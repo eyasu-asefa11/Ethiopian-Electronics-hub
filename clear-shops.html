@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Registered Shops</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success {
+            color: #28a745;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗑️ Clear Registered Shops</h1>
+        
+        <div class="success">
+            ✅ Database shops and products cleared successfully!
+        </div>
+        
+        <div class="warning">
+            ⚠️ <strong>Important:</strong> You also need to clear your browser's localStorage to remove old shops from the frontend.
+        </div>
+        
+        <h3>📱 What to do next:</h3>
+        
+        <ol>
+            <li><strong>Clear Browser Storage:</strong> Click the button below to clear localStorage</li>
+            <li><strong>Register New Shops:</strong> Go to shop registration page</li>
+            <li><strong>Add Products:</strong> Add products to your new shops</li>
+        </ol>
+        
+        <button class="btn" onclick="clearLocalStorage()">🗑️ Clear Browser Storage</button>
+        <button class="btn" onclick="goToRegistration()">📝 Go to Shop Registration</button>
+        <button class="btn" onclick="goToHome()">🏠 Go to Homepage</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function clearLocalStorage() {
+            // Clear all registered shops from localStorage
+            localStorage.removeItem('registeredShops');
+            localStorage.removeItem('shops');
+            localStorage.removeItem('products');
+            
+            // Clear any other related data
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && (key.includes('shop') || key.includes('product') || key.includes('registered'))) {
+                    localStorage.removeItem(key);
+                }
+            }
+            
+            document.getElementById('result').innerHTML = 
+                '<div class="success">✅ Browser storage cleared! You can now register new shops.</div>';
+        }
+        
+        function goToRegistration() {
+            window.location.href = 'http://localhost:3000/shop-registration';
+        }
+        
+        function goToHome() {
+            window.location.href = 'http://localhost:3000';
+        }
+    </script>
+</body>
+</html>

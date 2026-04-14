@@ -1,0 +1,326 @@
+/* Universal Back Button Component Styles */
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.back-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+}
+
+.back-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Default Variant */
+.back-button--default {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+}
+
+.back-button--default:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.back-button--default:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Primary Variant */
+.back-button--primary {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+}
+
+.back-button--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+  background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+}
+
+/* Secondary Variant */
+.back-button--secondary {
+  background: #6c757d;
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+}
+
+.back-button--secondary:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+}
+
+/* Outline Variant */
+.back-button--outline {
+  background: transparent;
+  color: #667eea;
+  border: 2px solid #667eea;
+  padding: 10px 22px;
+  font-size: 16px;
+}
+
+.back-button--outline:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Ghost Variant */
+.back-button--ghost {
+  background: transparent;
+  color: #495057;
+  padding: 12px 24px;
+  font-size: 16px;
+}
+
+.back-button--ghost:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Danger Variant */
+.back-button--danger {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+}
+
+.back-button--danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+  background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+}
+
+/* Size Variants */
+.back-button--small {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.back-button--medium {
+  padding: 12px 24px;
+  font-size: 16px;
+}
+
+.back-button--large {
+  padding: 16px 32px;
+  font-size: 18px;
+}
+
+/* Icon Styles */
+.back-button__icon {
+  font-size: 1.2em;
+  font-weight: bold;
+  line-height: 1;
+  transition: transform 0.3s ease;
+}
+
+.back-button:hover .back-button__icon {
+  transform: translateX(-2px);
+}
+
+.back-button__text {
+  font-weight: 600;
+}
+
+/* Mobile Visibility */
+.back-button--mobile-hidden {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .back-button--mobile {
+    display: inline-flex;
+  }
+  
+  .back-button--desktop {
+    display: none;
+  }
+  
+  .back-button--mobile-hidden {
+    display: none;
+  }
+}
+
+/* Desktop Visibility */
+@media (min-width: 769px) {
+  .back-button--mobile {
+    display: none;
+  }
+  
+  .back-button--desktop {
+    display: inline-flex;
+  }
+  
+  .back-button--desktop-hidden {
+    display: none;
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+  .back-button--small {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .back-button--medium {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  .back-button--large {
+    padding: 14px 28px;
+    font-size: 16px;
+  }
+  
+  .back-button--outline {
+    padding: 8px 18px;
+    font-size: 14px;
+  }
+}
+
+/* Animation States */
+.back-button--loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.back-button--loading .back-button__text {
+  opacity: 0.7;
+}
+
+.back-button--loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Floating Back Button */
+.back-button--floating {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.back-button--floating .back-button__text {
+  display: none;
+}
+
+.back-button--floating .back-button__icon {
+  font-size: 1.5em;
+}
+
+/* Header Back Button */
+.back-button--header {
+  background: transparent;
+  color: #495057;
+  padding: 8px 12px;
+  font-size: 14px;
+  box-shadow: none;
+}
+
+.back-button--header:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: none;
+}
+
+/* Card Back Button */
+.back-button--card {
+  background: white;
+  color: #495057;
+  border: 1px solid #e1e8ed;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+.back-button--card:hover {
+  background: #f8f9fa;
+  border-color: #667eea;
+  color: #667eea;
+  transform: translateY(-1px);
+}
+
+/* Accessibility */
+.back-button[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .back-button--default {
+    background: #000;
+    color: #fff;
+  }
+  
+  .back-button--outline {
+    border-width: 3px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .back-button {
+    transition: none;
+  }
+  
+  .back-button:hover {
+    transform: none;
+  }
+  
+  .back-button__icon {
+    transition: none;
+  }
+  
+  .back-button:hover .back-button__icon {
+    transform: none;
+  }
+}

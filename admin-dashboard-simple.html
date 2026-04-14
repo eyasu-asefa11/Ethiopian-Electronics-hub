@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Ethiopian Electronics Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2d1b69 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            color: #fff;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        .search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .shop-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+        }
+        
+        .shop-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .shop-info h3 {
+            margin: 0 0 10px 0;
+            color: #10b981;
+        }
+        
+        .shop-info p {
+            margin: 5px 0;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .shop-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .no-results h3 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Admin Dashboard</h1>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <input type="text" id="mainSearch" placeholder="Search shops, products, brands..." onkeyup="mainSearch()">
+                    <button class="btn btn-info" onclick="exportToExcel()">Export</button>
+                </div>
+                <a href="index.html" class="btn">Back to Home</a>
+                <button class="btn btn-danger" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <div id="searchResults" class="section" style="display: none;">
+            <h2>
+                <span>×</span> Search Results
+            </h2>
+            <div id="searchResultsList" class="shop-list">
+                <!-- Search results will appear here -->
+            </div>
+        </div>
+
+        <!-- Recent Shops -->
+        <div class="section">
+            <h2>
+                <span>×</span> Recent Shops
+            </h2>
+            <div id="shopList" class="shop-list">
+                <!-- Shops will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin credentials
+        const ADMIN_CREDENTIALS = {
+            phone: '+251912345678',
+            password: 'admin123'
+        };
+
+        // Sample shops for demonstration
+        const sampleShops = [
+            {
+                name: 'HENOK Electronics',
+                owner: 'HENOK',
+                city: 'Addis Ababa',
+                phone: '+251912345678',
+                status: 'active',
+                registered: '2024-04-07',
+                products: [
+                    {
+                        name: 'Samsung Galaxy A05',
+                        brand: 'Samsung',
+                        category: 'phones',
+                        price: 45000,
+                        condition: 'new',
+                        ram: '4GB',
+                        storage: '64GB',
+                        battery: '5000 mAh',
+                        screenSize: '6.7 inches',
+                        processor: 'MediaTek Helio G85',
+                        os: 'Android 13',
+                        description: 'Brand new Samsung Galaxy A05 with warranty'
+                    },
+                    {
+                        name: 'Tecno Spark 10',
+                        brand: 'Tecno',
+                        category: 'phones',
+                        price: 35000,
+                        condition: 'new',
+                        ram: '4GB',
+                        storage: '128GB',
+                        battery: '5000 mAh',
+                        screenSize: '6.6 inches',
+                        processor: 'MediaTek Helio G70',
+                        os: 'Android 12',
+                        description: 'Affordable smartphone with great features'
+                    }
+                ]
+            },
+            {
+                name: 'Alemu Tech Store',
+                owner: 'Alemu',
+                city: 'Hawassa',
+                phone: '+251923456789',
+                status: 'active',
+                registered: '2024-04-06',
+                products: [
+                    {
+                        name: 'HP Laptop 15',
+                        brand: 'HP',
+                        category: 'laptops',
+                        price: 25000,
+                        condition: 'new',
+                        ram: '8GB',
+                        storage: '512GB SSD',
+                        processor: 'Intel Core i5',
+                        os: 'Windows 11',
+                        description: 'Reliable laptop for work and study'
+                    }
+                ]
+            },
+            {
+                name: 'Kebede Mobile',
+                owner: 'Kebede',
+                city: 'Bahir Dar',
+                phone: '+251934567890',
+                status: 'active',
+                registered: '2024-04-05',
+                products: [
+                    {
+                        name: 'iPhone 12',
+                        brand: 'Apple',
+                        category: 'phones',
+                        price: 65000,
+                        condition: 'refurbished',
+                        ram: '4GB',
+                        storage: '64GB',
+                        battery: '2815 mAh',
+                        screenSize: '6.1 inches',
+                        processor: 'A14 Bionic',
+                        os: 'iOS 15',
+                        description: 'Refurbished iPhone 12 in excellent condition'
+                    }
+                ]
+            }
+        ];
+
+        // Check login status
+        function checkLoginStatus() {
+            const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
+            const adminPhone = sessionStorage.getItem('adminPhone');
+            
+            if (isLoggedIn === 'true' && adminPhone === ADMIN_CREDENTIALS.phone) {
+                // Already logged in, show dashboard
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+                loadDashboard();
+            } else {
+                // Not logged in, show login form
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('dashboardContent').style.display = 'none';
+            }
+        }
+
+        // Login function
+        function login(event) {
+            event.preventDefault();
+            
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            
+            if (phone === ADMIN_CREDENTIALS.phone && password === ADMIN_CREDENTIALS.password) {
+                // Successful login
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                sessionStorage.setItem('adminPhone', phone);
+                checkLoginStatus();
+            } else {
+                alert('Invalid credentials!');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            sessionStorage.removeItem('adminPhone');
+            checkLoginStatus();
+        }
+
+        // Load dashboard
+        function loadDashboard() {
+            // Load registered shops from localStorage
+            const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            
+            // If no registered shops, show sample shops
+            const shops = registeredShops.length > 0 ? registeredShops : sampleShops;
+            
+            const shopList = document.getElementById('shopList');
+            
+            if (shops.length === 0) {
+                shopList.innerHTML = '<div class="no-results"><h3>No shops found</h3></div>';
+                return;
+            }
+            
+            shopList.innerHTML = shops.map(shop => `
+                <div class="shop-item">
+                    <div class="shop-info">
+                        <h3>${shop.name}</h3>
+                        <p>Owner: ${shop.owner}</p>
+                        <p>City: ${shop.city}</p>
+                        <p>Phone: ${shop.phone}</p>
+                        <p>Status: <span style="color: ${shop.status === 'active' ? '#10b981' : '#f59e0b'}">${shop.status.toUpperCase()}</span></p>
+                        <p>Products: ${shop.products ? shop.products.length : 0}</p>
+                    </div>
+                    <div class="shop-actions">
+                        <button class="btn btn-small btn-success" onclick="approveShop('${shop.name}')">Approve</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteShop('${shop.name}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Simple search function
+        function mainSearch() {
+            const searchTerm = document.getElementById('mainSearch').value.toLowerCase();
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            
+            if (searchTerm.length === 0) {
+                document.getElementById('searchResults').style.display = 'none';
+                document.getElementById('shopList').parentElement.style.display = 'block';
+                return;
+            }
+            
+            // Simple filter shops
+            const filteredShops = shops.filter(shop => {
+                const shopName = shop.name || '';
+                const ownerName = shop.owner || '';
+                
+                return shopName.toLowerCase().includes(searchTerm) ||
+                       ownerName.toLowerCase().includes(searchTerm) ||
+                       (shop.city || '').toLowerCase().includes(searchTerm) ||
+                       (shop.phone || '').includes(searchTerm) ||
+                       (shop.products && shop.products.some(product => {
+                           const productName = product.name || '';
+                           const productBrand = product.brand || '';
+                           const productCategory = product.category || '';
+                           return productName.toLowerCase().includes(searchTerm) ||
+                                  productBrand.toLowerCase().includes(searchTerm) ||
+                                  productCategory.toLowerCase().includes(searchTerm);
+                       }));
+            });
+            
+            // Display search results
+            const searchResults = document.getElementById('searchResults');
+            const searchResultsList = document.getElementById('searchResultsList');
+            
+            if (filteredShops.length === 0) {
+                searchResults.style.display = 'block';
+                searchResultsList.innerHTML = '<div class="no-results"><h3>No shops found</h3></div>';
+            } else {
+                searchResults.style.display = 'block';
+                searchResultsList.innerHTML = filteredShops.map(shop => `
+                    <div class="shop-item">
+                        <div class="shop-info">
+                            <h3>${shop.name}</h3>
+                            <p>Owner: ${shop.owner}</p>
+                            <p>City: ${shop.city}</p>
+                            <p>Phone: ${shop.phone}</p>
+                            <p>Products: ${shop.products ? shop.products.length : 0}</p>
+                        </div>
+                        <div class="shop-actions">
+                            <button class="btn btn-small btn-success" onclick="approveShop('${shop.name}')">Approve</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteShop('${shop.name}')">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Approve shop function
+        function approveShop(shopName) {
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const shopIndex = shops.findIndex(s => s.name === shopName);
+            
+            if (shopIndex !== -1) {
+                shops[shopIndex].status = 'active';
+                localStorage.setItem('registeredShops', JSON.stringify(shops));
+                alert(`Shop "${shopName}" approved successfully!`);
+                loadShops(); // Refresh shops list
+            } else {
+                alert(`Shop "${shopName}" not found!`);
+            }
+        }
+
+        // Delete shop function
+        function deleteShop(shopName) {
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const updatedShops = shops.filter(s => s.name !== shopName);
+            
+            if (confirm(`Are you sure you want to delete ${shopName}?`)) {
+                localStorage.setItem('registeredShops', JSON.stringify(updatedShops));
+                alert(`Shop "${shopName}" deleted successfully!`);
+                loadShops(); // Refresh shops list
+            }
+        }
+
+        // Export function
+        function exportToExcel() {
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            
+            if (shops.length === 0) {
+                alert('No shops to export!');
+                return;
+            }
+            
+            let csvContent = 'Shop Name,Owner Name,Phone,City,Status,Products\n';
+            
+            shops.forEach(shop => {
+                csvContent += `"${shop.name}","${shop.owner}","${shop.phone}","${shop.city}","${shop.status}","${shop.products ? shop.products.length : 0}"\n`;
+            });
+            
+            // Download CSV
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'shops_export.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            alert('Shops exported successfully!');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+        });
+    </script>
+</body>
+</html>

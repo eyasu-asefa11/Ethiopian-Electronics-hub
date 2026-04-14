@@ -1,0 +1,175 @@
+/* City Selection Message Styles */
+.city-selection-message {
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+  color: #1e40af;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  border: 1px solid #bfdbfe;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  animation: slideInUp 0.3s ease;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hero Section Spacing */
+.hero {
+  padding-bottom: 80px; /* Increased bottom padding */
+}
+
+.hero-content {
+  margin-bottom: 40px; /* Add spacing below hero */
+}
+
+.hero-text {
+  margin-bottom: 30px; /* Add spacing below hero text */
+}
+
+/* City Search Section */
+.city-search-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 40px; /* Increased margin */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.city-search-section h3 {
+  color: #374151;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Product Search Section */
+.product-search-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 40px; /* Increased margin */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.product-search-section h3 {
+  color: #374151;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Search Section Spacing */
+.search-section {
+  padding: 80px 0; /* Increased padding */
+  background: #f8fafc;
+  margin-top: 60px; /* Add top margin */
+}
+
+.search-section .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 60px; /* Increased spacing between sections */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero {
+    padding-bottom: 60px;
+  }
+  
+  .hero-content {
+    margin-bottom: 30px;
+  }
+  
+  .hero-text {
+    margin-bottom: 20px;
+  }
+  
+  .city-selection-message {
+    font-size: 14px;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+  }
+  
+  .city-search-section,
+  .product-search-section {
+    padding: 16px;
+    margin-bottom: 30px;
+  }
+  
+  .city-search-section h3,
+  .product-search-section h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .search-section {
+    padding: 60px 0;
+    margin-top: 40px;
+  }
+  
+  .search-section .container {
+    gap: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding-bottom: 40px;
+  }
+  
+  .hero-content {
+    margin-bottom: 20px;
+  }
+  
+  .hero-text {
+    margin-bottom: 15px;
+  }
+  
+  .city-selection-message {
+    font-size: 13px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+  }
+  
+  .city-search-section,
+  .product-search-section {
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .city-search-section h3,
+  .product-search-section h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .search-section {
+    padding: 40px 0;
+    margin-top: 30px;
+  }
+  
+  .search-section .container {
+    gap: 30px;
+  }
+}

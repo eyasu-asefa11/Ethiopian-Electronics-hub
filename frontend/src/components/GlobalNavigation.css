@@ -1,0 +1,527 @@
+/* Global Navigation Styles */
+.global-back-button {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  color: #2c3e50;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  position: relative;
+}
+
+.global-back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.global-back-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.global-back-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+}
+
+.global-back-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Position Variants */
+.global-back-button--top-left {
+  top: 20px;
+  left: 20px;
+}
+
+.global-back-button--top-right {
+  top: 20px;
+  right: 20px;
+}
+
+.global-back-button--bottom-left {
+  bottom: 20px;
+  left: 20px;
+}
+
+.global-back-button--bottom-right {
+  bottom: 20px;
+  right: 20px;
+}
+
+.global-back-button--center-left {
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+}
+
+.global-back-button--center-right {
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+}
+
+/* Theme Variants */
+.global-back-button--default {
+  background: rgba(255, 255, 255, 0.9);
+  color: #2c3e50;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.global-back-button--dark {
+  background: rgba(44, 62, 80, 0.9);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.global-back-button--gradient {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.global-back-button--minimal {
+  background: rgba(248, 249, 250, 0.8);
+  color: #495057;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.global-back-button--colorful {
+  background: linear-gradient(135deg, rgba(40, 167, 69, 0.9) 0%, rgba(32, 201, 151, 0.9) 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Size Variants */
+.global-back-button--small {
+  padding: 8px 12px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.global-back-button--medium {
+  padding: 12px 16px;
+  font-size: 14px;
+  border-radius: 12px;
+}
+
+.global-back-button--large {
+  padding: 16px 20px;
+  font-size: 16px;
+  border-radius: 16px;
+}
+
+/* Icon Styles */
+.back-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.global-back-button:hover .back-icon {
+  transform: translateX(-2px);
+}
+
+.back-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.global-back-button--small .back-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.global-back-button--large .back-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Text Styles */
+.back-text {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.global-back-button--small .back-text {
+  display: none;
+}
+
+/* Tooltip */
+.back-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  margin-bottom: 8px;
+  z-index: 1001;
+}
+
+.back-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.8);
+}
+
+.global-back-button:hover .back-tooltip {
+  opacity: 1;
+}
+
+/* Animation State */
+.global-back-button--animating {
+  animation: backButtonPulse 0.3s ease;
+}
+
+@keyframes backButtonPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Ripple Effect */
+.nav-ripple {
+  position: fixed;
+  border-radius: 50%;
+  background: rgba(102, 126, 234, 0.3);
+  transform: scale(0);
+  animation: rippleEffect 0.6s ease-out;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+@keyframes rippleEffect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Disabled State */
+.global-back-button--disabled {
+  background: rgba(248, 249, 250, 0.6);
+  color: #adb5bd;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.global-back-button--disabled:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Breadcrumb Navigation */
+.global-breadcrumb {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+}
+
+.breadcrumb-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumb-link {
+  color: #667eea;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.breadcrumb-link:hover {
+  color: #5a6fd8;
+  text-decoration: underline;
+}
+
+.breadcrumb-current {
+  color: #495057;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.breadcrumb-separator {
+  color: #adb5bd;
+  display: flex;
+  align-items: center;
+}
+
+/* Progress Indicator */
+.nav-progress-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .global-back-button--top-left {
+    top: 16px;
+    left: 16px;
+  }
+
+  .global-back-button--top-right {
+    top: 16px;
+    right: 16px;
+  }
+
+  .global-back-button--bottom-left {
+    bottom: 16px;
+    left: 16px;
+  }
+
+  .global-back-button--bottom-right {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .global-breadcrumb {
+    top: 16px;
+    padding: 6px 12px;
+  }
+
+  .breadcrumb-link,
+  .breadcrumb-current {
+    font-size: 12px;
+  }
+
+  .back-text {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .global-back-button--top-left {
+    top: 12px;
+    left: 12px;
+  }
+
+  .global-back-button--top-right {
+    top: 12px;
+    right: 12px;
+  }
+
+  .global-back-button--bottom-left {
+    bottom: 12px;
+    left: 12px;
+  }
+
+  .global-back-button--bottom-right {
+    bottom: 12px;
+    right: 12px;
+  }
+
+  .global-breadcrumb {
+    display: none; /* Hide breadcrumb on very small screens */
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .global-back-button--default {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+  }
+
+  .global-back-button--dark {
+    background: #000000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+  }
+
+  .back-tooltip {
+    background: #000000;
+    color: #ffffff;
+  }
+
+  .back-tooltip::after {
+    border-top-color: #000000;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .global-back-button,
+  .back-icon,
+  .back-tooltip,
+  .progress-bar {
+    transition: none;
+  }
+
+  .global-back-button:hover .back-icon {
+    transform: none;
+  }
+
+  .global-back-button--animating {
+    animation: none;
+  }
+
+  .nav-ripple {
+    animation: none;
+  }
+}
+
+/* Dark Theme Support */
+@media (prefers-color-scheme: dark) {
+  .global-back-button--default {
+    background: rgba(44, 62, 80, 0.9);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .global-breadcrumb {
+    background: rgba(44, 62, 80, 0.9);
+    color: #ffffff;
+  }
+
+  .breadcrumb-current {
+    color: #ffffff;
+  }
+}
+
+/* Focus Management */
+.global-back-button:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+  .global-back-button,
+  .global-breadcrumb,
+  .nav-progress-indicator {
+    display: none;
+  }
+}
+
+/* Loading State */
+.global-back-button--loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.global-back-button--loading .back-text::after {
+  content: '...';
+  animation: loadingDots 1.5s infinite;
+}
+
+@keyframes loadingDots {
+  0%, 20% { content: '.'; }
+  40% { content: '..'; }
+  60%, 100% { content: '...'; }
+}
+
+/* Success State */
+.global-back-button--success {
+  background: linear-gradient(135deg, rgba(40, 167, 69, 0.9) 0%, rgba(32, 201, 151, 0.9) 100%);
+  color: #ffffff;
+}
+
+/* Error State */
+.global-back-button--error {
+  background: linear-gradient(135deg, rgba(220, 53, 69, 0.9) 0%, rgba(200, 35, 51, 0.9) 100%);
+  color: #ffffff;
+}
+
+/* Special States for Different Pages */
+.global-back-button--home {
+  display: none; /* Hide on home page */
+}
+
+.global-back-button--checkout {
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.9) 0%, rgba(255, 152, 0, 0.9) 100%);
+  color: #000000;
+}
+
+.global-back-button--error-page {
+  background: linear-gradient(135deg, rgba(108, 117, 125, 0.9) 0%, rgba(73, 80, 87, 0.9) 100%);
+  color: #ffffff;
+}
+
+/* Animation for page transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}

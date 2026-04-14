@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Shop - Ethio Electronics Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #312e81 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: white;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #1e293b;
+            font-size: 16px;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #374151;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .product-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .product-section h4 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .product-table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+
+        .product-table th,
+        .product-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .product-table th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: bold;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 4px 8px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-edit {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+
+        .image-upload-container {
+            margin-top: 10px;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .upload-area:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .upload-area.dragover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+        }
+
+        .image-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .image-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .image-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status {
+            display: none;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .phone-input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .phone-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .help-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .phone-rules {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .rules-content h4 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .rules-content p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .close-rules {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            color: #ef4444;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .error-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: rgba(239, 68, 68, 0.8);
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .error-text {
+            flex: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .header p {
+                font-size: 14px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .form-group label {
+                font-size: 14px;
+                margin-bottom: 5px;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                margin-right: 5px;
+            }
+
+            .btn-small {
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+
+            .image-upload-container {
+                margin-bottom: 15px;
+            }
+
+            .upload-area {
+                padding: 20px;
+                min-height: 100px;
+            }
+
+            .upload-icon {
+                font-size: 36px;
+                margin-bottom: 10px;
+            }
+
+            .product-section {
+                padding: 15px;
+                margin-top: 20px;
+            }
+
+            .product-table {
+                font-size: 12px;
+            }
+
+            .product-table th,
+            .product-table td {
+                padding: 8px;
+            }
+
+            .modal-content {
+                margin: 10px;
+                padding: 20px;
+                max-width: calc(100% - 20px);
+            }
+
+            .phone-rules-modal .modal-content {
+                padding: 15px;
+            }
+
+            .phone-rules-modal h2 {
+                font-size: 18px;
+            }
+
+            .phone-rules-modal ul {
+                padding-left: 20px;
+            }
+
+            .phone-rules-modal li {
+                margin-bottom: 8px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                margin: 5px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .header p {
+                font-size: 12px;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 8px;
+                font-size: 13px;
+            }
+
+            .btn {
+                padding: 10px 15px;
+                font-size: 13px;
+                margin-right: 3px;
+            }
+
+            .btn-small {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+
+            .upload-area {
+                padding: 15px;
+                min-height: 80px;
+            }
+
+            .upload-icon {
+                font-size: 28px;
+            }
+
+            .product-table {
+                font-size: 11px;
+            }
+
+            .product-table th,
+            .product-table td {
+                padding: 6px;
+            }
+
+            .modal-content {
+                padding: 15px;
+            }
+
+            .phone-rules-modal h2 {
+                font-size: 16px;
+            }
+
+            .phone-rules-modal li {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">BACK</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>Register Your Shop</h1>
+            <p>Join Ethio Electronics Hub - Professional Electronics Marketplace</p>
+        </div>
+
+        <div id="status" class="status"></div>
+
+        <form id="shopForm">
+            <div class="form-group">
+                <label>Electronics House Name *</label>
+                <input type="text" name="shopName" placeholder="Enter your shop name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Owner Name *</label>
+                <input type="text" name="ownerName" placeholder="Enter owner name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Shop Description *</label>
+                <textarea name="description" rows="4" placeholder="Example: We sell original smartphones and laptops with warranty and excellent customer service." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number *</label>
+                <div class="phone-input-container">
+                    <select id="phoneProvider" name="phoneProvider" required>
+                        <option value="">Select Provider</option>
+                        <option value="ethio">Ethio Telecom</option>
+                        <option value="safaricom">Safaricom Ethiopia</option>
+                    </select>
+                    <div class="phone-input-wrapper">
+                        <input type="tel" id="phoneNumber" name="phone" placeholder="Enter phone number" required>
+                        <button type="button" id="phoneHelpBtn" class="help-btn" title="Show phone format help">?</button>
+                    </div>
+                </div>
+                <div id="phoneRules" class="phone-rules" style="display: none;">
+                    <div class="rules-content">
+                        <h4>Phone Number Format Rules:</h4>
+                        <div id="providerRules"></div>
+                        <button type="button" class="close-rules" onclick="hidePhoneRules()">×</button>
+                    </div>
+                </div>
+                <div id="phoneError" class="error-message" style="display: none;">
+                    <span class="error-icon">!</span>
+                    <span class="error-text">Invalid phone number</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email" placeholder="shop@example.com">
+            </div>
+
+            <div class="form-group">
+                <label>City *</label>
+                <input type="text" name="city" placeholder="Enter your city (e.g., Addis Ababa, Dire Dawa, Mekelle, etc.)" required>
+            </div>
+
+            <div class="form-group">
+                <label>Shop Address *</label>
+                <input type="text" name="address" placeholder="Enter your shop address" required>
+            </div>
+
+            
+            <div class="form-group">
+                <label>Shop Images</label>
+                <div class="image-upload-container">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">+</div>
+                        <p>Click to upload shop images</p>
+                        <p style="font-size: 12px; opacity: 0.7;">PNG, JPG up to 10MB each</p>
+                    </div>
+                    <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+            </div>
+
+            <!-- Product Management Section -->
+            <div class="product-section">
+                <h4>+ Add Products to Your Shop</h4>
+                <button type="button" class="btn btn-secondary btn-small" onclick="addProduct()">+ Add Product</button>
+                
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Type</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                        <!-- Products will be added here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <button type="submit" class="btn">Register Shop</button>
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">Cancel</button>
+        </form>
+    </div>
+
+    <script>
+        let uploadedImages = [];
+        let products = [];
+        let currentEditingIndex = -1;
+
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.style.display = 'block';
+            status.style.background = type === 'success' ? 'rgba(16, 185, 129, 0.9)' : 'rgba(239, 68, 68, 0.9)';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 5000);
+        }
+
+        // Image Upload Functionality
+        function initializeImageUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            const imageInput = document.getElementById('imageInput');
+            const imagePreview = document.getElementById('imagePreview');
+
+            // Click to upload
+            uploadArea.addEventListener('click', () => {
+                imageInput.click();
+            });
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+
+            // File input change
+            imageInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+
+        function handleFiles(files) {
+            console.log('Processing files:', files);
+            
+            const validFiles = Array.from(files).filter(file => {
+                console.log('Checking file:', file.name, file.type, file.size);
+                
+                if (!file.type.startsWith('image/')) {
+                    showStatus(`${file.name} is not an image file`, 'error');
+                    return false;
+                }
+                if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                    showStatus(`${file.name} is too large (max 10MB)`, 'error');
+                    return false;
+                }
+                return true;
+            });
+
+            console.log('Valid files:', validFiles.length);
+
+            validFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                
+                reader.onloadstart = () => {
+                    console.log(`Starting to read ${file.name}...`);
+                };
+                
+                reader.onload = (e) => {
+                    console.log(`Successfully read ${file.name}`);
+                    
+                    const imageData = {
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        data: e.target.result
+                    };
+                    
+                    uploadedImages.push(imageData);
+                    console.log(`Added image ${uploadedImages.length}:`, imageData.name);
+                    
+                    displayImage(imageData, uploadedImages.length - 1);
+                    updateImageInfo();
+                    
+                    showStatus(`\u2705 ${file.name} uploaded successfully!`, 'success');
+                };
+                
+                reader.onerror = (error) => {
+                    console.error(`Error reading ${file.name}:`, error);
+                    showStatus(`\u274c Failed to read ${file.name}`, 'error');
+                };
+                
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function displayImage(imageData, index) {
+            const imagePreview = document.getElementById('imagePreview');
+            
+            const imageItem = document.createElement('div');
+            imageItem.className = 'image-item';
+            imageItem.innerHTML = `
+                <img src="${imageData.data}" alt="${imageData.name}">
+                <button type="button" class="remove-btn" onclick="removeImage(${index})">\u00d7</button>
+            `;
+            
+            imagePreview.appendChild(imageItem);
+        }
+
+        function removeImage(index) {
+            console.log(`Removing image at index ${index}`);
+            uploadedImages.splice(index, 1);
+            refreshImageDisplay();
+            updateImageInfo();
+            showStatus('Image removed', 'success');
+        }
+
+        function refreshImageDisplay() {
+            const imagePreview = document.getElementById('imagePreview');
+            imagePreview.innerHTML = '';
+            
+            uploadedImages.forEach((imageData, index) => {
+                displayImage(imageData, index);
+            });
+        }
+
+        function updateImageInfo() {
+            const uploadArea = document.getElementById('uploadArea');
+            
+            if (uploadedImages.length > 0) {
+                const totalSize = uploadedImages.reduce((sum, img) => sum + img.size, 0);
+                const sizeText = totalSize > 1024 * 1024 ? 
+                    `${(totalSize / (1024 * 1024)).toFixed(1)} MB` : 
+                    `${(totalSize / 1024).toFixed(1)} KB`;
+                
+                uploadArea.innerHTML = `
+                    <div class="upload-icon">+</div>
+                    <p>Click to add more images</p>
+                    <p style="font-size: 12px; opacity: 0.7;">${uploadedImages.length} images uploaded (${sizeText})</p>
+                `;
+            } else {
+                uploadArea.innerHTML = `
+                    <div class="upload-icon">+</div>
+                    <p>Click to upload shop images</p>
+                    <p style="font-size: 12px; opacity: 0.7;">PNG, JPG up to 10MB each</p>
+                `;
+            }
+        }
+
+        // Phone Validation
+        const providerValidation = {
+            ethio: {
+                international: /^\+2519\d{8}$/,
+                local: /^09\d{8}$/,
+                errorMessage: 'Ethio Telecom numbers must be in format: 09XXXXXXXX or +2519XXXXXXXX'
+            },
+            safaricom: {
+                international: /^\+2517\d{8}$/,
+                local: /^07\d{8}$/,
+                errorMessage: 'Safaricom Ethiopia numbers must be in format: 07XXXXXXXX or +2517XXXXXXXX'
+            }
+        };
+
+        function initializePhoneValidation() {
+            const phoneProvider = document.getElementById('phoneProvider');
+            const phoneNumber = document.getElementById('phoneNumber');
+            const phoneHelpBtn = document.getElementById('phoneHelpBtn');
+            const phoneError = document.getElementById('phoneError');
+
+            phoneHelpBtn.addEventListener('click', showPhoneRules);
+            phoneProvider.addEventListener('change', validatePhone);
+            phoneNumber.addEventListener('input', validatePhone);
+        }
+
+        function showPhoneRules() {
+            const provider = document.getElementById('phoneProvider').value;
+            const phoneRules = document.getElementById('phoneRules');
+            const providerRules = document.getElementById('providerRules');
+            
+            if (!provider) {
+                providerRules.innerHTML = '<p>Please select a provider first</p>';
+            } else {
+                const rules = providerValidation[provider];
+                providerRules.innerHTML = `
+                    <p><strong>${provider === 'ethio' ? 'Ethio Telecom' : 'Safaricom Ethiopia'} Format:</strong></p>
+                    <p>Local: ${rules.local.source}</p>
+                    <p>International: ${rules.international.source}</p>
+                    <p style="font-size: 12px; opacity: 0.7;">${rules.errorMessage}</p>
+                `;
+            }
+            
+            phoneRules.style.display = 'block';
+        }
+
+        function hidePhoneRules() {
+            document.getElementById('phoneRules').style.display = 'none';
+        }
+
+        function validatePhone() {
+            const provider = document.getElementById('phoneProvider').value;
+            const number = document.getElementById('phoneNumber').value;
+            const phoneError = document.getElementById('phoneError');
+
+            if (!provider || !number) {
+                hideError();
+                return false;
+            }
+
+            const rules = providerValidation[provider];
+            if (!rules) {
+                hideError();
+                return false;
+            }
+
+            const cleanNumber = number.replace(/\D/g, '');
+            
+            if (rules.international.test(cleanNumber) || rules.local.test(cleanNumber)) {
+                hideError();
+                return true;
+            } else {
+                showError(rules.errorMessage);
+                return false;
+            }
+        }
+
+        function showError(message) {
+            const phoneError = document.getElementById('phoneError');
+            phoneError.querySelector('.error-text').textContent = message;
+            phoneError.style.display = 'flex';
+        }
+
+        function hideError() {
+            document.getElementById('phoneError').style.display = 'none';
+        }
+
+        // Product Management
+        function addProduct() {
+            currentEditingIndex = -1;
+            showProductForm();
+        }
+
+        function showProductForm() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #312e81 100%); border-radius: 20px; padding: 40px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                        <h2 style="margin: 0; color: white;">Add Product</h2>
+                        <button onclick="closeProductModal()" style="background: #ef4444; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">× Close</button>
+                    </div>
+                    <form id="productForm" onsubmit="saveProduct(event)">
+                        <div class="product-form">
+                            <div class="form-group">
+                                <label style="color: white; font-weight: 600;">Product Type *</label>
+                                <select id="productType" required onchange="updateProductFields()" style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                                    <option value="">Select Product Type</option>
+                                    <option value="Computer">Computer</option>
+                                    <option value="Laptop">Laptop</option>
+                                    <option value="Phone">Phone</option>
+                                    <option value="Tablet">Tablet</option>
+                                    <option value="Accessories">Accessories</option>
+                                </select>
+                            </div>
+                            
+                            <div id="dynamicProductFields">
+                                <!-- Dynamic product fields will be inserted here -->
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary">Save Product</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            updateProductFields();
+        }
+
+        function closeProductModal() {
+            const modal = document.querySelector('div[style*="position: fixed"]');
+            if (modal) {
+                modal.remove();
+            }
+            document.getElementById('productForm').reset();
+        }
+
+        function updateProductFields() {
+            const productType = document.getElementById('productType').value;
+            const dynamicFields = document.getElementById('dynamicProductFields');
+            
+            dynamicFields.innerHTML = '';
+            
+            if (productType === 'Laptop') {
+                dynamicFields.innerHTML = `
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Product Name *</label>
+                        <input type="text" id="productName" placeholder="e.g., Dell Inspiron 15" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Brand *</label>
+                        <input type="text" id="brand" placeholder="e.g., Dell" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Price (ETB) *</label>
+                        <input type="number" id="price" placeholder="e.g., 45000" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Stock Quantity *</label>
+                        <input type="number" id="stock" placeholder="e.g., 10" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                `;
+            } else if (productType === 'Phone') {
+                dynamicFields.innerHTML = `
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Product Name *</label>
+                        <input type="text" id="productName" placeholder="e.g., iPhone 15" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Brand *</label>
+                        <input type="text" id="brand" placeholder="e.g., Apple" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Price (ETB) *</label>
+                        <input type="number" id="price" placeholder="e.g., 45000" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Stock Quantity *</label>
+                        <input type="number" id="stock" placeholder="e.g., 10" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                `;
+            } else if (productType === 'Accessories') {
+                dynamicFields.innerHTML = `
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Product Name *</label>
+                        <input type="text" id="productName" placeholder="e.g., Wireless Headphones" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Brand *</label>
+                        <input type="text" id="brand" placeholder="e.g., Sony" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Price (ETB) *</label>
+                        <input type="number" id="price" placeholder="e.g., 8000" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Stock Quantity *</label>
+                        <input type="number" id="stock" placeholder="e.g., 20" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                `;
+            } else {
+                // Default for Computer, Tablet
+                dynamicFields.innerHTML = `
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Product Name *</label>
+                        <input type="text" id="productName" placeholder="e.g., iPad Pro" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Brand *</label>
+                        <input type="text" id="brand" placeholder="e.g., Apple" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Price (ETB) *</label>
+                        <input type="number" id="price" placeholder="e.g., 25000" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Stock Quantity *</label>
+                        <input type="number" id="stock" placeholder="e.g., 15" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                `;
+            }
+        }
+
+        function saveProduct(event) {
+            event.preventDefault();
+            
+            const productType = document.getElementById('productType').value;
+            const productName = document.getElementById('productName').value;
+            const brand = document.getElementById('brand').value;
+            const price = document.getElementById('price').value;
+            const stock = document.getElementById('stock').value;
+            
+            const product = {
+                id: Date.now().toString(),
+                productType: productType,
+                name: productName,
+                brand: brand,
+                price: price,
+                stock: stock
+            };
+            
+            if (currentEditingIndex === -1) {
+                products.push(product);
+            } else {
+                products[currentEditingIndex] = product;
+            }
+            
+            updateProductTable();
+            closeProductModal();
+            showStatus('Product saved successfully!', 'success');
+        }
+
+        function updateProductTable() {
+            const tbody = document.getElementById('productTableBody');
+            
+            if (products.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: rgba(255, 255, 255, 0.6);">No products added yet</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = products.map((product, index) => `
+                <tr>
+                    <td>${product.name}</td>
+                    <td>${product.productType}</td>
+                    <td>${product.price} ETB</td>
+                    <td>${product.stock}</td>
+                    <td>
+                        <div class="product-actions">
+                            <button type="button" class="btn-edit" onclick="editProduct(${index})">Edit</button>
+                            <button type="button" class="btn-delete" onclick="deleteProduct(${index})">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function editProduct(index) {
+            currentEditingIndex = index;
+            const product = products[index];
+            
+            showProductForm();
+            
+            // Fill the form with existing data
+            document.getElementById('productType').value = product.productType;
+            document.getElementById('productName').value = product.name;
+            document.getElementById('brand').value = product.brand;
+            document.getElementById('price').value = product.price;
+            document.getElementById('stock').value = product.stock;
+            
+            updateProductFields();
+        }
+
+        function deleteProduct(index) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                products.splice(index, 1);
+                updateProductTable();
+                showStatus('Product deleted successfully!', 'success');
+            }
+        }
+
+        // Form Submission
+        document.getElementById('shopForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate phone number
+            if (!validatePhone()) {
+                showStatus('Please enter a valid phone number', 'error');
+                return;
+            }
+            
+            // Get form data
+            const formData = new FormData(this);
+            const shopData = {
+                id: Date.now().toString(),
+                shopName: formData.get('shopName'),
+                ownerName: formData.get('ownerName'),
+                description: formData.get('description'),
+                phone: formData.get('phone'),
+                phoneProvider: formData.get('phoneProvider'),
+                email: formData.get('email'),
+                city: formData.get('city'),
+                address: formData.get('address'),
+                images: uploadedImages,
+                products: products,
+                createdAt: new Date().toISOString(),
+                status: 'pending'
+            };
+            
+            // Save to localStorage
+            const existingShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            existingShops.push(shopData);
+            localStorage.setItem('registeredShops', JSON.stringify(existingShops));
+            
+            // Show success message
+            showStatus('Shop registered successfully! Redirecting...', 'success');
+            
+            // Redirect after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        });
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeImageUpload();
+            initializePhoneValidation();
+            updateProductTable();
+        });
+    </script>
+</body>
+</html>

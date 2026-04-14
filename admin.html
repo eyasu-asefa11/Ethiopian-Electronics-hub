@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Ethiopian Electronics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #312e81 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-card h3 {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .action-card p {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .recent-shops {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .recent-shops h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .shop-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .shop-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .shop-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .shop-info h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .shop-info p {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .shop-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            color: white;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: none;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <a href="functional-interface.html" class="back-btn">BACK</a>
+    
+    <div id="status" class="status"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>Admin Dashboard</h1>
+            <p>Website management panel</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="totalShops">0</h3>
+                <p>Total Shops</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="activeShops">0</h3>
+                <p>Active Shops</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="pendingShops">0</h3>
+                <p>Pending Approval</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="citiesCount">0</h3>
+                <p>Cities</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="totalVisitors">0</h3>
+                <p>Total Visitors</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="activeVisitors">0</h3>
+                <p>Active Visitors</p>
+            </div>
+        </div>
+        
+        
+        <!-- Search Section -->
+        <div style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 15px; padding: 20px; margin-bottom: 30px;">
+            <h2 style="color: white; margin-bottom: 20px;">Search & Filter</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <input type="text" id="searchInput" placeholder="Search shops or visitors..." style="width: 100%; padding: 12px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; background: rgba(255, 255, 255, 0.9); color: white; font-size: 14px;">
+                </div>
+                <div>
+                    <select id="searchType" style="width: 100%; padding: 12px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; background: rgba(255, 255, 255, 0.9); color: white; font-size: 14px;">
+                        <option value="all">All</option>
+                        <option value="shops">Shops</option>
+                        <option value="visitors">Visitors</option>
+                    </select>
+                </div>
+            </div>
+            <div style="margin-top: 15px;">
+                <button class="btn" onclick="performSearch()" style="width: 100%;">Search</button>
+            </div>
+        </div>
+
+        
+        <div class="actions-grid">
+            <div class="action-card" onclick="exportData()">
+                <h3>Export Data</h3>
+                <p>Download all shop data as CSV</p>
+                <button class="btn">Export</button>
+            </div>
+                        <div class="action-card" onclick="showModal('backup')">
+                <h3>Backup Data</h3>
+                <p>Create backup of all data</p>
+                <button class="btn btn-success">Backup</button>
+            </div>
+            <div class="action-card" onclick="refreshStats()">
+                <h3>Refresh Stats</h3>
+                <p>Update dashboard statistics</p>
+                <button class="btn">Refresh</button>
+            </div>
+        </div>
+
+        <div class="recent-shops">
+            <h2>Recent Shop Registrations</h2>
+            <div id="shopList" class="shop-list">
+                <!-- Shops will be loaded here -->
+            </div>
+        </div>
+        
+        <div class="recent-shops">
+            <h2>Recent Visitor Registrations</h2>
+            <div id="visitorList" class="shop-list">
+                <!-- Visitors will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Confirm Action</h2>
+            <p id="modalMessage">Are you sure you want to proceed?</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-danger" id="modalConfirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.style.display = 'block';
+            status.style.background = type === 'success' ? 'rgba(16, 185, 129, 0.9)' : 'rgba(239, 68, 68, 0.9)';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 5000);
+        }
+
+        function loadStats() {
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const visitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+            
+            const totalShops = shops.length;
+            const activeShops = shops.filter(shop => shop.status !== 'inactive').length;
+            const pendingShops = shops.filter(shop => shop.status === 'pending').length;
+            const cities = [...new Set(shops.map(shop => shop.city))].length;
+            
+            const totalVisitors = visitors.length;
+            const activeVisitors = visitors.filter(visitor => visitor.status !== 'inactive').length;
+
+            document.getElementById('totalShops').textContent = totalShops;
+            document.getElementById('activeShops').textContent = activeShops;
+            document.getElementById('pendingShops').textContent = pendingShops;
+            document.getElementById('citiesCount').textContent = cities;
+            document.getElementById('totalVisitors').textContent = totalVisitors;
+            document.getElementById('activeVisitors').textContent = activeVisitors;
+        }
+
+        function loadRecentShops() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const searchType = document.getElementById('searchType').value;
+            
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            let recentShops = shops.slice(-5).reverse();
+            
+            if (searchType === 'shops' || searchType === 'all') {
+                if (searchInput) {
+                    recentShops = recentShops.filter(shop => 
+                        shop.shopName.toLowerCase().includes(searchInput) || 
+                        shop.ownerName.toLowerCase().includes(searchInput) || 
+                        shop.city.toLowerCase().includes(searchInput) || 
+                        shop.address.toLowerCase().includes(searchInput)
+                    );
+                }
+            } else {
+                recentShops = [];
+            }
+            
+            const shopList = document.getElementById('shopList');
+            
+            if (recentShops.length === 0) {
+                shopList.innerHTML = '<p style="text-align: center; opacity: 0.7;">No shops found</p>';
+                return;
+            }
+            
+            shopList.innerHTML = recentShops.map(shop => `
+                <div class="shop-item">
+                    <div class="shop-info">
+                        <h4>${shop.shopName || 'Unnamed Shop'}</h4>
+                        <p>${shop.ownerName || 'Unknown Owner'} - ${shop.city || 'Unknown City'}</p>
+                    </div>
+                    <div class="shop-actions">
+                        <button class="btn" onclick="viewShop('${shop.id}')">View</button>
+                        <button class="btn btn-danger" onclick="deleteShop('${shop.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadRecentVisitors() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const searchType = document.getElementById('searchType').value;
+            
+            const visitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+            let recentVisitors = visitors.slice(-5).reverse();
+            
+            if (searchType === 'visitors' || searchType === 'all') {
+                if (searchInput) {
+                    recentVisitors = recentVisitors.filter(visitor => visitor.name.toLowerCase().includes(searchInput) || visitor.email.toLowerCase().includes(searchInput) || visitor.phone.toLowerCase().includes(searchInput));
+                }
+            } else {
+                recentVisitors = [];
+            }
+            
+            const visitorList = document.getElementById('visitorList');
+            
+            if (recentVisitors.length === 0) {
+                visitorList.innerHTML = '<p style="text-align: center; opacity: 0.7;">No visitors found</p>';
+                return;
+            }
+            
+            visitorList.innerHTML = recentVisitors.map(visitor => `
+                <div class="shop-item">
+                    <div class="shop-info">
+                        <h4>${visitor.name || 'Unnamed Visitor'}</h4>
+                        <p>${visitor.email} - ${visitor.phone || 'No Phone'}</p>
+                    </div>
+                    <div class="shop-actions">
+                        <button class="btn" onclick="viewVisitor('${visitor.id}')">View</button>
+                        <button class="btn btn-danger" onclick="deleteVisitor('${visitor.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const searchType = document.getElementById('searchType').value;
+            
+            if (searchType === 'shops' || searchType === 'all') {
+                loadRecentShops();
+            } else if (searchType === 'visitors') {
+                loadRecentVisitors();
+            } else {
+                // Clear both lists
+                document.getElementById('shopList').innerHTML = '<p style="text-align: center; opacity: 0.7;">Select search type</p>';
+                document.getElementById('visitorList').innerHTML = '<p style="text-align: center; opacity: 0.7;">Select search type</p>';
+            }
+        }
+
+        function viewShop(shopId) {
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const shop = shops.find(s => s.id === shopId);
+            
+            if (shop) {
+                alert(`Shop Details:\n\nName: ${shop.shopName}\nOwner: ${shop.ownerName}\nPhone: ${shop.phone}\nAddress: ${shop.address}\nCity: ${shop.city}\nEmail: ${shop.email}\nLicense: ${shop.license}\nDescription: ${shop.description}\nCreated: ${new Date(shop.createdAt).toLocaleString()}`);
+            }
+        }
+
+        function deleteShop(shopId) {
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const updatedShops = shops.filter(shop => shop.id !== shopId);
+            
+            localStorage.setItem('registeredShops', JSON.stringify(updatedShops));
+            
+            showStatus('Shop deleted successfully!', 'success');
+            loadStats();
+            loadRecentShops();
+        }
+
+        function deleteVisitor(visitorId) {
+            const visitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+            const updatedVisitors = visitors.filter(visitor => visitor.id !== visitorId);
+            
+            localStorage.setItem('registeredVisitors', JSON.stringify(updatedVisitors));
+            
+            showStatus('Visitor deleted successfully!', 'success');
+            loadStats();
+            loadRecentVisitors();
+        }
+
+        function viewVisitor(visitorId) {
+            const visitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+            const visitor = visitors.find(v => v.id === visitorId);
+            
+            if (visitor) {
+                alert(`Visitor Details:\n\nName: ${visitor.name}\nEmail: ${visitor.email}\nPhone: ${visitor.phone}\nAddress: ${visitor.address || 'N/A'}\nCity: ${visitor.city || 'N/A'}\nPurpose: ${visitor.purpose || 'N/A'}\nCreated: ${new Date(visitor.createdAt).toLocaleString()}`);
+            }
+        }
+
+        function exportData() {
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            
+            if (shops.length === 0) {
+                showStatus('No data to export!', 'error');
+                return;
+            }
+
+            // Create CSV
+            const headers = ['Shop Name', 'Owner Name', 'Phone', 'Email', 'City', 'Address', 'License', 'Created Date'];
+            const csvContent = [
+                headers.join(','),
+                ...shops.map(shop => [
+                    shop.shopName || '',
+                    shop.ownerName || '',
+                    shop.phone || '',
+                    shop.email || '',
+                    shop.city || '',
+                    shop.address || '',
+                    shop.license || '',
+                    new Date(shop.createdAt).toLocaleString()
+                ].join(','))
+            ].join('\n');
+
+            // Download file
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ethiopian-electronics-shops-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            showStatus('Data exported successfully!');
+        }
+
+        function clearAllData() {
+            localStorage.removeItem('registeredShops');
+            loadStats();
+            loadRecentShops();
+            showStatus('All data cleared successfully!');
+            closeModal();
+        }
+
+        function backupData() {
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const backup = {
+                timestamp: new Date().toISOString(),
+                data: shops
+            };
+            
+            localStorage.setItem('backup', JSON.stringify(backup));
+            showStatus('Data backed up successfully!');
+            closeModal();
+        }
+
+        function refreshStats() {
+            loadStats();
+            loadRecentShops();
+            showStatus('Statistics refreshed!');
+        }
+
+        function showModal(action) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalConfirm = document.getElementById('modalConfirm');
+
+            switch(action) {
+                case 'backup':
+                    modalTitle.textContent = 'Backup Data';
+                    modalMessage.textContent = 'Create a backup of all shop data?';
+                    modalConfirm.textContent = 'Backup';
+                    modalConfirm.className = 'btn btn-success';
+                    modalConfirm.onclick = function() {
+                        backupData();
+                        closeModal();
+                    };
+                    break;
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function backupData() {
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const backupData = JSON.stringify(shops, null, 2);
+            const blob = new Blob([backupData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `shop_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showStatus('Backup created successfully!', 'success');
+        }
+
+        
+        // Initialize on page load
+        window.onload = function() {
+            loadStats();
+            loadRecentShops();
+            loadRecentVisitors();
+            
+            // Auto-refresh stats every 30 seconds
+            setInterval(() => {
+                loadStats();
+                loadRecentShops();
+                loadRecentVisitors();
+            }, 30000);
+        };
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

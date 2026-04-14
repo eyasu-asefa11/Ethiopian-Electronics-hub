@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HENOK Electronics - Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #1e1b4b 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .shop-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .shop-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .shop-info h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .shop-info p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        .shop-stats {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .stat-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .products-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .search-filter-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        .filter-select {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        .filter-select option {
+            background: #1f2937;
+            color: white;
+            padding: 10px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+
+        .product-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        .product-specs {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .product-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .product-stock {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .product-stock.low {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .product-stock.out {
+            background: rgba(107, 114, 128, 0.2);
+            color: #6b7280;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .product-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .contact-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .product-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .contact-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .contact-options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .contact-option {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .contact-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .contact-label {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .contact-value {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .no-products {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <a href="functional-interface.html" class="back-btn">← Back to Main</a>
+
+    <div class="shop-container">
+        <!-- Shop Header -->
+        <div class="shop-header">
+            <div class="shop-info">
+                <h1>🏪 HENOK Electronics</h1>
+                <p>📍 Addis Ababa, Bole</p>
+            </div>
+            <div class="shop-stats">
+                <div class="stat-badge">📦 45 Products</div>
+                <div class="stat-badge">⭐ 4.8 Rating</div>
+                <div class="stat-badge">👁️ 1.2K Views</div>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div class="products-section">
+            <div class="section-header">
+                <h2 class="section-title">Available Products</h2>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="search-filter-bar">
+                <input type="text" class="search-input" id="productSearch" placeholder="Search products...">
+                <select class="filter-select" id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="phones">Phones</option>
+                    <option value="laptops">Laptops</option>
+                    <option value="tablets">Tablets</option>
+                    <option value="accessories">Accessories</option>
+                </select>
+                <select class="filter-select" id="sortBy">
+                    <option value="name">Name</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="stock">Stock Level</option>
+                </select>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="contact-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Contact HENOK Electronics</h2>
+                <button class="close-btn" onclick="closeContactModal()">×</button>
+            </div>
+            <div class="contact-options">
+                <div class="contact-option" onclick="makePhoneCall()">
+                    <div class="contact-label">📞 Phone</div>
+                    <div class="contact-value">+251 912345678</div>
+                </div>
+                <div class="contact-option" onclick="openWhatsApp()">
+                    <div class="contact-label">💬 WhatsApp</div>
+                    <div class="contact-value">Chat on WhatsApp</div>
+                </div>
+                <div class="contact-option" onclick="openTelegram()">
+                    <div class="contact-label">✈️ Telegram</div>
+                    <div class="contact-value">@henok_electronics</div>
+                </div>
+                <div class="contact-option" onclick="sendEmail()">
+                    <div class="contact-label">📧 Email</div>
+                    <div class="contact-value">henok@electronics.com</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Shop data
+        const shopData = {
+            name: "HENOK Electronics",
+            owner: "HENOK",
+            city: "Addis Ababa",
+            location: "Bole",
+            phone: "+251 912345678",
+            telegram: "@henok_electronics",
+            email: "henok@electronics.com",
+            products: []
+        };
+
+        // Load products from shop dashboard
+        function loadProducts() {
+            const savedShopData = localStorage.getItem('henokShop');
+            if (savedShopData) {
+                const shop = JSON.parse(savedShopData);
+                shopData.products = shop.products || [];
+            } else {
+                // Initialize with sample data
+                initializeSampleProducts();
+            }
+            renderProducts();
+        }
+
+        // Initialize sample products
+        function initializeSampleProducts() {
+            shopData.products = [
+                {
+                    id: 1,
+                    name: "Samsung Galaxy A05",
+                    category: "phones",
+                    specifications: "4GB RAM | 64GB Storage | 5000mAh Battery",
+                    price: 45000,
+                    stock: 5,
+                    image: "https://picsum.photos/seed/samsung-a05/300/300.jpg",
+                    status: "active",
+                    views: 234
+                },
+                {
+                    id: 2,
+                    name: "iPhone 13 Pro",
+                    category: "phones",
+                    specifications: "128GB | Graphite | A15 Bionic Chip",
+                    price: 85000,
+                    stock: 3,
+                    image: "https://picsum.photos/seed/iphone13/300/300.jpg",
+                    status: "active",
+                    views: 456
+                },
+                {
+                    id: 3,
+                    name: "Dell Inspiron 15",
+                    category: "laptops",
+                    specifications: "Intel i5 | 8GB RAM | 512GB SSD | 15.6\" Display",
+                    price: 65000,
+                    stock: 2,
+                    image: "https://picsum.photos/seed/dell15/300/300.jpg",
+                    status: "active",
+                    views: 123
+                },
+                {
+                    id: 4,
+                    name: "iPad Air",
+                    category: "tablets",
+                    specifications: "10.9\" | 64GB | Wi-Fi | Space Gray",
+                    price: 55000,
+                    stock: 4,
+                    image: "https://picsum.photos/seed/ipadair/300/300.jpg",
+                    status: "active",
+                    views: 289
+                },
+                {
+                    id: 5,
+                    name: "AirPods Pro",
+                    category: "accessories",
+                    specifications: "Active Noise Cancellation | Wireless Charging | 24hr Battery",
+                    price: 12000,
+                    stock: 8,
+                    image: "https://picsum.photos/seed/airpods/300/300.jpg",
+                    status: "active",
+                    views: 567
+                }
+            ];
+        }
+
+        // Render products
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const searchTerm = document.getElementById('productSearch').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const sortBy = document.getElementById('sortBy').value;
+
+            let filteredProducts = shopData.products.filter(product => {
+                const matchesSearch = !searchTerm || 
+                    product.name.toLowerCase().includes(searchTerm) ||
+                    product.specifications.toLowerCase().includes(searchTerm);
+                const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
+                const matchesStatus = product.status === 'active';
+                return matchesSearch && matchesCategory && matchesStatus;
+            });
+
+            // Sort products
+            filteredProducts.sort((a, b) => {
+                switch(sortBy) {
+                    case 'name': return a.name.localeCompare(b.name);
+                    case 'price-low': return a.price - b.price;
+                    case 'price-high': return b.price - a.price;
+                    case 'stock': return b.stock - a.stock;
+                    default: return a.name.localeCompare(b.name);
+                }
+            });
+
+            if (filteredProducts.length === 0) {
+                grid.innerHTML = '<div class="no-products">No products found matching your criteria.</div>';
+                return;
+            }
+
+            grid.innerHTML = filteredProducts.map(product => `
+                <div class="product-card" onclick="viewProduct(${product.id})">
+                    <div class="product-image">
+                        ${product.image ? `<img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">` : getProductIcon(product.category)}
+                    </div>
+                    <div class="product-title">${product.name}</div>
+                    <div class="product-specs">${product.specifications}</div>
+                    <div class="product-meta">
+                        <div class="product-price">${product.price.toLocaleString()} Birr</div>
+                        <div class="product-stock ${getStockClass(product.stock)}">${getStockText(product.stock)}</div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="product-btn view-btn" onclick="event.stopPropagation(); viewProductDetails(${product.id})">View Details</button>
+                        <button class="product-btn contact-btn" onclick="event.stopPropagation(); openContactModal()">Contact Shop</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get product icon
+        function getProductIcon(category) {
+            const icons = {
+                phones: '📱',
+                laptops: '💻',
+                tablets: '📱',
+                accessories: '🎧'
+            };
+            return icons[category] || '📦';
+        }
+
+        // Get stock class
+        function getStockClass(stock) {
+            if (stock === 0) return 'out';
+            if (stock <= 2) return 'low';
+            return '';
+        }
+
+        // Get stock text
+        function getStockText(stock) {
+            if (stock === 0) return 'Out of Stock';
+            if (stock <= 2) return `Only ${stock} left`;
+            return `In Stock (${stock})`;
+        }
+
+        // View product details
+        function viewProduct(productId) {
+            const product = shopData.products.find(p => p.id === productId);
+            if (product) {
+                alert(`Product Details:\n\nName: ${product.name}\nSpecifications: ${product.specifications}\nPrice: ${product.price.toLocaleString()} Birr\nStock: ${product.stock}\n\nContact HENOK Electronics to purchase!`);
+            }
+        }
+
+        // View product details (expanded view)
+        function viewProductDetails(productId) {
+            viewProduct(productId);
+        }
+
+        // Open contact modal
+        function openContactModal() {
+            document.getElementById('contactModal').style.display = 'flex';
+        }
+
+        // Close contact modal
+        function closeContactModal() {
+            document.getElementById('contactModal').style.display = 'none';
+        }
+
+        // Contact methods
+        function makePhoneCall() {
+            window.location.href = `tel:${shopData.phone}`;
+        }
+
+        function openWhatsApp() {
+            window.open(`https://wa.me/${shopData.phone.replace(/\D/g, '')}`, '_blank');
+        }
+
+        function openTelegram() {
+            window.open(`https://t.me/${shopData.telegram.replace('@', '')}`, '_blank');
+        }
+
+        function sendEmail() {
+            window.location.href = `mailto:${shopData.email}?subject=Inquiry about products`;
+        }
+
+        // Event listeners
+        document.getElementById('productSearch').addEventListener('input', renderProducts);
+        document.getElementById('categoryFilter').addEventListener('change', renderProducts);
+        document.getElementById('sortBy').addEventListener('change', renderProducts);
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+        });
+    </script>
+</body>
+</html>

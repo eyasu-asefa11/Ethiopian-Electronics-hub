@@ -1,0 +1,330 @@
+/* App Wrapper Styles */
+.app-wrapper {
+  position: relative;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.app-main {
+  position: relative;
+  z-index: 1;
+  padding-top: 0; /* No padding needed since back button is fixed */
+}
+
+/* Loading Indicator */
+.app-loading-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+  background-size: 200% 100%;
+  animation: loadingShimmer 1.5s infinite;
+  z-index: 1002;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.app-loading-indicator.active {
+  opacity: 1;
+}
+
+@keyframes loadingShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Page Transition Overlay */
+.page-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.page-transition-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Responsive adjustments for global navigation */
+@media (max-width: 768px) {
+  .app-main {
+    /* Add padding to account for fixed back button on mobile */
+    padding-top: 0;
+  }
+}
+
+/* Ensure content doesn't overlap with fixed navigation */
+.global-back-button ~ .app-main {
+  /* No padding needed since back button is in corner */
+}
+
+/* Special handling for pages with headers */
+.app-main > header,
+.app-main > .page-header {
+  /* Add margin to avoid overlap with back button */
+  margin-left: 80px;
+}
+
+@media (max-width: 768px) {
+  .app-main > header,
+  .app-main > .page-header {
+    margin-left: 60px;
+  }
+}
+
+/* Smooth scroll behavior */
+.app-wrapper {
+  scroll-behavior: smooth;
+}
+
+/* Focus management for accessibility */
+.app-wrapper:focus-within .global-back-button {
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.5);
+}
+
+/* Print styles */
+@media print {
+  .global-back-button,
+  .global-breadcrumb,
+  .nav-progress-indicator,
+  .app-loading-indicator,
+  .page-transition-overlay {
+    display: none !important;
+  }
+  
+  .app-main {
+    padding-top: 0 !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .app-wrapper {
+    background: #ffffff;
+  }
+  
+  .app-main {
+    background: #ffffff;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .app-loading-indicator {
+    animation: none;
+  }
+  
+  .page-transition-overlay {
+    transition: none;
+  }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .app-wrapper {
+    background: #1a1a1a;
+  }
+  
+  .app-main {
+    background: #1a1a1a;
+  }
+  
+  .page-transition-overlay {
+    background: rgba(26, 26, 26, 0.8);
+  }
+}
+
+/* Page-specific adjustments */
+.app-wrapper.checkout-page .app-main {
+  padding-top: 20px;
+}
+
+.app-wrapper.product-page .app-main {
+  padding-top: 0;
+}
+
+.app-wrapper.error-page .app-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Keyboard navigation support */
+.app-wrapper:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Animation classes for page transitions */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Loading states */
+.app-wrapper.loading .app-loading-indicator {
+  opacity: 1;
+}
+
+.app-wrapper.loading .app-main {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Error states */
+.app-wrapper.error .global-back-button {
+  background: linear-gradient(135deg, rgba(220, 53, 69, 0.9) 0%, rgba(200, 35, 51, 0.9) 100%);
+  color: #ffffff;
+}
+
+/* Success states */
+.app-wrapper.success .global-back-button {
+  background: linear-gradient(135deg, rgba(40, 167, 69, 0.9) 0%, rgba(32, 201, 151, 0.9) 100%);
+  color: #ffffff;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 480px) {
+  .app-wrapper {
+    /* Ensure mobile viewport is properly handled */
+    min-height: 100vh;
+    min-height: -webkit-fill-available; /* iOS Safari */
+  }
+  
+  .app-main {
+    /* Adjust for mobile viewport */
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Tablet-specific adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .app-main > header,
+  .app-main > .page-header {
+    margin-left: 100px;
+  }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1200px) {
+  .app-main > header,
+  .app-main > .page-header {
+    margin-left: 120px;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: no-preference) {
+  .app-wrapper {
+    transition: background-color 0.3s ease;
+  }
+}
+
+/* Performance optimizations */
+.app-wrapper {
+  will-change: background-color;
+}
+
+.app-loading-indicator {
+  will-change: opacity, transform;
+}
+
+.page-transition-overlay {
+  will-change: opacity;
+}
+
+/* Debug styles (remove in production) */
+.debug .app-wrapper::before {
+  content: 'App Wrapper';
+  position: fixed;
+  top: 0;
+  right: 0;
+  background: rgba(255, 0, 0, 0.1);
+  color: red;
+  padding: 4px 8px;
+  font-size: 10px;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+/* Component-specific overrides */
+.app-wrapper .global-back-button {
+  /* Ensure back button is always on top */
+  z-index: 1000;
+}
+
+.app-wrapper .global-breadcrumb {
+  /* Ensure breadcrumb is below back button */
+  z-index: 999;
+}
+
+/* Content area adjustments for fixed navigation */
+.content-with-fixed-nav {
+  /* Add padding to content that might be behind fixed elements */
+  padding-top: 80px;
+}
+
+@media (max-width: 768px) {
+  .content-with-fixed-nav {
+    padding-top: 60px;
+  }
+}
+
+/* Smooth scrolling for anchor links */
+.app-wrapper html {
+  scroll-behavior: smooth;
+}
+
+/* Focus trap for modals */
+.app-wrapper.modal-open {
+  overflow: hidden;
+}
+
+/* Skeleton loading states */
+.app-wrapper.loading .skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

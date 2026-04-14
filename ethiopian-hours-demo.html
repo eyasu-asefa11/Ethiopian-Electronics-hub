@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethiopian Working Hours System - የኢትዮጵያ የስራ ሰዓቶች</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', 'Noto Sans Ethiopic', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #007bff;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin: 0;
+            font-weight: 700;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            margin: 10px 0 0 0;
+        }
+        
+        .language-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .lang-btn {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-btn:hover {
+            background: linear-gradient(135deg, #0056b3, #004085);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+        
+        .lang-btn.active {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+        }
+        
+        .section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .section h2 {
+            color: #495057;
+            margin-top: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        .ethiopian-calendar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .day-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .day-card:hover {
+            border-color: #007bff;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
+        }
+        
+        .day-card.today {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border-color: #0056b3;
+        }
+        
+        .day-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .english-name {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+        
+        .day-type {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background: rgba(0,0,0,0.1);
+            display: inline-block;
+            margin-top: 5px;
+        }
+        
+        .day-card.today .day-type {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .hours-display {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .hours-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .hours-row.today {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-color: #2196f3;
+        }
+        
+        .day-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .time-info {
+            text-align: right;
+        }
+        
+        .ethiopian-time {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .international-time {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .special-note {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+        
+        .current-status {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+        
+        .status-open {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        }
+        
+        .status-closed {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .comparison-table th {
+            background: #007bff;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .ethiopian-text {
+            font-family: 'Noto Sans Ethiopic', 'Kefa', 'Arial Unicode MS', sans-serif;
+            font-weight: 600;
+        }
+        
+        .amharic-content {
+            direction: rtl;
+            text-align: right;
+        }
+        
+        .english-content {
+            direction: ltr;
+            text-align: left;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .ethiopian-calendar {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+            
+            .hours-row {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .time-info {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 id="mainTitle">Ethiopian Working Hours System</h1>
+            <p id="subtitle">Professional schedule management with Ethiopian calendar and time format</p>
+        </div>
+        
+        <div class="language-toggle">
+            <button class="lang-btn active" onclick="setLanguage('en')">🇬🇧 English</button>
+            <button class="lang-btn" onclick="setLanguage('am')">🇪🇹 አማርኛ</button>
+        </div>
+        
+        <div class="section">
+            <h2 id="calendarTitle">Ethiopian Week Days</h2>
+            <div class="ethiopian-calendar" id="calendarGrid">
+                <!-- Calendar will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 id="scheduleTitle">Standard Working Hours</h2>
+            <div class="hours-display" id="hoursDisplay">
+                <!-- Hours will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="current-status" id="currentStatus">
+            <!-- Current status will be populated by JavaScript -->
+        </div>
+        
+        <div class="special-note" id="sundayNote">
+            <!-- Sunday special note will be populated by JavaScript -->
+        </div>
+        
+        <div class="section">
+            <h2 id="comparisonTitle">Time Conversion Table</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th id="ethiopianTimeHeader">Ethiopian Time</th>
+                        <th id="internationalTimeHeader">International Time</th>
+                        <th id="usageHeader">Common Usage</th>
+                    </tr>
+                </thead>
+                <tbody id="timeConversionTable">
+                    <!-- Table will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Ethiopian Working Hours Data
+        const ethiopianDays = {
+            'ሰኞ': { english: 'Sunday', isWeekend: true, special: 'Church Day' },
+            'ማነዲ': { english: 'Monday', isWeekend: false, special: 'Regular' },
+            'ማክሰኞ': { english: 'Tuesday', isWeekend: false, special: 'Regular' },
+            'ረቡዕ': { english: 'Wednesday', isWeekend: false, special: 'Regular' },
+            'ሐሙስ': { english: 'Thursday', isWeekend: false, special: 'Regular' },
+            'ዓርብ': { english: 'Friday', isWeekend: false, special: 'Regular' },
+            'ቅዳሜ': { english: 'Saturday', isWeekend: true, special: 'Weekend' }
+        };
+
+        const workingHours = {
+            weekdays: { ethiopian: '6:00 ጠዋት - 9:00 ከሰዓት', international: '12:00 PM - 3:00 AM' },
+            sunday: { ethiopian: '8:00 ጠዋት - 1:00 ከሰዓት', international: '2:00 PM - 7:00 PM' },
+            saturday: { ethiopian: '9:00 ጠዋት - 5:00 ከሰዓት', international: '3:00 PM - 11:00 PM' }
+        };
+
+        const timeConversions = [
+            { ethiopian: '6:00 ጠዋት', international: '12:00 PM', usage: 'Noon / Lunch time' },
+            { ethiopian: '7:00 ጠዋት', international: '1:00 PM', usage: 'Early afternoon' },
+            { ethiopian: '8:00 ጠዋት', international: '2:00 PM', usage: 'Business hours start' },
+            { ethiopian: '9:00 ጠዋት', international: '3:00 PM', usage: 'Mid afternoon' },
+            { ethiopian: '10:00 ጠዋት', international: '4:00 PM', usage: 'Late afternoon' },
+            { ethiopian: '11:00 ጠዋት', international: '5:00 PM', usage: 'Evening begins' },
+            { ethiopian: '12:00 ጠዋት', international: '6:00 PM', usage: 'Dinner time' },
+            { ethiopian: '1:00 ከሰዓት', international: '7:00 PM', usage: 'Evening' },
+            { ethiopian: '2:00 ከሰዓት', international: '8:00 PM', usage: 'Night' },
+            { ethiopian: '3:00 ከሰዓት', international: '9:00 PM', usage: 'Business closing' },
+            { ethiopian: '4:00 ከሰዓት', international: '10:00 PM', usage: 'Late night' },
+            { ethiopian: '5:00 ከሰዓት', international: '11:00 PM', usage: 'Very late' },
+            { ethiopian: '6:00 ከሰዓት', international: '12:00 AM', usage: 'Midnight' }
+        ];
+
+        let currentLanguage = 'en';
+
+        const translations = {
+            en: {
+                mainTitle: 'Ethiopian Working Hours System',
+                subtitle: 'Professional schedule management with Ethiopian calendar and time format',
+                calendarTitle: 'Ethiopian Week Days',
+                scheduleTitle: 'Standard Working Hours',
+                comparisonTitle: 'Time Conversion Table',
+                ethiopianTimeHeader: 'Ethiopian Time',
+                internationalTimeHeader: 'International Time',
+                usageHeader: 'Common Usage',
+                currentOpen: '🟢 Currently Open',
+                currentClosed: '🔴 Currently Closed',
+                sundayNote: 'Sunday is a church day in Ethiopia. Most shops open from 8:00 AM to 1:00 PM (2:00 PM - 7:00 PM Ethiopian time).',
+                today: 'Today',
+                weekend: 'Weekend',
+                churchDay: 'Church Day'
+            },
+            am: {
+                mainTitle: 'የኢትዮጵያ የስራ ሰዓቶች ስርዓት',
+                subtitle: 'ከኢትዮጵያ ካለንደር እና የጊዜ አቀማመጥ ጋር ብልህ የስራ አሰራርዝ',
+                calendarTitle: 'የኢትዮጵያ የሳምንታቱ ቀኖች',
+                scheduleTitle: 'የመደብረኛ የስራ ሰዓቶች',
+                comparisonTitle: 'የጊዜ መለክያ ሠንጣን',
+                ethiopianTimeHeader: 'የኢትዮጵያ ጊዜ',
+                internationalTimeHeader: 'ዓለም አቀማመጥ',
+                usageHeader: 'የጋልጣ ጊዜ',
+                currentOpen: '🟢 ክፍትል ነው',
+                currentClosed: '🔴 ተዘግቷል',
+                sundayNote: 'ሰኞ በኢትዮጵያ የቤተክርስቲያን ቀን ነው። ብዙሾች ሱቅሎች ከጠዋት 8:00 እስከ ከሰዓት 1:00 ይሠራሉ። (ከሰዓት 2:00 - 7:00 የኢትዮጵያ ጊዜ)።',
+                today: 'ዛሬ',
+                weekend: 'የሰሽኛል',
+                churchDay: 'የቤተክርስቲያን'
+            }
+        };
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update button states
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update text content
+            document.getElementById('mainTitle').textContent = translations[lang].mainTitle;
+            document.getElementById('subtitle').textContent = translations[lang].subtitle;
+            document.getElementById('calendarTitle').textContent = translations[lang].calendarTitle;
+            document.getElementById('scheduleTitle').textContent = translations[lang].scheduleTitle;
+            document.getElementById('comparisonTitle').textContent = translations[lang].comparisonTitle;
+            document.getElementById('ethiopianTimeHeader').textContent = translations[lang].ethiopianTimeHeader;
+            document.getElementById('internationalTimeHeader').textContent = translations[lang].internationalTimeHeader;
+            document.getElementById('usageHeader').textContent = translations[lang].usageHeader;
+            document.getElementById('sundayNote').textContent = translations[lang].sundayNote;
+            
+            // Change direction for Amharic
+            document.body.dir = lang === 'am' ? 'rtl' : 'ltr';
+            
+            // Re-render content
+            renderCalendar();
+            renderHours();
+            renderTimeTable();
+            updateCurrentStatus();
+        }
+
+        function getCurrentEthiopianDay() {
+            const now = new Date();
+            const dayIndex = now.getDay();
+            const days = ['ሰኞ', 'ማነዲ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ', 'ዓርብ', 'ቅዳሜ'];
+            return days[dayIndex];
+        }
+
+        function renderCalendar() {
+            const calendarGrid = document.getElementById('calendarGrid');
+            const today = getCurrentEthiopianDay();
+            
+            calendarGrid.innerHTML = Object.keys(ethiopianDays).map(day => {
+                const dayInfo = ethiopianDays[day];
+                const isToday = day === today;
+                
+                return `
+                    <div class="day-card ${isToday ? 'today' : ''}">
+                        <div class="day-name ethiopian-text">${day}</div>
+                        <div class="english-name">${dayInfo.english}</div>
+                        <div class="day-type">
+                            ${dayInfo.isWeekend ? 
+                                (currentLanguage === 'am' ? 'የሰሽኛል' : 'Weekend') : 
+                                (currentLanguage === 'am' ? 'የስራ' : 'Weekday')
+                            }
+                        </div>
+                        ${isToday ? `<div class="day-type">${translations[currentLanguage].today}</div>` : ''}
+                        ${day === 'ሰኞ' ? `<div class="day-type">${translations[currentLanguage].churchDay}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderHours() {
+            const hoursDisplay = document.getElementById('hoursDisplay');
+            const today = getCurrentEthiopianDay();
+            
+            const hoursData = Object.keys(ethiopianDays).map(day => {
+                const dayInfo = ethiopianDays[day];
+                let hours;
+                
+                if (day === 'ሰኞ') {
+                    hours = workingHours.sunday;
+                } else if (day === 'ቅዳሜ') {
+                    hours = workingHours.saturday;
+                } else {
+                    hours = workingHours.weekdays;
+                }
+                
+                const isToday = day === today;
+                
+                return `
+                    <div class="hours-row ${isToday ? 'today' : ''}">
+                        <div class="day-info">
+                            <span class="ethiopian-text">${day}</span>
+                            <span>${dayInfo.english}</span>
+                            ${day === 'ሰኞ' ? `<span style="color: #e91e63;">• ${translations[currentLanguage].churchDay}</span>` : ''}
+                        </div>
+                        <div class="time-info">
+                            <div class="ethiopian-time ethiopian-text">${hours.ethiopian}</div>
+                            <div class="international-time">${hours.international}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            hoursDisplay.innerHTML = hoursData;
+        }
+
+        function renderTimeTable() {
+            const tableBody = document.getElementById('timeConversionTable');
+            
+            tableBody.innerHTML = timeConversions.map(conversion => `
+                <tr>
+                    <td class="ethiopian-text">${conversion.ethiopian}</td>
+                    <td>${conversion.international}</td>
+                    <td>${conversion.usage}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateCurrentStatus() {
+            const currentStatus = document.getElementById('currentStatus');
+            const today = getCurrentEthiopianDay();
+            
+            // Simple check - in real app would check actual time
+            const isOpen = today !== 'ሰኞ'; // Simplified for demo
+            
+            currentStatus.className = `current-status ${isOpen ? 'status-open' : 'status-closed'}`;
+            currentStatus.textContent = isOpen ? 
+                translations[currentLanguage].currentOpen : 
+                translations[currentLanguage].currentClosed;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCalendar();
+            renderHours();
+            renderTimeTable();
+            updateCurrentStatus();
+        });
+    </script>
+</body>
+</html>

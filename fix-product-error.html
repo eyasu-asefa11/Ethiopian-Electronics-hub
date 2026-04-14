@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Product Addition Error</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+        .steps {
+            background: #e2e3e5;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .steps h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Fix Product Addition Error</h1>
+        
+        <div class="error">
+            <strong>❌ Problem:</strong> Product addition fails because there are no registered shops in the system.
+        </div>
+        
+        <div class="success">
+            <strong>✅ Solution:</strong> Register a shop first, then you can add products to that shop.
+        </div>
+        
+        <div class="steps">
+            <h3>📋 Step-by-Step Fix:</h3>
+            <ol>
+                <li><strong>Register a Shop:</strong> Click "Register New Shop" button below</li>
+                <li><strong>Fill Shop Details:</strong> Complete shop registration form with shop name, address, etc.</li>
+                <li><strong>Upload Shop Images:</strong> Add shop logo and images</li>
+                <li><strong>Submit Registration:</strong> Complete shop registration</li>
+                <li><strong>Add Products:</strong> After shop is registered, you can add products</li>
+                <li><strong>Test Product Addition:</strong> Products will now save successfully</li>
+            </ol>
+        </div>
+        
+        <h3>🚀 Quick Actions:</h3>
+        <button class="btn" onclick="registerShop()">📝 Register New Shop</button>
+        <button class="btn btn-success" onclick="createTestShop()">⚡ Create Test Shop (Quick)</button>
+        <button class="btn" onclick="goToDashboard()">🏠 Go to Dashboard</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function createTestShop() {
+            // Create a test shop quickly
+            const testShop = {
+                id: 'test-shop-' + Date.now(),
+                electronicsHouseName: 'Test Electronics Shop',
+                shopName: 'Test Electronics Shop',
+                owner: 'Test Owner',
+                email: 'test@shop.com',
+                phone: '+251900000000',
+                city: 'Dilla',
+                address: 'Test Address, Dilla',
+                description: 'Test electronics shop for product addition',
+                category: 'Electronics',
+                subcategory: 'Mobile Phones',
+                logo: 'https://via.placeholder.com/150x150/007bff/ffffff?text=TEST',
+                shopFrontImage: 'https://via.placeholder.com/400x200/28a745/ffffff?text=Shop+Front',
+                shopBackImage: 'https://via.placeholder.com/400x200/dc3545/ffffff?text=Shop+Back',
+                shopGallery: [
+                    'https://via.placeholder.com/300x200/ffc107/000000?text=Gallery+1',
+                    'https://via.placeholder.com/300x200/17a2b8/ffffff?text=Gallery+2'
+                ],
+                isVerified: true,
+                isActive: true,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                products: []
+            };
+            
+            // Save to localStorage
+            let shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            shops.push(testShop);
+            localStorage.setItem('registeredShops', JSON.stringify(shops));
+            localStorage.setItem('currentShop', JSON.stringify(testShop));
+            
+            document.getElementById('result').innerHTML = 
+                '<div class="success">✅ Test shop created successfully! You can now add products.</div>';
+        }
+        
+        function registerShop() {
+            window.location.href = 'http://localhost:3000/shop-registration';
+        }
+        
+        function goToDashboard() {
+            window.location.href = 'http://localhost:3000/shopkeeper-dashboard';
+        }
+        
+        // Check current status
+        window.onload = function() {
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const currentShop = JSON.parse(localStorage.getItem('currentShop') || '{}');
+            
+            console.log('Current shops:', shops);
+            console.log('Current shop:', currentShop);
+            
+            if (shops.length > 0) {
+                document.getElementById('result').innerHTML = 
+                    '<div class="success">✅ You have ' + shops.length + ' shop(s) registered. You should be able to add products now.</div>';
+            } else {
+                document.getElementById('result').innerHTML = 
+                    '<div class="error">❌ No shops found. You need to register a shop first.</div>';
+            }
+        };
+    </script>
+</body>
+</html>

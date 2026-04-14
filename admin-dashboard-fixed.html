@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Dilla Electronics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #312e81 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(236, 72, 153, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dashboard-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: none;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="search"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e1e1;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 0.25rem;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .search-result-item {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .search-result-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .shop-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+
+        .shop-actions {
+            margin-top: 1rem;
+        }
+
+        .status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e1e1e1;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Container -->
+    <div class="login-container" id="loginContainer">
+        <h1>Admin Login</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="text" id="phone" name="phone" value="+251912345678" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" value="admin123" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <div id="loginError" style="color: red; margin-top: 1rem; text-align: center; display: none;"></div>
+    </div>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container" id="dashboardContainer">
+        <div class="header">
+            <h1>Admin Dashboard</h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-container">
+            <input type="search" id="mainSearch" placeholder="Search shops, products, brands..." autocomplete="off">
+            <div class="search-results" id="searchResults"></div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalShops">0</div>
+                <div>Total Shops</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeUsers">0</div>
+                <div>Active Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="todayViews">0</div>
+                <div>Today's Views</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingApprovals">0</div>
+                <div>Pending Approvals</div>
+            </div>
+        </div>
+
+        <!-- Recent Shops -->
+        <h2>Recent Shops</h2>
+        <div id="shopList"></div>
+
+        <!-- Recent Visitors -->
+        <h2>Recent Visitors</h2>
+        <div id="visitorList"></div>
+
+        <!-- Export Section -->
+        <div style="margin-top: 2rem; text-align: center;">
+            <button class="btn-success" onclick="exportToExcel()">Export to Excel</button>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const sampleShops = [
+            {
+                name: "Samsung Store",
+                owner: "John Doe",
+                phone: "+251911234567",
+                city: "Addis Ababa",
+                status: "active",
+                products: ["Samsung Galaxy S21", "Samsung Galaxy Tab", "Samsung Watch"]
+            },
+            {
+                name: "iPhone Center",
+                owner: "Jane Smith",
+                phone: "+251922345678",
+                city: "Dire Dawa",
+                status: "pending",
+                products: ["iPhone 13", "iPhone 14", "iPhone 15"]
+            },
+            {
+                name: "Tech World",
+                owner: "Ahmed Ali",
+                phone: "+251933456789",
+                city: "Hawassa",
+                status: "active",
+                products: ["Laptops", "Tablets", "Accessories"]
+            }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            initializeSearch();
+        });
+
+        // Check login status
+        function checkLoginStatus() {
+            const isLoggedIn = sessionStorage.getItem('adminLoggedIn') === 'true';
+            if (isLoggedIn) {
+                showDashboard();
+            } else {
+                showLogin();
+            }
+        }
+
+        // Show login form
+        function showLogin() {
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('dashboardContainer').style.display = 'none';
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('dashboardContainer').style.display = 'block';
+            loadDashboard();
+        }
+
+        // Handle login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+
+            if (phone === '+251912345678' && password === 'admin123') {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                sessionStorage.setItem('adminPhone', phone);
+                showDashboard();
+                document.getElementById('loginError').style.display = 'none';
+            } else {
+                document.getElementById('loginError').textContent = 'Invalid credentials!';
+                document.getElementById('loginError').style.display = 'block';
+            }
+        });
+
+        // Logout
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            sessionStorage.removeItem('adminPhone');
+            showLogin();
+        }
+
+        // Load dashboard data
+        function loadDashboard() {
+            loadShops();
+            loadVisitors();
+            updateStats();
+        }
+
+        // Load shops
+        function loadShops() {
+            const shopList = document.getElementById('shopList');
+            
+            // Load actual registered shops from localStorage
+            const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            
+            // Combine with sample shops if no registered shops
+            const shops = registeredShops.length > 0 ? registeredShops : sampleShops;
+
+            if (shops.length === 0) {
+                shopList.innerHTML = '<div class="no-results"><h3>No shops found</h3></div>';
+                return;
+            }
+
+            shopList.innerHTML = shops.map(shop => `
+                <div class="shop-item">
+                    <h3>${shop.shopName || shop.name}</h3>
+                    <p><strong>Owner:</strong> ${shop.ownerName || shop.owner}</p>
+                    <p><strong>City:</strong> ${shop.city}</p>
+                    <p><strong>Phone:</strong> ${shop.phone}</p>
+                    <p><strong>Status:</strong> <span class="status ${shop.status || 'pending'}">${(shop.status || 'pending').toUpperCase()}</span></p>
+                    <p><strong>Products:</strong> ${shop.products ? shop.products.length : 0}</p>
+                    <p><strong>Registered:</strong> ${shop.registeredAt ? new Date(shop.registeredAt).toLocaleDateString() : 'N/A'}</p>
+                    <div class="shop-actions">
+                        <button class="btn-success" onclick="approveShop('${shop.shopName || shop.name}')">Approve</button>
+                        <button class="btn-danger" onclick="deleteShop('${shop.shopName || shop.name}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load visitors
+        function loadVisitors() {
+            const visitorList = document.getElementById('visitorList');
+            
+            // Load actual registered visitors from localStorage
+            const registeredVisitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+
+            if (registeredVisitors.length === 0) {
+                visitorList.innerHTML = '<div class="no-results"><h3>No visitors found</h3></div>';
+                return;
+            }
+
+            visitorList.innerHTML = registeredVisitors.map(visitor => `
+                <div class="shop-item">
+                    <h3>${visitor.firstName} ${visitor.lastName}</h3>
+                    <p><strong>Phone:</strong> ${visitor.phone}</p>
+                    <p><strong>City:</strong> ${visitor.city}</p>
+                    <p><strong>Gender:</strong> ${visitor.gender}</p>
+                    <p><strong>Address:</strong> ${visitor.address}</p>
+                    <p><strong>Registered:</strong> ${visitor.registeredAt ? new Date(visitor.registeredAt).toLocaleDateString() : 'N/A'}</p>
+                    <div class="shop-actions">
+                        <button class="btn-danger" onclick="deleteVisitor('${visitor.id}')">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Delete visitor
+        function deleteVisitor(visitorId) {
+            if (confirm('Are you sure you want to remove this visitor?')) {
+                const registeredVisitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+                const updatedVisitors = registeredVisitors.filter(v => v.id !== visitorId);
+                localStorage.setItem('registeredVisitors', JSON.stringify(updatedVisitors));
+                loadVisitors();
+                updateStats();
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const registeredVisitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+            const shops = registeredShops.length > 0 ? registeredShops : sampleShops;
+            
+            document.getElementById('totalShops').textContent = shops.length;
+            document.getElementById('activeUsers').textContent = registeredVisitors.length;
+            document.getElementById('todayViews').textContent = parseInt(localStorage.getItem('mainPageVisits') || '0');
+            document.getElementById('pendingApprovals').textContent = shops.filter(s => (s.status || 'pending') === 'pending').length;
+        }
+
+        // Initialize search
+        function initializeSearch() {
+            const searchInput = document.getElementById('mainSearch');
+            const searchResults = document.getElementById('searchResults');
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                
+                if (query.length === 0) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
+
+                const results = performSearch(query);
+                displaySearchResults(results);
+            });
+
+            // Hide search results when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.search-container')) {
+                    searchResults.style.display = 'none';
+                }
+            });
+        }
+
+        // Perform search
+        function performSearch(query) {
+            const results = [];
+            
+            // Load actual registered shops from localStorage
+            const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const shops = registeredShops.length > 0 ? registeredShops : sampleShops;
+            
+            shops.forEach(shop => {
+                const shopName = shop.shopName || shop.name;
+                const ownerName = shop.ownerName || shop.owner;
+                
+                // Search shop name
+                if (shopName.toLowerCase().startsWith(query)) {
+                    results.push({
+                        type: 'shop',
+                        name: shopName,
+                        owner: ownerName,
+                        city: shop.city,
+                        status: shop.status || 'pending'
+                    });
+                }
+                
+                // Search owner name
+                if (ownerName.toLowerCase().startsWith(query)) {
+                    results.push({
+                        type: 'shop',
+                        name: shopName,
+                        owner: ownerName,
+                        city: shop.city,
+                        status: shop.status || 'pending'
+                    });
+                }
+                
+                // Search products
+                if (shop.products) {
+                    shop.products.forEach(product => {
+                        if (product.toLowerCase().startsWith(query)) {
+                            results.push({
+                                type: 'product',
+                                name: product,
+                                shop: shopName,
+                                city: shop.city
+                            });
+                        }
+                    });
+                }
+            });
+            
+            return results;
+        }
+
+        // Display search results
+        function displaySearchResults(results) {
+            const searchResults = document.getElementById('searchResults');
+            
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
+                searchResults.style.display = 'block';
+                return;
+            }
+
+            searchResults.innerHTML = results.map(result => `
+                <div class="search-result-item">
+                    <strong>${result.name}</strong>
+                    <br>
+                    <small>
+                        ${result.type === 'shop' ? `Shop - ${result.owner}, ${result.city}` : `Product from ${result.shop}, ${result.city}`}
+                    </small>
+                    <br>
+                    <span class="status ${result.status || 'active'}">${result.type.toUpperCase()}</span>
+                </div>
+            `).join('');
+            
+            searchResults.style.display = 'block';
+        }
+
+        // Approve shop
+        function approveShop(shopName) {
+            alert(`Shop "${shopName}" approved successfully!`);
+            loadShops();
+        }
+
+        // Delete shop
+        function deleteShop(shopName) {
+            if (confirm(`Are you sure you want to delete "${shopName}"?`)) {
+                alert(`Shop "${shopName}" deleted successfully!`);
+                loadShops();
+            }
+        }
+
+        // Export to Excel
+        function exportToExcel() {
+            let csvContent = "Shop Name,Owner,Phone,City,Status,Products,Registered Date\n";
+            
+            // Load actual registered shops from localStorage
+            const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const shops = registeredShops.length > 0 ? registeredShops : sampleShops;
+            
+            shops.forEach(shop => {
+                const shopName = shop.shopName || shop.name;
+                const ownerName = shop.ownerName || shop.owner;
+                const status = shop.status || 'pending';
+                const products = shop.products ? shop.products.join('; ') : '';
+                const registeredDate = shop.registeredAt ? new Date(shop.registeredAt).toLocaleDateString() : 'N/A';
+                
+                csvContent += `"${shopName}","${ownerName}","${shop.phone}","${shop.city}","${status}","${products}","${registeredDate}"\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'shops_export.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

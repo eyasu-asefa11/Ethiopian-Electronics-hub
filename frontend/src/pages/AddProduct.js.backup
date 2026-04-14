@@ -1,0 +1,655 @@
+// src/pages/AddProduct.js
+import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+import './AddProduct.css';
+
+function AddProduct({ user }) {
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [brand, setBrand] = useState("");
+  const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("In Stock");
+  const [shop_id, setShopId] = useState("");
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // New media and warranty states
+  const [shopGallery, setShopGallery] = useState([]);
+  const [shopVideos, setShopVideos] = useState([]);
+  const [warrantyDocuments, setWarrantyDocuments] = useState([]);
+  const [galleryPreviews, setGalleryPreviews] = useState([]);
+  const [videoPreviews, setVideoPreviews] = useState([]);
+
+  // Voice input states
+  const [inputMethod, setInputMethod] = useState("writing"); // "writing" or "speaking"
+  const [isListening, setIsListening] = useState(false);
+  const [voiceInput, setVoiceInput] = useState("");
+  const [recognition, setRecognition] = useState(null);
+  const [voiceField, setVoiceField] = useState(""); // Which field is being recorded
+
+  useEffect(() => {
+    // Get current shop from localStorage
+    const currentShop = JSON.parse(localStorage.getItem('currentShop') || '{}');
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    if (currentShop.id) {
+      setShopId(currentShop.id);
+    } else if (currentUser.shop_id) {
+      setShopId(currentUser.shop_id);
+    } else {
+      // If no shop found, redirect to dashboard
+      alert('Please register your shop first before adding products!');
+      navigate('/shopkeeper-dashboard');
+    }
+
+    // Initialize speech recognition
+    if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
+      const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+      const recognitionInstance = new SpeechRecognition();
+      recognitionInstance.continuous = false;
+      recognitionInstance.interimResults = false;
+      recognitionInstance.lang = 'en-US';
+
+      recognitionInstance.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setVoiceInput(transcript);
+        processVoiceInput(transcript);
+      };
+
+      recognitionInstance.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        if (event.error === 'no-speech') {
+          alert('No speech detected. Please try again.');
+        } else if (event.error === 'not-allowed') {
+          alert('Microphone access denied. Please allow microphone access to use voice input.');
+        } else {
+          alert('Speech recognition error: ' + event.error);
+        }
+      };
+
+      recognitionInstance.onend = () => {
+        setIsListening(false);
+      };
+
+      setRecognition(recognitionInstance);
+    } else {
+      console.warn('Speech recognition not supported in this browser');
+    }
+  }, [navigate]);
+
+  const processVoiceInput = (transcript) => {
+    // Process the voice input and extract product information
+    const lowerTranscript = transcript.toLowerCase();
+    
+    // Extract product name (look for keywords like "name", "product", "called")
+    const nameMatch = lowerTranscript.match(/(?:name|product|called)\s+(.+?)(?:\s+(?:brand|price|category|description|status|$))/i);
+    if (nameMatch) {
+      setName(nameMatch[1].trim());
+    } else if (lowerTranscript.includes('add') || lowerTranscript.includes('new')) {
+      // Try to extract the first noun phrase as product name
+      const words = transcript.split(' ');
+      const nameIndex = words.findIndex(word => 
+        word.toLowerCase() === 'add' || 
+        word.toLowerCase() === 'new' || 
+        word.toLowerCase() === 'create'
+      );
+      if (nameIndex !== -1 && words[nameIndex + 1]) {
+        let productName = words[nameIndex + 1];
+        let nextIndex = nameIndex + 2;
+        
+        // Include more words to get the full product name
+        while (nextIndex < words.length && 
+               !['brand', 'price', 'category', 'description', 'status', 'for', 'with', 'and'].includes(words[nextIndex].toLowerCase())) {
+          productName += ' ' + words[nextIndex];
+          nextIndex++;
+        }
+        setName(productName.trim());
+      }
+    }
+
+    // Extract brand
+    const brandMatch = lowerTranscript.match(/(?:brand|by|made by)\s+(.+?)(?:\s+(?:price|category|description|status|$))/i);
+    if (brandMatch) {
+      setBrand(brandMatch[1].trim());
+    }
+
+    // Extract price
+    const priceMatch = lowerTranscript.match(/(?:price|cost| priced at)\s+(.+?)(?:\s+(?:category|description|status|$))/i);
+    if (priceMatch) {
+      const priceText = priceMatch[1].replace(/[^0-9.]/g, '');
+      if (priceText) {
+        setPrice(priceText);
+      }
+    }
+
+    // Extract category
+    const categories = ['smartphones', 'laptops', 'tablets', 'headphones', 'speakers', 'cameras', 'tvs', 'gaming', 'accessories', 'other'];
+    for (const category of categories) {
+      if (lowerTranscript.includes(category)) {
+        setCategory(category.charAt(0).toUpperCase() + category.slice(1));
+        break;
+      }
+    }
+
+    // Extract description
+    const descMatch = lowerTranscript.match(/(?:description|describe|features|specifications?)\s+(.+?)(?:\s+(?:status|$))/i);
+    if (descMatch) {
+      setDescription(descMatch[1].trim());
+    } else {
+      // Use remaining text as description if no specific description found
+      const remainingText = transcript.replace(/(?:name|product|brand|price|category|description|status|add|new|create)\s+/gi, '').trim();
+      if (remainingText && remainingText.length > 10) {
+        setDescription(remainingText);
+      }
+    }
+
+    // Extract status
+    if (lowerTranscript.includes('in stock') || lowerTranscript.includes('available')) {
+      setStatus('In Stock');
+    } else if (lowerTranscript.includes('out of stock') || lowerTranscript.includes('unavailable')) {
+      setStatus('Out of Stock');
+    } else if (lowerTranscript.includes('pre-order') || lowerTranscript.includes('preorder')) {
+      setStatus('Pre-order');
+    }
+  };
+
+  const startVoiceInput = () => {
+    if (recognition && !isListening) {
+      setIsListening(true);
+      setVoiceInput("");
+      recognition.start();
+    }
+  };
+
+  const stopVoiceInput = () => {
+    if (recognition && isListening) {
+      recognition.stop();
+      setIsListening(false);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleGalleryChange = (e) => {
+    const files = Array.from(e.target.files);
+    const newGalleryImages = files.map(file => ({
+      file,
+      preview: URL.createObjectURL(file)
+    }));
+    
+    setShopGallery(prev => [...prev, ...newGalleryImages]);
+    setGalleryPreviews(prev => [...prev, ...newGalleryImages.map(img => img.preview)]);
+  };
+
+  const handleVideoChange = (e) => {
+    const files = Array.from(e.target.files);
+    const newVideos = files.map(file => ({
+      file,
+      preview: URL.createObjectURL(file),
+      name: file.name
+    }));
+    
+    setShopVideos(prev => [...prev, ...newVideos]);
+    setVideoPreviews(prev => [...prev, ...newVideos.map(video => video.preview)]);
+  };
+
+  const handleWarrantyChange = (e) => {
+    const files = Array.from(e.target.files);
+    setWarrantyDocuments(prev => [...prev, ...files]);
+  };
+
+  const removeGalleryImage = (index) => {
+    setShopGallery(prev => prev.filter((_, i) => i !== index));
+    setGalleryPreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeVideo = (index) => {
+    setShopVideos(prev => prev.filter((_, i) => i !== index));
+    setVideoPreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeWarrantyDoc = (index) => {
+    setWarrantyDocuments(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      // Get current shop
+      const currentShop = JSON.parse(localStorage.getItem('currentShop') || '{}');
+      
+      if (!currentShop.id) {
+        alert('Shop not found. Please register your shop first.');
+        navigate('/shopkeeper-dashboard');
+        return;
+      }
+
+      // Create new product
+      const newProduct = {
+        id: Date.now().toString(),
+        name: name.trim(),
+        brand: brand.trim(),
+        price: parseFloat(price),
+        category: category.trim(),
+        description: description.trim(),
+        status: status,
+        shop_id: currentShop.id,
+        shopName: currentShop.electronicsHouseName || currentShop.shopName,
+        image: imagePreview || `https://picsum.photos/seed/${name}/300/200.jpg`,
+        shopGallery: galleryPreviews,
+        shopVideos: videoPreviews,
+        warrantyDocuments: warrantyDocuments.map(doc => ({
+          name: doc.name,
+          size: doc.size,
+          type: doc.type
+        })),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        views: 0,
+        inquiries: 0,
+        rating: 0,
+        reviews: []
+      };
+
+      // Get existing shops
+      const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+      const shopIndex = shops.findIndex(shop => shop.id === currentShop.id);
+      
+      if (shopIndex !== -1) {
+        // Add product to the shop
+        if (!shops[shopIndex].products) {
+          shops[shopIndex].products = [];
+        }
+        shops[shopIndex].products.push(newProduct);
+        
+        // Update localStorage
+        localStorage.setItem('registeredShops', JSON.stringify(shops));
+        localStorage.setItem('currentShop', JSON.stringify(shops[shopIndex]));
+      }
+
+      alert("✅ Product added successfully!");
+      
+      // Reset form
+      setName("");
+      setBrand("");
+      setPrice("");
+      setCategory("");
+      setDescription("");
+      setStatus("In Stock");
+      setImage(null);
+      setImagePreview("");
+      setShopGallery([]);
+      setShopVideos([]);
+      setWarrantyDocuments([]);
+      setGalleryPreviews([]);
+      setVideoPreviews([]);
+      
+      // Navigate back to dashboard
+      navigate('/shopkeeper-dashboard');
+      
+    } catch (err) {
+      console.error(err);
+      alert("❌ Error adding product. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="add-product-container">
+      <div className="add-product-card">
+        <div className="add-product-header">
+          <h2>📦 Add New Product</h2>
+          <p>Add your electronics product to the marketplace</p>
+        </div>
+
+        {/* Input Method Selection */}
+        <div className="input-method-selector">
+          <h3>🎤 Choose Input Method</h3>
+          <div className="input-method-options">
+            <button
+              type="button"
+              className={`input-method-btn ${inputMethod === 'writing' ? 'active' : ''}`}
+              onClick={() => setInputMethod('writing')}
+            >
+              ✍️ By Writing
+              <span>Type your product details manually</span>
+            </button>
+            <button
+              type="button"
+              className={`input-method-btn ${inputMethod === 'speaking' ? 'active' : ''}`}
+              onClick={() => setInputMethod('speaking')}
+            >
+              🎤 By Speaking
+              <span>Speak your product details aloud</span>
+            </button>
+          </div>
+        </div>
+
+        {inputMethod === 'speaking' && (
+          <div className="voice-input-section">
+            <div className="voice-input-header">
+              <h3>🎤 Voice Input</h3>
+              <p>Speak clearly about your product. You can say things like:</p>
+              <div className="voice-examples">
+                <p><strong>"Add Samsung Galaxy S24, brand Samsung, price 25000, category smartphones, description 128GB storage, excellent condition, status in stock"</strong></p>
+                <p><strong>"New iPhone 15 Pro by Apple, priced at 35000, smartphones category, features titanium body and A17 chip, available"</strong></p>
+              </div>
+            </div>
+            
+            <div className="voice-controls">
+              {!isListening ? (
+                <button
+                  type="button"
+                  className="voice-start-btn"
+                  onClick={startVoiceInput}
+                  disabled={!recognition}
+                >
+                  🎤 Start Recording
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="voice-stop-btn"
+                  onClick={stopVoiceInput}
+                >
+                  ⏹️ Stop Recording
+                </button>
+              )}
+              
+              {isListening && (
+                <div className="listening-indicator">
+                  <div className="listening-dot"></div>
+                  <span>Listening...</span>
+                </div>
+              )}
+            </div>
+
+            {voiceInput && (
+              <div className="voice-result">
+                <h4>📝 What I heard:</h4>
+                <p className="voice-transcript">{voiceInput}</p>
+              </div>
+            )}
+
+            {!recognition && (
+              <div className="voice-warning">
+                <p>⚠️ Voice recognition is not supported in your browser. Please use the writing method or try Chrome/Edge browser.</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="add-product-form">
+          {inputMethod === 'writing' ? (
+            <>
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="name">Product Name *</label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    placeholder="e.g., Samsung Galaxy S24"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="brand">Brand *</label>
+                  <input
+                    type="text"
+                    id="brand"
+                    value={brand}
+                    onChange={(e) => setBrand(e.target.value)}
+                    required
+                    placeholder="e.g., Samsung"
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="price">Price (ETB) *</label>
+                  <input
+                    type="number"
+                    id="price"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    required
+                    min="0"
+                    step="0.01"
+                    placeholder="e.g., 25000"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="category">Category *</label>
+                  <select
+                    id="category"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    required
+                  >
+                    <option value="">Select Category</option>
+                    <option value="Smartphones">Smartphones</option>
+                    <option value="Laptops">Laptops</option>
+                    <option value="Tablets">Tablets</option>
+                    <option value="Headphones">Headphones</option>
+                    <option value="Speakers">Speakers</option>
+                    <option value="Cameras">Cameras</option>
+                    <option value="TVs">TVs</option>
+                    <option value="Gaming">Gaming</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="description">Description *</label>
+                <textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                  rows={4}
+                  placeholder="Describe your product features, condition, and specifications..."
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="status">Status *</label>
+                  <select
+                    id="status"
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                    required
+                  >
+                    <option value="In Stock">In Stock</option>
+                    <option value="Out of Stock">Out of Stock</option>
+                    <option value="Pre-order">Pre-order</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="image">Product Image</label>
+                  <input
+                    type="file"
+                    id="image"
+                    onChange={handleImageChange}
+                    accept="image/*"
+                    className="file-input"
+                  />
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Voice input form - show extracted data */}
+              <div className="voice-form-preview">
+                <h3>📋 Extracted Product Information</h3>
+                <div className="extracted-fields">
+                  <div className="field-group">
+                    <label>Product Name:</label>
+                    <div className="field-value">
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Product name will appear here..."
+                        className="voice-field-input"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="field-group">
+                    <label>Brand:</label>
+                    <div className="field-value">
+                      <input
+                        type="text"
+                        value={brand}
+                        onChange={(e) => setBrand(e.target.value)}
+                        placeholder="Brand will appear here..."
+                        className="voice-field-input"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="field-group">
+                    <label>Price (ETB):</label>
+                    <div className="field-value">
+                      <input
+                        type="number"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        placeholder="Price will appear here..."
+                        className="voice-field-input"
+                        min="0"
+                        step="0.01"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="field-group">
+                    <label>Category:</label>
+                    <div className="field-value">
+                      <select
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        className="voice-field-input"
+                      >
+                        <option value="">Select/Confirm Category</option>
+                        <option value="Smartphones">Smartphones</option>
+                        <option value="Laptops">Laptops</option>
+                        <option value="Tablets">Tablets</option>
+                        <option value="Headphones">Headphones</option>
+                        <option value="Speakers">Speakers</option>
+                        <option value="Cameras">Cameras</option>
+                        <option value="TVs">TVs</option>
+                        <option value="Gaming">Gaming</option>
+                        <option value="Accessories">Accessories</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div className="field-group">
+                    <label>Description:</label>
+                    <div className="field-value">
+                      <textarea
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Description will appear here..."
+                        className="voice-field-textarea"
+                        rows={4}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="field-group">
+                    <label>Status:</label>
+                    <div className="field-value">
+                      <select
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                        className="voice-field-input"
+                      >
+                        <option value="In Stock">In Stock</option>
+                        <option value="Out of Stock">Out of Stock</option>
+                        <option value="Pre-order">Pre-order</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div className="field-group">
+                    <label>Product Image:</label>
+                    <div className="field-value">
+                      <input
+                        type="file"
+                        onChange={handleImageChange}
+                        accept="image/*"
+                        className="voice-field-input"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {imagePreview && (
+            <div className="image-preview">
+              <img src={imagePreview} alt="Product preview" />
+              <button 
+                type="button" 
+                className="remove-image"
+                onClick={() => {
+                  setImage(null);
+                  setImagePreview("");
+                }}
+              >
+                ❌ Remove
+              </button>
+            </div>
+          )}
+
+          <div className="form-actions">
+            <button
+              type="button"
+              className="cancel-btn"
+              onClick={handleCancel}
+              disabled={loading}
+            >
+              ❌ Cancel
+            </button>
+            <button
+              type="submit"
+              className="submit-btn"
+              disabled={loading}
+            >
+              {loading ? '⏳ Adding...' : '✅ Add Product'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default AddProduct;

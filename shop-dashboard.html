@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HENOK Electronics - Shop Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #1e1b4b 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .shop-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .shop-info h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .shop-info p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px;
+            border-radius: 15px;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .action-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .products-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .search-filter-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        .filter-select {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        .filter-select option {
+            background: #1f2937;
+            color: white;
+            padding: 10px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+
+        .product-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        .product-specs {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .product-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .product-stock {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .product-stock.low {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .product-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .product-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .add-product-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Enhanced Product Modal Styles */
+        .enhanced-product-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            overflow-y: auto;
+        }
+
+        .modal-container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .modal-header h2 {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 60%;
+            width: 80%;
+            height: 2px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .step.active::after {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transform: scale(1.1);
+        }
+
+        .step-title {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
+        .step.active .step-title {
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Step Content */
+        .modal-content {
+            padding: 30px;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        .step-content h3 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        /* Form Styles */
+        .form-section {
+            max-width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Image Upload Styles */
+        .image-upload-section {
+            margin-bottom: 20px;
+        }
+
+        .upload-tips {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .upload-tips h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .upload-tips ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .upload-tips li {
+            padding: 5px 0;
+            color: #666;
+        }
+
+        .upload-tips li::before {
+            content: '>';
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .image-slot {
+            position: relative;
+            aspect-ratio: 1;
+            border: 2px dashed #e1e5e9;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .image-slot:hover {
+            border-color: #667eea;
+            transform: scale(1.02);
+        }
+
+        .image-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+
+        .image-slot:hover .image-placeholder {
+            color: #667eea;
+        }
+
+        .add-icon {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .slot-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .slot-label {
+            font-size: 12px;
+        }
+
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .image-slot.has-image {
+            border-style: solid;
+            border-color: #667eea;
+        }
+
+        .image-slot.has-image .image-placeholder {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Radio and Checkbox Styles */
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .radio-option input,
+        .checkbox-option input {
+            margin-right: 8px;
+            width: auto;
+        }
+
+        /* Specification Grid */
+        .spec-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .spec-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Price Stock Grid */
+        .price-stock-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Character Counter */
+        .char-counter {
+            text-align: right;
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Tag Styles */
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .preview-section h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        /* Modal Footer */
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            background: #f8f9fa;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-success {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-primary:hover,
+        .btn-secondary:hover,
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Low Stock Input */
+        .low-stock-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .low-stock-input input {
+            width: 80px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .modal-container {
+                margin: 0;
+                border-radius: 0;
+                max-height: 100vh;
+            }
+
+            .progress-steps {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .step:not(:last-child)::after {
+                display: none;
+            }
+
+            .spec-row,
+            .price-stock-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .image-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Shop Header -->
+        <div class="shop-header">
+            <div class="shop-info">
+                <h1>🏪 HENOK Electronics</h1>
+                <p>📍 Addis Ababa, Bole</p>
+            </div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="switchTab('dashboard')">Dashboard</button>
+                <button class="nav-tab" onclick="switchTab('products')">📦 My Products</button>
+                <button class="nav-tab" onclick="switchTab('orders')">Orders</button>
+                <button class="nav-tab" onclick="switchTab('messages')">Messages</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Tab Content -->
+        <div id="dashboard-tab" class="tab-content">
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalProducts">0</div>
+                    <div class="stat-label">Total Products</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="inStock">0</div>
+                    <div class="stat-label">In Stock</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="outOfStock">0</div>
+                    <div class="stat-label">Out of Stock</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalViews">0</div>
+                    <div class="stat-label">Views This Week</div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn" onclick="openAddProductModal()">
+                    <span>➕</span>
+                    <span>Add New Product</span>
+                </button>
+                <button class="action-btn secondary" onclick="bulkUpload()">
+                    <span>📤</span>
+                    <span>Bulk Upload</span>
+                </button>
+                <button class="action-btn secondary" onclick="exportProducts()">
+                    <span>📥</span>
+                    <span>Export List</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Products Tab Content -->
+        <div id="products-tab" class="tab-content hidden">
+            <div class="products-section">
+                <!-- Search and Filter Bar -->
+                <div class="search-filter-bar">
+                    <input type="text" class="search-input" id="productSearch" placeholder="Search products...">
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        <option value="phones">Phones</option>
+                        <option value="laptops">Laptops</option>
+                        <option value="accessories">Accessories</option>
+                        <option value="tablets">Tablets</option>
+                    </select>
+                    <select class="filter-select" id="sortBy">
+                        <option value="date">Date Added</option>
+                        <option value="name">Name</option>
+                        <option value="price">Price</option>
+                        <option value="stock">Stock Level</option>
+                    </select>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="products-grid" id="productsGrid">
+                    <!-- Products will be loaded here -->
+                </div>
+
+                <!-- Load More Button -->
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="action-btn" onclick="loadMoreProducts()">Load More...</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Tab Content -->
+        <div id="orders-tab" class="tab-content hidden">
+            <div class="products-section">
+                <h2 style="margin-bottom: 20px;">Order Management</h2>
+                <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 30px;">Manage customer orders and track fulfillment status.</p>
+                <div id="ordersList">
+                    <!-- Orders will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Tab Content -->
+        <div id="messages-tab" class="tab-content hidden">
+            <div class="products-section">
+                <h2 style="margin-bottom: 20px;">Customer Messages</h2>
+                <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 30px;">Communicate with customers about products and orders.</p>
+                <div id="messagesList">
+                    <!-- Messages will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Add Product Modal -->
+    <div id="addProductModal" class="enhanced-product-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Product</h2>
+                <button class="close-btn" onclick="closeAddProductModal()">×</button>
+            </div>
+            
+            <!-- Progress Steps -->
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Images</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Basic Info</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Specifications</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Pricing</div>
+                </div>
+                <div class="step" data-step="5">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Description</div>
+                </div>
+                <div class="step" data-step="6">
+                    <div class="step-number">6</div>
+                    <div class="step-title">Warranty</div>
+                </div>
+                <div class="step" data-step="7">
+                    <div class="step-number">7</div>
+                    <div class="step-title">Tags</div>
+                </div>
+                <div class="step" data-step="8">
+                    <div class="step-number">8</div>
+                    <div class="step-title">Publish</div>
+                </div>
+            </div>
+
+            <!-- Step Content -->
+            <div class="modal-content">
+                <!-- Step 1: Product Images -->
+                <div class="step-content active" id="step1">
+                    <h3>STEP 1: PRODUCT IMAGES</h3>
+                    <div class="image-upload-section">
+                        <div class="upload-tips">
+                            <h4>Upload 6-10 clear photos of the product</h4>
+                            <ul>
+                                <li>Use good lighting</li>
+                                <li>Show product from multiple angles</li>
+                                <li>Include accessories and packaging</li>
+                                <li>Maximum 5MB per image</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="image-grid">
+                            <div class="image-slot" data-slot="0">
+                                <div class="image-placeholder">
+                                    <span class="add-icon">+</span>
+                                    <span class="slot-label">Add Photo</span>
+                                </div>
+                                <input type="file" class="file-input" accept="image/*" onchange="handleImageUpload(0, this)">
+                            </div>
+                            <div class="image-slot" data-slot="1">
+                                <div class="image-placeholder">
+                                    <span class="slot-number">1</span>
+                                    <span class="slot-label">Front</span>
+                                </div>
+                                <input type="file" class="file-input" accept="image/*" onchange="handleImageUpload(1, this)">
+                            </div>
+                            <div class="image-slot" data-slot="2">
+                                <div class="image-placeholder">
+                                    <span class="slot-number">2</span>
+                                    <span class="slot-label">Back</span>
+                                </div>
+                                <input type="file" class="file-input" accept="image/*" onchange="handleImageUpload(2, this)">
+                            </div>
+                            <div class="image-slot" data-slot="3">
+                                <div class="image-placeholder">
+                                    <span class="slot-number">3</span>
+                                    <span class="slot-label">Screen</span>
+                                </div>
+                                <input type="file" class="file-input" accept="image/*" onchange="handleImageUpload(3, this)">
+                            </div>
+                            <div class="image-slot" data-slot="4">
+                                <div class="image-placeholder">
+                                    <span class="slot-number">4</span>
+                                    <span class="slot-label">Access</span>
+                                </div>
+                                <input type="file" class="file-input" accept="image/*" onchange="handleImageUpload(4, this)">
+                            </div>
+                            <div class="image-slot" data-slot="5">
+                                <div class="image-placeholder">
+                                    <span class="slot-number">5</span>
+                                    <span class="slot-label">Package</span>
+                                </div>
+                                <input type="file" class="file-input" accept="image/*" onchange="handleImageUpload(5, this)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Basic Information -->
+                <div class="step-content" id="step2">
+                    <h3>STEP 2: BASIC INFORMATION</h3>
+                    <div class="form-section">
+                        <div class="form-group">
+                            <label>Product Category *</label>
+                            <select id="productCategory" onchange="updateSpecificationFields()">
+                                <option value="">Select Category...</option>
+                                <option value="phones">Mobile Phones</option>
+                                <option value="laptops">Laptops</option>
+                                <option value="tablets">Tablets</option>
+                                <option value="watches">Smart Watches</option>
+                                <option value="audio">Audio Devices</option>
+                                <option value="accessories">Accessories</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Brand *</label>
+                            <select id="productBrand">
+                                <option value="">Select Brand...</option>
+                                <option value="samsung">Samsung</option>
+                                <option value="apple">Apple</option>
+                                <option value="tecno">Tecno</option>
+                                <option value="infinix">Infinix</option>
+                                <option value="hp">HP</option>
+                                <option value="dell">Dell</option>
+                                <option value="lenovo">Lenovo</option>
+                                <option value="acer">Acer</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <input type="text" id="otherBrand" placeholder="Type brand name" style="display:none;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Product Name *</label>
+                            <input type="text" id="productName" placeholder="Samsung Galaxy A05">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Model Number *</label>
+                            <input type="text" id="modelNumber" placeholder="SM-A057F">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Product Condition *</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="condition" value="new" checked>
+                                    <span>Brand New</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="condition" value="like-new">
+                                    <span>Used (Like New)</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="condition" value="refurbished">
+                                    <span>Refurbished</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Specifications -->
+                <div class="step-content" id="step3">
+                    <h3>STEP 3: SPECIFICATIONS</h3>
+                    <div class="form-section">
+                        <div id="phoneSpecs" class="category-specs">
+                            <h4>For Mobile Phones:</h4>
+                            <div class="spec-grid">
+                                <div class="spec-row">
+                                    <div class="form-group">
+                                        <label>RAM *</label>
+                                        <select id="ram">
+                                            <option value="2GB">2GB</option>
+                                            <option value="3GB">3GB</option>
+                                            <option value="4GB" selected>4GB</option>
+                                            <option value="6GB">6GB</option>
+                                            <option value="8GB">8GB</option>
+                                            <option value="12GB">12GB+</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Storage *</label>
+                                        <select id="storage">
+                                            <option value="16GB">16GB</option>
+                                            <option value="32GB">32GB</option>
+                                            <option value="64GB" selected>64GB</option>
+                                            <option value="128GB">128GB</option>
+                                            <option value="256GB">256GB</option>
+                                            <option value="512GB">512GB</option>
+                                            <option value="1TB">1TB</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="form-group">
+                                        <label>Battery</label>
+                                        <input type="text" id="battery" placeholder="5000 mAh">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Screen Size</label>
+                                        <input type="text" id="screenSize" placeholder="6.7 inches">
+                                    </div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="form-group">
+                                        <label>Front Camera</label>
+                                        <input type="text" id="frontCamera" placeholder="8 MP">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Back Camera</label>
+                                        <input type="text" id="backCamera" placeholder="50 MP + 2 MP Dual Camera">
+                                    </div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="form-group">
+                                        <label>Processor</label>
+                                        <input type="text" id="processor" placeholder="MediaTek Helio G85">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Operating System</label>
+                                        <input type="text" id="os" placeholder="Android 13, One UI 5.1">
+                                    </div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="form-group">
+                                        <label>Network Type</label>
+                                        <div class="checkbox-group">
+                                            <label><input type="checkbox" name="network" value="4g" checked> 4G LTE</label>
+                                            <label><input type="checkbox" name="network" value="5g"> 5G</label>
+                                            <label><input type="checkbox" name="network" value="3g"> 3G</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>SIM Slots</label>
+                                        <div class="radio-group">
+                                            <label><input type="radio" name="sim" value="dual" checked> Dual SIM</label>
+                                            <label><input type="radio" name="sim" value="single"> Single SIM</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="form-group">
+                                        <label>Colors Available *</label>
+                                        <div class="checkbox-group">
+                                            <label><input type="checkbox" name="colors" value="green"> Light Green</label>
+                                            <label><input type="checkbox" name="colors" value="silver"> Silver</label>
+                                            <label><input type="checkbox" name="colors" value="black"> Black</label>
+                                            <label><input type="checkbox" name="colors" value="blue"> Blue</label>
+                                            <label><input type="checkbox" name="colors" value="red"> Red</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Dimensions</label>
+                                        <input type="text" id="dimensions" placeholder="168x77x8.8 mm">
+                                    </div>
+                                </div>
+                                <div class="spec-row">
+                                    <div class="form-group">
+                                        <label>Weight</label>
+                                        <input type="text" id="weight" placeholder="195g">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Pricing & Stock -->
+                <div class="step-content" id="step4">
+                    <h3>STEP 4: PRICING & STOCK</h3>
+                    <div class="form-section">
+                        <div class="price-stock-grid">
+                            <div class="form-group">
+                                <label>Price (Birr) *</label>
+                                <input type="number" id="price" placeholder="45000">
+                            </div>
+                            <div class="form-group">
+                                <label>Quantity Available *</label>
+                                <input type="number" id="quantity" placeholder="5">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Original Price (if discounted)</label>
+                            <input type="number" id="originalPrice" placeholder="48000">
+                            <small>Leave empty if not on discount</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Low Stock Alert</label>
+                            <div class="low-stock-input">
+                                <span>Notify me when stock falls below:</span>
+                                <input type="number" id="lowStockAlert" placeholder="2" min="1">
+                                <span>units</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Product Description -->
+                <div class="step-content" id="step5">
+                    <h3>STEP 5: PRODUCT DESCRIPTION</h3>
+                    <div class="form-section">
+                        <div class="form-group">
+                            <label>Full Description</label>
+                            <textarea id="description" rows="8" maxlength="2000" placeholder="Describe your product in detail..."></textarea>
+                            <div class="char-counter">
+                                <span id="charCount">0</span>/2000 characters
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 6: Warranty & Notes -->
+                <div class="step-content" id="step6">
+                    <h3>STEP 6: WARRANTY & SELLER NOTES</h3>
+                    <div class="form-section">
+                        <div class="form-group">
+                            <label>Warranty Information</label>
+                            <input type="text" id="warranty" placeholder="1 Year Official Samsung Warranty">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Special Offers & Notes</label>
+                            <textarea id="specialOffers" rows="6" placeholder="Free delivery, discounts, return policy, etc..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 7: Product Tags -->
+                <div class="step-content" id="step7">
+                    <h3>STEP 7: PRODUCT TAGS</h3>
+                    <div class="form-section">
+                        <div class="auto-tags">
+                            <label>Auto-generated tags:</label>
+                            <div id="autoTags" class="tag-list">
+                                <!-- Tags will be generated here -->
+                            </div>
+                        </div>
+                        
+                        <div class="custom-tags">
+                            <label>Add custom tags:</label>
+                            <input type="text" id="customTags" placeholder="budget phone, student phone">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 8: Preview & Publish -->
+                <div class="step-content" id="step8">
+                    <h3>STEP 8: PREVIEW & PUBLISH</h3>
+                    <div class="form-section">
+                        <div class="confirmations">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="confirmAccurate" required>
+                                <span>I confirm this product information is accurate</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="confirmInStock" required>
+                                <span>I have the product in stock</span>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="confirmImages" required>
+                                <span>The images are of the actual product I'm selling</span>
+                            </label>
+                        </div>
+                        
+                        <div class="preview-section">
+                            <h4>Product Preview</h4>
+                            <div id="productPreview">
+                                <!-- Preview will be generated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="previousStep()" id="prevBtn" style="display:none;">Previous</button>
+                <button class="btn-primary" onclick="nextStep()" id="nextBtn">Next</button>
+                <button class="btn-success" onclick="publishProduct()" id="publishBtn" style="display:none;">Publish Product</button>
+                <button class="btn-secondary" onclick="saveDraft()">Save as Draft</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize shop data
+        let shopData = {
+            name: "HENOK Electronics",
+            owner: "HENOK",
+            city: "Addis Ababa",
+            location: "Bole",
+            phone: "+251 912345678",
+            telegram: "@henok_electronics",
+            email: "henok@electronics.com",
+            products: []
+        };
+
+        // Enhanced Product Modal Variables
+        let currentStep = 1;
+        let uploadedImages = [];
+        let productData = {};
+
+        // Initialize the system
+        document.addEventListener('DOMContentLoaded', function() {
+            loadShopData();
+            updateStats();
+            renderProducts();
+            initializeEventListeners();
+        });
+
+        // Initialize event listeners
+        function initializeEventListeners() {
+            // Description character counter
+            const descriptionTextarea = document.getElementById('description');
+            if (descriptionTextarea) {
+                descriptionTextarea.addEventListener('input', updateCharCounter);
+            }
+
+            // Brand selection handler
+            const brandSelect = document.getElementById('productBrand');
+            if (brandSelect) {
+                brandSelect.addEventListener('change', handleBrandSelection);
+            }
+        }
+
+        // Open enhanced add product modal
+        function openAddProductModal() {
+            document.getElementById('addProductModal').style.display = 'block';
+            currentStep = 1;
+            uploadedImages = [];
+            productData = {};
+            showStep(1);
+        }
+
+        // Close add product modal
+        function closeAddProductModal() {
+            document.getElementById('addProductModal').style.display = 'none';
+            resetForm();
+        }
+
+        // Reset form
+        function resetForm() {
+            // Clear all form inputs
+            const formInputs = document.querySelectorAll('#addProductModal input, #addProductModal select, #addProductModal textarea');
+            formInputs.forEach(input => {
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    input.checked = false;
+                } else {
+                    input.value = '';
+                }
+            });
+
+            // Reset images
+            uploadedImages = [];
+            const imageSlots = document.querySelectorAll('.image-slot');
+            imageSlots.forEach(slot => {
+                slot.classList.remove('has-image');
+                const placeholder = slot.querySelector('.image-placeholder');
+                placeholder.style.backgroundImage = '';
+            });
+
+            // Reset to step 1
+            currentStep = 1;
+            showStep(1);
+        }
+
+        // Step navigation
+        function showStep(stepNumber) {
+            // Hide all steps
+            const allSteps = document.querySelectorAll('.step-content');
+            allSteps.forEach(step => step.classList.remove('active'));
+
+            // Show current step
+            const currentStepElement = document.getElementById(`step${stepNumber}`);
+            if (currentStepElement) {
+                currentStepElement.classList.add('active');
+            }
+
+            // Update progress indicators
+            updateProgressIndicators(stepNumber);
+
+            // Update navigation buttons
+            updateNavigationButtons(stepNumber);
+
+            // Generate auto tags if on step 7
+            if (stepNumber === 7) {
+                generateAutoTags();
+            }
+
+            // Generate preview if on step 8
+            if (stepNumber === 8) {
+                generatePreview();
+            }
+        }
+
+        // Update progress indicators
+        function updateProgressIndicators(activeStep) {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                if (index + 1 <= activeStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+        }
+
+        // Update navigation buttons
+        function updateNavigationButtons(stepNumber) {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const publishBtn = document.getElementById('publishBtn');
+
+            // Show/hide previous button
+            if (stepNumber === 1) {
+                prevBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'block';
+            }
+
+            // Show/hide next and publish buttons
+            if (stepNumber === 8) {
+                nextBtn.style.display = 'none';
+                publishBtn.style.display = 'block';
+            } else {
+                nextBtn.style.display = 'block';
+                publishBtn.style.display = 'none';
+            }
+        }
+
+        // Next step
+        function nextStep() {
+            if (validateCurrentStep()) {
+                saveStepData(currentStep);
+                if (currentStep < 8) {
+                    currentStep++;
+                    showStep(currentStep);
+                }
+            }
+        }
+
+        // Previous step
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        // Validate current step
+        function validateCurrentStep() {
+            switch (currentStep) {
+                case 1:
+                    return validateImages();
+                case 2:
+                    return validateBasicInfo();
+                case 3:
+                    return validateSpecifications();
+                case 4:
+                    return validatePricing();
+                case 5:
+                    return validateDescription();
+                case 6:
+                    return validateWarranty();
+                case 7:
+                    return validateTags();
+                case 8:
+                    return validateConfirmations();
+                default:
+                    return true;
+            }
+        }
+
+        // Validation functions
+        function validateImages() {
+            // At least one image is required
+            if (uploadedImages.length === 0) {
+                showNotification('Please upload at least one product image', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        function validateBasicInfo() {
+            const category = document.getElementById('productCategory').value;
+            const brand = document.getElementById('productBrand').value;
+            const name = document.getElementById('productName').value;
+            const model = document.getElementById('modelNumber').value;
+
+            if (!category || !brand || !name || !model) {
+                showNotification('Please fill in all required basic information fields', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        function validateSpecifications() {
+            // For phones, RAM and Storage are required
+            if (productData.category === 'phones') {
+                const ram = document.getElementById('ram').value;
+                const storage = document.getElementById('storage').value;
+                const colors = document.querySelectorAll('input[name="colors"]:checked');
+
+                if (!ram || !storage || colors.length === 0) {
+                    showNotification('Please fill in all required specification fields', 'error');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function validatePricing() {
+            const price = document.getElementById('price').value;
+            const quantity = document.getElementById('quantity').value;
+
+            if (!price || !quantity || price <= 0 || quantity <= 0) {
+                showNotification('Please enter valid price and quantity', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        function validateDescription() {
+            // Description is optional
+            return true;
+        }
+
+        function validateWarranty() {
+            // Warranty is optional
+            return true;
+        }
+
+        function validateTags() {
+            // Tags are optional
+            return true;
+        }
+
+        function validateConfirmations() {
+            const confirmAccurate = document.getElementById('confirmAccurate').checked;
+            const confirmInStock = document.getElementById('confirmInStock').checked;
+            const confirmImages = document.getElementById('confirmImages').checked;
+
+            if (!confirmAccurate || !confirmInStock || !confirmImages) {
+                showNotification('Please confirm all checkboxes before publishing', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        // Save step data
+        function saveStepData(step) {
+            switch (step) {
+                case 1:
+                    productData.images = uploadedImages;
+                    break;
+                case 2:
+                    productData.category = document.getElementById('productCategory').value;
+                    productData.brand = document.getElementById('productBrand').value;
+                    productData.name = document.getElementById('productName').value;
+                    productData.model = document.getElementById('modelNumber').value;
+                    productData.condition = document.querySelector('input[name="condition"]:checked').value;
+                    break;
+                case 3:
+                    if (productData.category === 'phones') {
+                        productData.ram = document.getElementById('ram').value;
+                        productData.storage = document.getElementById('storage').value;
+                        productData.battery = document.getElementById('battery').value;
+                        productData.screenSize = document.getElementById('screenSize').value;
+                        productData.frontCamera = document.getElementById('frontCamera').value;
+                        productData.backCamera = document.getElementById('backCamera').value;
+                        productData.processor = document.getElementById('processor').value;
+                        productData.os = document.getElementById('os').value;
+                        
+                        const networks = [];
+                        document.querySelectorAll('input[name="network"]:checked').forEach(cb => networks.push(cb.value));
+                        productData.network = networks;
+                        
+                        productData.sim = document.querySelector('input[name="sim"]:checked').value;
+                        
+                        const colors = [];
+                        document.querySelectorAll('input[name="colors"]:checked').forEach(cb => colors.push(cb.value));
+                        productData.colors = colors;
+                        
+                        productData.dimensions = document.getElementById('dimensions').value;
+                        productData.weight = document.getElementById('weight').value;
+                    }
+                    break;
+                case 4:
+                    productData.price = parseFloat(document.getElementById('price').value);
+                    productData.quantity = parseInt(document.getElementById('quantity').value);
+                    productData.originalPrice = document.getElementById('originalPrice').value ? parseFloat(document.getElementById('originalPrice').value) : null;
+                    productData.lowStockAlert = document.getElementById('lowStockAlert').value ? parseInt(document.getElementById('lowStockAlert').value) : 2;
+                    break;
+                case 5:
+                    productData.description = document.getElementById('description').value;
+                    break;
+                case 6:
+                    productData.warranty = document.getElementById('warranty').value;
+                    productData.specialOffers = document.getElementById('specialOffers').value;
+                    break;
+                case 7:
+                    productData.customTags = document.getElementById('customTags').value;
+                    break;
+            }
+        }
+
+        // Image upload handling
+        function handleImageUpload(slotIndex, input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // Check file size (5MB limit)
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('Image size must be less than 5MB', 'error');
+                return;
+            }
+
+            // Check file type
+            if (!file.type.startsWith('image/')) {
+                showNotification('Please select an image file', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                
+                // Store image data
+                uploadedImages[slotIndex] = {
+                    data: imageData,
+                    name: file.name,
+                    type: file.type
+                };
+
+                // Update UI
+                const slot = document.querySelector(`[data-slot="${slotIndex}"]`);
+                const placeholder = slot.querySelector('.image-placeholder');
+                
+                placeholder.style.backgroundImage = `url(${imageData})`;
+                placeholder.innerHTML = '';
+                slot.classList.add('has-image');
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        // Brand selection handling
+        function handleBrandSelection() {
+            const brandSelect = document.getElementById('productBrand');
+            const otherBrandInput = document.getElementById('otherBrand');
+
+            if (brandSelect.value === 'other') {
+                otherBrandInput.style.display = 'block';
+                otherBrandInput.required = true;
+            } else {
+                otherBrandInput.style.display = 'none';
+                otherBrandInput.required = false;
+            }
+        }
+
+        // Character counter
+        function updateCharCounter() {
+            const textarea = document.getElementById('description');
+            const counter = document.getElementById('charCount');
+            
+            if (textarea && counter) {
+                const length = textarea.value.length;
+                counter.textContent = length;
+                
+                if (length > 1800) {
+                    counter.style.color = '#dc3545';
+                } else if (length > 1500) {
+                    counter.style.color = '#ffc107';
+                } else {
+                    counter.style.color = '#666';
+                }
+            }
+        }
+
+        // Generate auto tags
+        function generateAutoTags() {
+            const tags = [];
+            
+            // Add brand tag
+            if (productData.brand) {
+                tags.push(productData.brand.toLowerCase());
+            }
+            
+            // Add name-based tags
+            if (productData.name) {
+                const nameWords = productData.name.toLowerCase().split(' ');
+                tags.push(...nameWords);
+            }
+            
+            // Add category-specific tags
+            if (productData.category === 'phones') {
+                tags.push('smartphone');
+                if (productData.ram) tags.push(productData.ram.toLowerCase());
+                if (productData.storage) tags.push(productData.storage.toLowerCase());
+                if (productData.battery) tags.push(productData.battery.toLowerCase().replace(' ', ''));
+            }
+            
+            // Remove duplicates and limit to 10 tags
+            const uniqueTags = [...new Set(tags)].slice(0, 10);
+            
+            // Display tags
+            const tagsContainer = document.getElementById('autoTags');
+            tagsContainer.innerHTML = uniqueTags.map(tag => `<span class="tag">${tag}</span>`).join('');
+        }
+
+        // Generate preview
+        function generatePreview() {
+            const previewContainer = document.getElementById('productPreview');
+            
+            const previewHTML = `
+                <div class="product-preview-card">
+                    <div class="preview-images">
+                        ${uploadedImages[0] ? `<img src="${uploadedImages[0].data}" alt="${productData.name}" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px;">` : '<div class="no-image">No image</div>'}
+                    </div>
+                    <div class="preview-details">
+                        <h4>${productData.name || 'Product Name'}</h4>
+                        <p><strong>Brand:</strong> ${productData.brand || 'N/A'}</p>
+                        <p><strong>Model:</strong> ${productData.model || 'N/A'}</p>
+                        <p><strong>Condition:</strong> ${productData.condition || 'N/A'}</p>
+                        ${productData.ram ? `<p><strong>RAM:</strong> ${productData.ram}</p>` : ''}
+                        ${productData.storage ? `<p><strong>Storage:</strong> ${productData.storage}</p>` : ''}
+                        <p><strong>Price:</strong> ${productData.price ? productData.price.toLocaleString() + ' Birr' : 'N/A'}</p>
+                        <p><strong>Quantity:</strong> ${productData.quantity || 'N/A'}</p>
+                        ${productData.description ? `<p><strong>Description:</strong> ${productData.description.substring(0, 100)}...</p>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            previewContainer.innerHTML = previewHTML;
+        }
+
+        // Publish product
+        function publishProduct() {
+            if (!validateCurrentStep()) {
+                return;
+            }
+
+            // Save final step data
+            saveStepData(8);
+
+            // Create product object
+            const newProduct = {
+                id: Date.now(),
+                ...productData,
+                status: 'active',
+                views: 0,
+                dateAdded: new Date().toISOString(),
+                publishedAt: new Date().toISOString()
+            };
+
+            // Add to shop data
+            shopData.products.push(newProduct);
+            saveShopData();
+            updateStats();
+            renderProducts();
+            closeAddProductModal();
+
+            // Send notification
+            sendProductNotification(newProduct);
+
+            // Show success message
+            showNotification('Product published successfully! All registered users have been notified.', 'success');
+        }
+
+        // Save draft
+        function saveDraft() {
+            saveStepData(currentStep);
+            
+            // Save draft to localStorage
+            const draftData = {
+                ...productData,
+                images: uploadedImages,
+                step: currentStep,
+                savedAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('productDraft', JSON.stringify(draftData));
+            showNotification('Draft saved successfully!', 'success');
+        }
+
+        // Update specification fields based on category
+        function updateSpecificationFields() {
+            const category = document.getElementById('productCategory').value;
+            const specsContainer = document.getElementById('phoneSpecs');
+            
+            if (category === 'phones') {
+                specsContainer.style.display = 'block';
+            } else {
+                specsContainer.style.display = 'none';
+                // Could add other category specifications here
+            }
+        }
+
+        // Load data from localStorage
+        function loadShopData() {
+            const savedData = localStorage.getItem('henokShop');
+            if (savedData) {
+                shopData = JSON.parse(savedData);
+            } else {
+                // Only initialize sample data if no saved data exists
+                initializeSampleData();
+            }
+            updateStats();
+            renderProducts();
+        }
+
+        // Initialize sample products
+        function initializeSampleData() {
+            shopData.products = [
+                {
+                    id: 1,
+                    name: "Samsung Galaxy A05",
+                    category: "phones",
+                    specifications: "4GB RAM | 64GB Storage",
+                    price: 45000,
+                    stock: 5,
+                    image: "https://picsum.photos/seed/samsung-a05/300/300.jpg",
+                    status: "active",
+                    views: 234,
+                    dateAdded: new Date().toISOString()
+                },
+                {
+                    id: 2,
+                    name: "iPhone 13 Pro",
+                    category: "phones",
+                    specifications: "128GB | Graphite",
+                    price: 125000,
+                    stock: 2,
+                    image: "https://picsum.photos/seed/iphone13/300/300.jpg",
+                    status: "active",
+                    views: 456,
+                    dateAdded: new Date().toISOString()
+                },
+                {
+                    id: 3,
+                    name: "Dell Latitude 5420",
+                    category: "laptops",
+                    specifications: "Intel i5 | 16GB RAM | 512GB SSD",
+                    price: 85000,
+                    stock: 3,
+                    image: "https://picsum.photos/seed/dell5420/300/300.jpg",
+                    status: "active",
+                    views: 189,
+                    dateAdded: new Date().toISOString()
+                }
+            ];
+            saveShopData();
+        }
+
+        // Save shop data to localStorage
+        function saveShopData() {
+            localStorage.setItem('henokShop', JSON.stringify(shopData));
+        }
+
+        // Update statistics
+        function updateStats() {
+            const totalProducts = shopData.products.length;
+            const inStock = shopData.products.filter(p => p.stock > 0).length;
+            const outOfStock = shopData.products.filter(p => p.stock === 0).length;
+            const totalViews = shopData.products.reduce((sum, p) => sum + (p.views || 0), 0);
+
+            document.getElementById('totalProducts').textContent = totalProducts;
+            document.getElementById('inStock').textContent = inStock;
+            document.getElementById('outOfStock').textContent = outOfStock;
+            document.getElementById('totalViews').textContent = totalViews.toLocaleString();
+        }
+
+        // Render products
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const searchTerm = document.getElementById('productSearch').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const sortBy = document.getElementById('sortBy').value;
+
+            let filteredProducts = shopData.products.filter(product => {
+                const matchesSearch = !searchTerm || 
+                    product.name.toLowerCase().includes(searchTerm) ||
+                    product.specifications.toLowerCase().includes(searchTerm);
+                const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
+                return matchesSearch && matchesCategory;
+            });
+
+            // Sort products
+            filteredProducts.sort((a, b) => {
+                switch(sortBy) {
+                    case 'name': return a.name.localeCompare(b.name);
+                    case 'price': return a.price - b.price;
+                    case 'stock': return b.stock - a.stock;
+                    case 'date':
+                    default: return new Date(b.dateAdded) - new Date(a.dateAdded);
+                }
+            });
+
+            grid.innerHTML = filteredProducts.map(product => {
+                console.log('Rendering product:', product);
+                console.log('Product image:', product.image);
+                console.log('Product image type:', typeof product.image);
+                
+                return `
+                <div class="product-card fade-in">
+                    <div class="product-image">
+                        ${product.image ? `<img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;" onerror="console.error('Image failed to load:', this.src); this.style.display='none'; this.parentElement.innerHTML='📱';">` : '📱'}
+                    </div>
+                    <div class="product-title">${product.name}</div>
+                    <div class="product-specs">${product.specifications}</div>
+                    <div class="product-meta">
+                        <div class="product-price">${product.price.toLocaleString()} Birr</div>
+                        <div class="product-stock ${product.stock <= 2 ? 'low' : ''}">Stock: ${product.stock}</div>
+                    </div>
+                    <div class="product-actions">
+                        <button class="product-btn edit-btn" onclick="editProduct(${product.id})">✏️ Edit</button>
+                        <button class="product-btn delete-btn" onclick="deleteProduct(${product.id})">🗑️ Delete</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            event.target.classList.add('active');
+        }
+
+        // Open add product modal
+        function openAddProductModal() {
+            document.getElementById('addProductModal').style.display = 'flex';
+        }
+
+        // Close add product modal
+        function closeAddProductModal() {
+            document.getElementById('addProductModal').style.display = 'none';
+            document.getElementById('addProductForm').reset();
+        }
+
+        // Add product
+        document.getElementById('addProductForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const imageInput = document.querySelector('input[name="productImage"]');
+            const imageFile = imageInput.files[0];
+            
+            console.log('Image file:', imageFile);
+            console.log('Image file name:', imageFile ? imageFile.name : 'No file');
+            console.log('Image file size:', imageFile ? imageFile.size : 'No file');
+            
+            // Handle image upload
+            let imageData = null;
+            if (imageFile && imageFile.size > 0) {
+                console.log('Processing image upload...');
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    console.log('FileReader loaded, image data length:', event.target.result ? event.target.result.length : 'No result');
+                    imageData = event.target.result;
+                    
+                    const newProduct = {
+                        id: Date.now(),
+                        name: formData.get('productName'),
+                        category: formData.get('category'),
+                        specifications: formData.get('specifications'),
+                        price: parseInt(formData.get('price')),
+                        stock: parseInt(formData.get('stock')),
+                        image: imageData,
+                        status: 'active',
+                        views: 0,
+                        dateAdded: new Date().toISOString()
+                    };
+
+                    console.log('New product with image:', newProduct);
+                    shopData.products.push(newProduct);
+                    saveShopData();
+                    updateStats();
+                    renderProducts();
+                    closeAddProductModal();
+                    
+                    // Send notification to all registered users
+                    sendProductNotification(newProduct);
+                    
+                    // Show success message
+                    showNotification('Product added successfully! All registered users have been notified.', 'success');
+                };
+                reader.onerror = function(error) {
+                    console.error('FileReader error:', error);
+                    showNotification('Error reading image file. Please try again.', 'error');
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                console.log('No image file provided, using default image');
+                // Use default image if no image uploaded
+                const newProduct = {
+                    id: Date.now(),
+                    name: formData.get('productName'),
+                    category: formData.get('category'),
+                    specifications: formData.get('specifications'),
+                    price: parseInt(formData.get('price')),
+                    stock: parseInt(formData.get('stock')),
+                    image: getDefaultImage(formData.get('category')),
+                    status: 'active',
+                    views: 0,
+                    dateAdded: new Date().toISOString()
+                };
+
+                console.log('New product with default image:', newProduct);
+                shopData.products.push(newProduct);
+                saveShopData();
+                updateStats();
+                renderProducts();
+                closeAddProductModal();
+                
+                // Send notification to all registered users
+                sendProductNotification(newProduct);
+                
+                // Show success message
+                showNotification('Product added successfully! All registered users have been notified.', 'success');
+            }
+        });
+
+        // Get default image based on category
+        function getDefaultImage(category) {
+            const defaultImages = {
+                phones: 'https://picsum.photos/seed/phone/300/300.jpg',
+                laptops: 'https://picsum.photos/seed/laptop/300/300.jpg',
+                tablets: 'https://picsum.photos/seed/tablet/300/300.jpg',
+                accessories: 'https://picsum.photos/seed/accessory/300/300.jpg',
+                other: 'https://picsum.photos/seed/electronics/300/300.jpg'
+            };
+            return defaultImages[category] || defaultImages.other;
+        }
+
+        // Send notification to all registered users
+        function sendProductNotification(product) {
+            // Get all registered users from localStorage
+            const registeredUsers = getRegisteredUsers();
+            
+            // Create notification message
+            const notification = {
+                id: Date.now(),
+                type: 'new_product',
+                title: `New Product Added by HENOK Electronics!`,
+                message: `${product.name} is now available at ${product.price.toLocaleString()} Birr`,
+                productId: product.id,
+                productName: product.name,
+                shopName: shopData.name,
+                shopOwner: shopData.owner,
+                price: product.price,
+                category: product.category,
+                timestamp: new Date().toISOString(),
+                read: false
+            };
+            
+            // Send notification to all registered users
+            registeredUsers.forEach(user => {
+                if (!user.notifications) {
+                    user.notifications = [];
+                }
+                user.notifications.push(notification);
+            });
+            
+            // Save updated user data
+            saveRegisteredUsers(registeredUsers);
+            
+            // Also add to global notifications
+            addGlobalNotification(notification);
+        }
+
+        // Get all registered users
+        function getRegisteredUsers() {
+            const users = [];
+            
+            // Get from shops registration
+            const shops = JSON.parse(localStorage.getItem('shops') || '[]');
+            shops.forEach(shop => {
+                users.push({
+                    type: 'shop',
+                    name: shop.name || shop.shopName,
+                    email: shop.email,
+                    phone: shop.phone,
+                    city: shop.city,
+                    notifications: shop.notifications || []
+                });
+            });
+            
+            // Get from registeredShops
+            const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            registeredShops.forEach(shop => {
+                if (!users.find(u => u.email === shop.email)) {
+                    users.push({
+                        type: 'shop',
+                        name: shop.name || shop.shopName,
+                        email: shop.email,
+                        phone: shop.phone,
+                        city: shop.city,
+                        notifications: shop.notifications || []
+                    });
+                }
+            });
+            
+            return users;
+        }
+
+        // Save registered users
+        function saveRegisteredUsers(users) {
+            // Update shops localStorage
+            const shops = JSON.parse(localStorage.getItem('shops') || '[]');
+            users.forEach(user => {
+                if (user.type === 'shop') {
+                    const shopIndex = shops.findIndex(s => s.email === user.email);
+                    if (shopIndex !== -1) {
+                        shops[shopIndex].notifications = user.notifications;
+                    }
+                }
+            });
+            localStorage.setItem('shops', JSON.stringify(shops));
+            
+            // Update registeredShops localStorage
+            const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            users.forEach(user => {
+                if (user.type === 'shop') {
+                    const shopIndex = registeredShops.findIndex(s => s.email === user.email);
+                    if (shopIndex !== -1) {
+                        registeredShops[shopIndex].notifications = user.notifications;
+                    }
+                }
+            });
+            localStorage.setItem('registeredShops', JSON.stringify(registeredShops));
+        }
+
+        // Add to global notifications
+        function addGlobalNotification(notification) {
+            const globalNotifications = JSON.parse(localStorage.getItem('globalNotifications') || '[]');
+            globalNotifications.push(notification);
+            
+            // Keep only last 100 notifications
+            if (globalNotifications.length > 100) {
+                globalNotifications.splice(0, globalNotifications.length - 100);
+            }
+            
+            localStorage.setItem('globalNotifications', JSON.stringify(globalNotifications));
+        }
+
+        // Show notification to shop owner
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #ef4444, #dc2626)'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                max-width: 300px;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Delete product
+        function deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                shopData.products = shopData.products.filter(p => p.id !== productId);
+                saveShopData();
+                updateStats();
+                renderProducts();
+            }
+        }
+
+        // Bulk upload
+        function bulkUpload() {
+            alert('Bulk upload feature coming soon! This will allow you to upload multiple products at once using CSV or Excel files.');
+        }
+
+        // Export products
+        function exportProducts() {
+            const csvContent = "data:text/csv;charset=utf-8," 
+                + "Name,Category,Specifications,Price,Stock,Status\n"
+                + shopData.products.map(p => 
+                    `"${p.name}","${p.category}","${p.specifications}","${p.price}","${p.stock}","${p.status}"`
+                ).join("\n");
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "henok_products.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Load more products
+        function loadMoreProducts() {
+            alert('Load more functionality - pagination will be implemented here');
+        }
+
+        // Search and filter event listeners
+        document.getElementById('productSearch').addEventListener('input', renderProducts);
+        document.getElementById('categoryFilter').addEventListener('change', renderProducts);
+        document.getElementById('sortBy').addEventListener('change', renderProducts);
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadShopData();
+        });
+    </script>
+</body>
+</html>

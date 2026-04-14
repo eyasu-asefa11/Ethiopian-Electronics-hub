@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethiopian Electronics Marketplace - Share Link</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        .header {
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #1e293b;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        .header p {
+            color: #64748b;
+            font-size: 16px;
+            margin: 0;
+        }
+        .link-section {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        .link-title {
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .link-display {
+            background: white;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #1e293b;
+        }
+        .copy-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .copy-btn:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .instructions {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .instructions h3 {
+            color: #d97706;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .instructions ol {
+            color: #92400e;
+            line-height: 1.6;
+            margin: 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        .note {
+            background: #dbeafe;
+            border: 1px solid #60a5fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #1e40af;
+            font-size: 14px;
+        }
+        .qr-section {
+            margin: 20px 0;
+        }
+        .qr-code {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ Ethiopian Electronics Marketplace</h1>
+            <p>Share your project with customers and stakeholders</p>
+        </div>
+
+        <div class="link-section">
+            <div class="link-title">📱 Customer Access Link</div>
+            <div class="link-display" id="customerLink">
+                http://localhost:3000
+            </div>
+            <button class="copy-btn" onclick="copyLink('customerLink')">
+                📋 Copy Link
+            </button>
+            <button class="copy-btn" onclick="copyLink('customerLink', true)">
+                📱 Share via WhatsApp
+            </button>
+        </div>
+
+        <div class="qr-section">
+            <div class="link-title">📷 QR Code for Mobile Access</div>
+            <div class="qr-code">
+                <canvas id="qrCode"></canvas>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 How to Share with Customers:</h3>
+            <ol>
+                <li><strong>Copy the Link:</strong> Click "Copy Link" button above</li>
+                <li><strong>Share via WhatsApp:</strong> Click "Share via WhatsApp" to send directly</li>
+                <li><strong>QR Code:</strong> Customers can scan the QR code with their phone</li>
+                <li><strong>Local Network:</strong> Make sure you're both on the same WiFi/network</li>
+                <li><strong>Keep Server Running:</strong> Your development server must be running</li>
+            </ol>
+        </div>
+
+        <div class="note">
+            <strong>⚠️ Important Note:</strong> This link works only when your development server is running. 
+            For production deployment, you'll need to host this online.
+        </div>
+
+        <div class="instructions">
+            <h3>🌐 Network Setup for External Access:</h3>
+            <ol>
+                <li><strong>Find Your IP Address:</strong> Open Command Prompt and run: <code>ipconfig</code></li>
+                <li><strong>Use Your IP:</strong> Replace "localhost" with your IP address</li>
+                <li><strong>Example:</strong> <code>http://192.168.1.100:3000</code></li>
+                <li><strong>Firewall:</strong> Make sure port 3000 is allowed</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+        // Generate QR Code
+        const qrContainer = document.getElementById('qrCode');
+        QRCode.toCanvas(qrContainer, 'http://localhost:3000', {
+            width: 200,
+            margin: 2,
+            color: {
+                dark: '#1e293b',
+                light: '#ffffff'
+            }
+        });
+
+        // Copy link function
+        function copyLink(elementId, shareWhatsApp = false) {
+            const linkElement = document.getElementById(elementId);
+            const link = linkElement.textContent;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(link).then(() => {
+                // Show success message
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            });
+
+            // Share via WhatsApp if requested
+            if (shareWhatsApp) {
+                const message = `🛍️ Check out Ethiopian Electronics Marketplace: ${link}`;
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+            }
+        }
+
+        // Get user's IP address (optional)
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                const ipLink = `http://${data.ip}:3000`;
+                document.getElementById('customerLink').textContent = ipLink;
+                
+                // Update QR code with IP
+                QRCode.toCanvas(qrContainer, ipLink, {
+                    width: 200,
+                    margin: 2,
+                    color: {
+                        dark: '#1e293b',
+                        light: '#ffffff'
+                    }
+                });
+            })
+            .catch(error => {
+                console.log('Could not get IP address, using localhost');
+            });
+    </script>
+</body>
+</html>

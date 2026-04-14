@@ -1,0 +1,505 @@
+/* Advanced App Wrapper with Glassmorphism Design */
+
+.advanced-app-wrapper {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  overflow-x: hidden;
+}
+
+.advanced-app-main {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Glass Morphism Background */
+.glass-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.glass-orb {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    rgba(255, 255, 255, 0.05) 40%, 
+    transparent 70%);
+  filter: blur(40px);
+  animation: floatOrb 20s infinite ease-in-out;
+}
+
+.glass-orb-1 {
+  width: 400px;
+  height: 400px;
+  top: -200px;
+  left: -200px;
+  animation-delay: 0s;
+}
+
+.glass-orb-2 {
+  width: 300px;
+  height: 300px;
+  bottom: -150px;
+  right: -150px;
+  animation-delay: 5s;
+}
+
+.glass-orb-3 {
+  width: 250px;
+  height: 250px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-delay: 10s;
+}
+
+@keyframes floatOrb {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(100px, -50px) scale(1.1);
+  }
+  50% {
+    transform: translate(-50px, 100px) scale(0.9);
+  }
+  75% {
+    transform: translate(50px, 50px) scale(1.05);
+  }
+}
+
+/* Advanced Loading Indicator */
+.advanced-loading-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    rgba(102, 126, 234, 0.1) 0%, 
+    rgba(118, 75, 162, 0.1) 50%, 
+    rgba(102, 126, 234, 0.1) 100%);
+  background-size: 200% 100%;
+  z-index: 1002;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.advanced-loading-indicator.active {
+  opacity: 1;
+  animation: advancedLoadingShimmer 1.5s infinite;
+}
+
+@keyframes advancedLoadingShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Advanced Page Transition Overlay */
+.advanced-page-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.9) 0%, 
+    rgba(255, 255, 255, 0.7) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.advanced-page-transition-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Responsive adjustments for advanced navigation */
+@media (max-width: 768px) {
+  .advanced-app-main {
+    background: rgba(255, 255, 255, 0.9);
+  }
+  
+  .glass-orb-1 {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .glass-orb-2 {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .glass-orb-3 {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .glass-orb-1 {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .glass-orb-2 {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .glass-orb-3 {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* Ensure content doesn't overlap with fixed navigation */
+.advanced-global-back-button ~ .advanced-app-main {
+  /* No padding needed since back button is in corner */
+}
+
+/* Special handling for pages with headers */
+.advanced-app-main > header,
+.advanced-app-main > .page-header {
+  /* Add margin to avoid overlap with back button */
+  margin-left: 80px;
+}
+
+@media (max-width: 768px) {
+  .advanced-app-main > header,
+  .advanced-app-main > .page-header {
+    margin-left: 60px;
+  }
+}
+
+/* Smooth scroll behavior */
+.advanced-app-wrapper {
+  scroll-behavior: smooth;
+}
+
+/* Focus management for accessibility */
+.advanced-app-wrapper:focus-within .advanced-global-back-button {
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.5);
+}
+
+/* Print styles */
+@media print {
+  .advanced-global-back-button,
+  .advanced-breadcrumb,
+  .advanced-progress-indicator,
+  .advanced-loading-indicator,
+  .advanced-page-transition-overlay,
+  .glass-background {
+    display: none !important;
+  }
+  
+  .advanced-app-main {
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .advanced-app-wrapper {
+    background: #ffffff;
+  }
+  
+  .advanced-app-main {
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  
+  .glass-background {
+    display: none;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .advanced-loading-indicator {
+    animation: none;
+  }
+  
+  .advanced-page-transition-overlay {
+    transition: none;
+  }
+  
+  .glass-orb {
+    animation: none;
+  }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .advanced-app-wrapper {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+  
+  .advanced-app-main {
+    background: rgba(26, 26, 26, 0.9);
+    color: #ffffff;
+  }
+  
+  .glass-orb {
+    background: radial-gradient(circle, 
+      rgba(102, 126, 234, 0.1) 0%, 
+      rgba(102, 126, 234, 0.05) 40%, 
+      transparent 70%);
+  }
+}
+
+/* Page-specific adjustments */
+.advanced-app-wrapper.checkout-page .advanced-app-main {
+  background: rgba(255, 248, 225, 0.95);
+}
+
+.advanced-app-wrapper.product-page .advanced-app-main {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.advanced-app-wrapper.error-page .advanced-app-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: rgba(248, 249, 250, 0.95);
+}
+
+/* Keyboard navigation support */
+.advanced-app-wrapper:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Animation classes for page transitions */
+.page-enter {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.page-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-exit-active {
+  opacity: 0;
+  transform: translateY(-30px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Loading states */
+.advanced-app-wrapper.loading .advanced-loading-indicator {
+  opacity: 1;
+}
+
+.advanced-app-wrapper.loading .advanced-app-main {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Error states */
+.advanced-app-wrapper.error .advanced-global-back-button {
+  background: rgba(220, 53, 69, 0.9);
+  color: #ffffff;
+}
+
+/* Success states */
+.advanced-app-wrapper.success .advanced-global-back-button {
+  background: rgba(40, 167, 69, 0.9);
+  color: #ffffff;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 480px) {
+  .advanced-app-wrapper {
+    /* Ensure mobile viewport is properly handled */
+    min-height: 100vh;
+    min-height: -webkit-fill-available; /* iOS Safari */
+  }
+  
+  .advanced-app-main {
+    /* Adjust for mobile viewport */
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Tablet-specific adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .advanced-app-main > header,
+  .advanced-app-main > .page-header {
+    margin-left: 100px;
+  }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1200px) {
+  .advanced-app-main > header,
+  .advanced-app-main > .page-header {
+    margin-left: 120px;
+  }
+  
+  .glass-orb-1 {
+    width: 500px;
+    height: 500px;
+  }
+  
+  .glass-orb-2 {
+    width: 400px;
+    height: 400px;
+  }
+  
+  .glass-orb-3 {
+    width: 350px;
+    height: 350px;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: no-preference) {
+  .advanced-app-wrapper {
+    transition: background-color 0.3s ease;
+  }
+}
+
+/* Performance optimizations */
+.advanced-app-wrapper {
+  will-change: background-color;
+}
+
+.advanced-loading-indicator {
+  will-change: opacity, transform;
+}
+
+.advanced-page-transition-overlay {
+  will-change: opacity;
+}
+
+.glass-orb {
+  will-change: transform;
+}
+
+/* Debug styles (remove in production) */
+.debug .advanced-app-wrapper::before {
+  content: 'Advanced App Wrapper';
+  position: fixed;
+  top: 0;
+  right: 0;
+  background: rgba(255, 0, 0, 0.1);
+  color: red;
+  padding: 4px 8px;
+  font-size: 10px;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+/* Component-specific overrides */
+.advanced-app-wrapper .advanced-global-back-button {
+  /* Ensure back button is always on top */
+  z-index: 1000;
+}
+
+.advanced-app-wrapper .advanced-breadcrumb {
+  /* Ensure breadcrumb is below back button */
+  z-index: 999;
+}
+
+/* Content area adjustments for fixed navigation */
+.content-with-fixed-nav {
+  /* Add padding to content that might be behind fixed elements */
+  padding-top: 80px;
+}
+
+@media (max-width: 768px) {
+  .content-with-fixed-nav {
+    padding-top: 60px;
+  }
+}
+
+/* Smooth scrolling for anchor links */
+.advanced-app-wrapper html {
+  scroll-behavior: smooth;
+}
+
+/* Focus trap for modals */
+.advanced-app-wrapper.modal-open {
+  overflow: hidden;
+}
+
+/* Skeleton loading states */
+.advanced-app-wrapper.loading .skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 25%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 75%);
+  background-size: 200% 100%;
+  animation: advancedShimmer 1.5s infinite;
+}
+
+@keyframes advancedShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Glassmorphism enhancements */
+.advanced-app-wrapper::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Mobile menu backdrop improvements */
+.advanced-app-wrapper.mobile-menu-open::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1001;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}

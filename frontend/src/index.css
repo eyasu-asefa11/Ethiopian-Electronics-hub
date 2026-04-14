@@ -1,0 +1,46 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    'Noto Sans Ethiopic', 'Kefa', 'Arial Unicode MS', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Amharic text support */
+.amharic-text, [lang="am"], .am {
+  font-family: 'Noto Sans Ethiopic', 'Kefa', 'Arial Unicode MS', sans-serif !important;
+  direction: rtl;
+  unicode-bidi: embed;
+}
+
+/* English text support */
+.english-text, [lang="en"], .en {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif !important;
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* Language selector styles */
+.language-selector {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    'Noto Sans Ethiopic', 'Kefa', 'Arial Unicode MS', sans-serif;
+}
+
+/* Ensure proper Unicode rendering */
+* {
+  unicode-bidi: plaintext;
+}
+
+/* Fix for mixed language content */
+.mixed-language {
+  unicode-bidi: isolate;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

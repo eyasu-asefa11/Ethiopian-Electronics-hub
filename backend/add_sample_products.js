@@ -1,0 +1,302 @@
+// Script to add sample products for testing admin dashboard
+
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
+// Connect to database
+const db = new sqlite3.Database(path.join(__dirname, 'ethiopian_electronics.db'));
+
+// Sample products data
+const sampleProducts = [
+  {
+    name: 'Samsung Galaxy A14',
+    brand: 'Samsung',
+    model: 'A14',
+    category: 'phones',
+    subcategory: 'smartphones',
+    price: 14500,
+    original_price: 16000,
+    condition: 'new',
+    description: 'Samsung Galaxy A14 with 4GB RAM and 64GB storage',
+    ram: '4GB',
+    storage: '64GB',
+    battery: '5000mAh',
+    screen_size: '6.6 inches',
+    screen_resolution: '1080x2408',
+    processor: 'MediaTek MT6769',
+    camera_front: '13MP',
+    camera_back: '50MP + 2MP',
+    color: 'Black',
+    weight: '201g',
+    dimensions: '167.7 x 78.0 x 9.1 mm',
+    stock_quantity: 15,
+    shop_id: 1,
+    is_available: 1,
+    featured: 1
+  },
+  {
+    name: 'iPhone 13',
+    brand: 'Apple',
+    model: 'iPhone 13',
+    category: 'phones',
+    subcategory: 'smartphones',
+    price: 45000,
+    original_price: 50000,
+    condition: 'new',
+    description: 'Apple iPhone 13 with 4GB RAM and 128GB storage',
+    ram: '4GB',
+    storage: '128GB',
+    battery: '3240mAh',
+    screen_size: '6.1 inches',
+    screen_resolution: '1170x2532',
+    processor: 'A15 Bionic',
+    camera_front: '12MP',
+    camera_back: '12MP + 12MP',
+    color: 'Pacific Blue',
+    weight: '174g',
+    dimensions: '146.7 x 71.5 x 7.65 mm',
+    stock_quantity: 8,
+    shop_id: 1,
+    is_available: 1,
+    featured: 1
+  },
+  {
+    name: 'Tecno Spark 10',
+    brand: 'Tecno',
+    model: 'Spark 10',
+    category: 'phones',
+    subcategory: 'smartphones',
+    price: 8500,
+    original_price: 9500,
+    condition: 'new',
+    description: 'Tecno Spark 10 with 4GB RAM and 128GB storage',
+    ram: '4GB',
+    storage: '128GB',
+    battery: '5000mAh',
+    screen_size: '6.6 inches',
+    screen_resolution: '720x1612',
+    processor: 'MediaTek Helio G85',
+    camera_front: '8MP',
+    camera_back: '50MP + 0.08MP',
+    color: 'Blue',
+    weight: '194g',
+    dimensions: '164.5 x 75.8 x 8.9 mm',
+    stock_quantity: 25,
+    shop_id: 2,
+    is_available: 1,
+    featured: 0
+  },
+  {
+    name: 'Dell Inspiron 15',
+    brand: 'Dell',
+    model: 'Inspiron 15',
+    category: 'laptops',
+    subcategory: 'notebooks',
+    price: 35000,
+    original_price: 40000,
+    condition: 'new',
+    description: 'Dell Inspiron 15 with 8GB RAM and 512GB SSD',
+    ram: '8GB',
+    storage: '512GB SSD',
+    battery: '3-cell',
+    screen_size: '15.6 inches',
+    screen_resolution: '1920x1080',
+    processor: 'Intel Core i5-1135G7',
+    camera_front: 'HD Webcam',
+    camera_back: 'N/A',
+    color: 'Silver',
+    weight: '1.83kg',
+    dimensions: '357.9 x 229.4 x 19.9 mm',
+    stock_quantity: 5,
+    shop_id: 1,
+    is_available: 1,
+    featured: 1
+  },
+  {
+    name: 'HP Pavilion 14',
+    brand: 'HP',
+    model: 'Pavilion 14',
+    category: 'laptops',
+    subcategory: 'notebooks',
+    price: 28000,
+    original_price: 32000,
+    condition: 'new',
+    description: 'HP Pavilion 14 with 8GB RAM and 256GB SSD',
+    ram: '8GB',
+    storage: '256GB SSD',
+    battery: '4-cell',
+    screen_size: '14 inches',
+    screen_resolution: '1366x768',
+    processor: 'AMD Ryzen 5 5625U',
+    camera_front: 'HD Webcam',
+    camera_back: 'N/A',
+    color: 'Natural Silver',
+    weight: '1.41kg',
+    dimensions: '324.2 x 225.7 x 17.9 mm',
+    stock_quantity: 10,
+    shop_id: 2,
+    is_available: 1,
+    featured: 0
+  },
+  {
+    name: 'AirPods Pro',
+    brand: 'Apple',
+    model: 'AirPods Pro',
+    category: 'accessories',
+    subcategory: 'audio',
+    price: 12000,
+    original_price: 15000,
+    condition: 'new',
+    description: 'Apple AirPods Pro with active noise cancellation',
+    ram: 'N/A',
+    storage: 'N/A',
+    battery: '24+ hours with case',
+    screen_size: 'N/A',
+    screen_resolution: 'N/A',
+    processor: 'H1 chip',
+    camera_front: 'N/A',
+    camera_back: 'N/A',
+    color: 'White',
+    weight: '5.4g each',
+    dimensions: '21.8 x 30.9 x 40.5 mm',
+    stock_quantity: 20,
+    shop_id: 3,
+    is_available: 1,
+    featured: 1
+  },
+  {
+    name: 'Samsung Galaxy Watch 5',
+    brand: 'Samsung',
+    model: 'Galaxy Watch 5',
+    category: 'smart_watches',
+    subcategory: 'wearables',
+    price: 18000,
+    original_price: 22000,
+    condition: 'new',
+    description: 'Samsung Galaxy Watch 5 with health tracking',
+    ram: '1.5GB',
+    storage: '16GB',
+    battery: '40 hours',
+    screen_size: '1.4 inches',
+    screen_resolution: '450x450',
+    processor: 'Exynos W920',
+    camera_front: 'N/A',
+    camera_back: 'N/A',
+    color: 'Graphite',
+    weight: '29g',
+    dimensions: '44.4 x 43.3 x 10.8 mm',
+    stock_quantity: 12,
+    shop_id: 1,
+    is_available: 1,
+    featured: 0
+  },
+  {
+    name: 'Canon EOS M50',
+    brand: 'Canon',
+    model: 'EOS M50',
+    category: 'cameras',
+    subcategory: 'digital',
+    price: 25000,
+    original_price: 30000,
+    condition: 'new',
+    description: 'Canon EOS M50 mirrorless camera with 24.1MP sensor',
+    ram: 'N/A',
+    storage: 'SD card slot',
+    battery: '235 shots per charge',
+    screen_size: '3.0 inches',
+    screen_resolution: '1040k dots',
+    processor: 'DIGIC 8',
+    camera_front: 'N/A',
+    camera_back: '24.1MP',
+    color: 'Black',
+    weight: '388g',
+    dimensions: '116.3 x 88.1 x 58.7 mm',
+    stock_quantity: 3,
+    shop_id: 2,
+    is_available: 1,
+    featured: 1
+  }
+];
+
+// Function to add sample products
+async function addSampleProducts() {
+  return new Promise((resolve, reject) => {
+    console.log('Adding sample products...');
+    
+    const insertSQL = `
+      INSERT INTO products (
+        name, brand, model, category, subcategory, price, original_price, 
+        condition, description, ram, storage, battery, screen_size, screen_resolution,
+        processor, camera_front, camera_back, color, weight, dimensions,
+        stock_quantity, is_available, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+    `;
+    
+    let addedCount = 0;
+    
+    db.serialize(() => {
+      // Clear existing products first
+      db.run("DELETE FROM products", (err) => {
+        if (err) {
+          console.error('Error clearing products:', err);
+          reject(err);
+          return;
+        }
+        
+        console.log('Cleared existing products');
+        
+        // Add sample products
+        sampleProducts.forEach((product, index) => {
+          const values = [
+            product.name, product.brand, product.model, product.category,
+            product.subcategory, product.price, product.original_price,
+            product.condition, product.description, product.ram,
+            product.storage, product.battery, product.screen_size, product.screen_resolution,
+            product.processor, product.camera_front, product.camera_back,
+            product.color, product.weight, product.dimensions,
+            product.stock_quantity, product.is_available
+          ];
+          
+          db.run(insertSQL, values, function(err) {
+            if (err) {
+              console.error(`Error adding product ${product.name}:`, err);
+            } else {
+              console.log(`✅ Added: ${product.name}`);
+              addedCount++;
+            }
+            
+            // Check if all products have been processed
+            if (index === sampleProducts.length - 1) {
+              setTimeout(() => {
+                console.log(`\n🎉 Successfully added ${addedCount} sample products!`);
+                resolve(addedCount);
+              }, 100);
+            }
+          });
+        });
+      });
+    });
+  });
+}
+
+// Run the script
+addSampleProducts()
+  .then((count) => {
+    console.log(`\n✅ Script completed! Added ${count} sample products.`);
+    console.log('\n📱 Sample products added:');
+    console.log('• Samsung Galaxy A14 - ETB 14,500');
+    console.log('• iPhone 13 - ETB 45,000');
+    console.log('• Tecno Spark 10 - ETB 8,500');
+    console.log('• Dell Inspiron 15 - ETB 35,000');
+    console.log('• HP Pavilion 14 - ETB 28,000');
+    console.log('• AirPods Pro - ETB 12,000');
+    console.log('• Samsung Galaxy Watch 5 - ETB 18,000');
+    console.log('• Canon EOS M50 - ETB 25,000');
+    console.log('\n🔗 Admin dashboard should now show these products!');
+    db.close();
+  })
+  .catch((err) => {
+    console.error('❌ Script failed:', err);
+    db.close();
+    process.exit(1);
+  });

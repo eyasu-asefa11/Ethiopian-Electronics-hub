@@ -1,0 +1,59 @@
+🛍️ DILLA ELECTRONICS MARKETPLACE - SHARE LINKS 🛍️
+
+═════════════════════════════════════════════════════════════════
+
+📱 CUSTOMER ACCESS LINKS:
+
+🔗 LOCAL ACCESS (Your Computer Only):
+http://localhost:3000
+
+🌐 NETWORK ACCESS (Same WiFi/Network):
+http://192.168.1.100:3000
+(Replace 192.168.1.100 with your actual IP address)
+
+📱 MOBILE QR CODE:
+Open share-link.html file and scan QR code with phone
+
+📋 HOW TO SHARE WITH CUSTOMERS:
+
+1️⃣ COPY LINK: Copy any link above and send to customers
+2️⃣ WHATSAPP: Use "Share via WhatsApp" button in share-link.html
+3️⃣ QR CODE: Customers scan QR code with phone camera
+4️⃣ EMAIL: Send link via email to customers
+5️⃣ SMS: Send link via text message
+
+🔧 TECHNICAL SETUP:
+
+✅ REQUIREMENTS:
+• Your development server must be running (npm start)
+• Port 3000 must be open
+• Both devices on same network for local access
+
+🌍 FIND YOUR IP ADDRESS:
+• Windows: Open Command Prompt → type "ipconfig"
+• Mac/Linux: Open Terminal → type "ifconfig" or "ip addr"
+• Look for "IPv4 Address" (usually 192.168.x.x)
+
+📱 SHARE WITH CUSTOMERS:
+• WhatsApp: Send link directly to customers
+• Email: Include link in customer emails
+• SMS: Send link via text message
+• Social Media: Post link on Facebook, Telegram, etc.
+
+⚠️ IMPORTANT NOTES:
+• Links work ONLY when your server is running
+• For production, deploy to hosting service
+• Local links work on same WiFi/network only
+• QR code updates automatically with your IP
+
+🚀 PRODUCTION DEPLOYMENT (Future):
+• Netlify, Vercel, or AWS for hosting
+• Get permanent domain name
+• SSL certificate for HTTPS
+• 24/7 server uptime
+
+═════════════════════════════════════════════════════════════════════
+
+Generated: 📅 ${new Date().toLocaleString()}
+Project: 🛍️ Dilla Electronics Marketplace
+Developer: 👨‍💻 ${require('os').userInfo().username || 'You'}

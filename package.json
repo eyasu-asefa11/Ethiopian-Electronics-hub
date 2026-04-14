@@ -1,0 +1,37 @@
+{
+  "name": "ethio-electronics-hub",
+  "version": "1.0.0",
+  "description": "Professional Ethiopian Electronics Marketplace",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "build": "echo 'Build complete'",
+    "deploy:netlify": "netlify deploy --prod --dir=.",
+    "deploy:vercel": "vercel --prod"
+  },
+  "keywords": [
+    "ethiopia",
+    "electronics",
+    "marketplace",
+    "e-commerce",
+    "shop",
+    "retail"
+  ],
+  "author": "Ethio Electronics Hub",
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ethio-electronics-hub"
+  },
+  "bugs": {
+    "url": "https://github.com/ethio-electronics-hub/issues"
+  },
+  "homepage": "https://ethio-electronics-hub.netlify.app",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

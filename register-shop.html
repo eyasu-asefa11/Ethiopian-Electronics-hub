@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Your Shop - Ethiopian Electronics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #312e81 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #fb923c;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #1e293b;
+            font-size: 16px;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .status {
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        /* Image Upload Styles */
+        .image-upload-container {
+            margin-top: 10px;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .upload-area:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .upload-area.dragover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+        }
+
+        .upload-area p {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 5px 0;
+        }
+
+        .image-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .preview-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.1);
+            aspect-ratio: 1;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .preview-item .remove-btn:hover {
+            background: rgba(239, 68, 68, 1);
+            transform: scale(1.1);
+        }
+
+        .image-info {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        /* Phone Format Info Styles */
+        .phone-format-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .phone-format-info p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 5px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .phone-format-info strong {
+            color: white;
+            font-weight: 600;
+        }
+
+        .phone-format-info code {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #3b82f6;
+        }
+
+        .phone-format-info em {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+        }
+
+        /* Phone Input Styles */
+        .phone-input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .phone-input-container select {
+            flex: 0 0 180px;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        .phone-input-container select option {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .phone-input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .phone-input-wrapper input {
+            flex: 1;
+            padding: 12px 45px 12px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .phone-input-wrapper input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .phone-input-wrapper input.valid {
+            border-color: rgba(16, 185, 129, 0.5);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .phone-input-wrapper input.invalid {
+            border-color: rgba(239, 68, 68, 0.5);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .help-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .help-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .phone-rules {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .rules-content h4 {
+            color: white;
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+
+        .rules-content p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .rules-content code {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #3b82f6;
+        }
+
+        .close-rules {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .close-rules:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .error-message {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 10px 15px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            border-radius: 8px;
+            color: #fca5a5;
+            font-size: 14px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .error-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: rgba(239, 68, 68, 0.8);
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .error-text {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <a href="functional-interface.html" class="back-btn">BACK</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>Register Your Shop</h1>
+            <p>Join 500+ premium electronics shops across Ethiopia</p>
+        </div>
+
+        <div id="status" class="status"></div>
+
+        <form id="shopForm">
+            <div class="form-group">
+                <label>Electronics House Name *</label>
+                <input type="text" name="shopName" placeholder="Enter your shop name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Owner Name *</label>
+                <input type="text" name="ownerName" placeholder="Enter owner name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Shop Description *</label>
+                <textarea name="description" rows="4" placeholder="Example: We sell original smartphones and laptops with warranty and excellent customer service." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number *</label>
+                <div class="phone-input-container">
+                    <select id="phoneProvider" name="phoneProvider" required>
+                        <option value="">Select Provider</option>
+                        <option value="ethio">Ethio Telecom</option>
+                        <option value="safaricom">Safaricom Ethiopia</option>
+                    </select>
+                    <div class="phone-input-wrapper">
+                        <input type="tel" id="phoneNumber" name="phone" placeholder="Enter phone number" required>
+                        <button type="button" id="phoneHelpBtn" class="help-btn" title="Show phone format help">?</button>
+                    </div>
+                </div>
+                <div id="phoneRules" class="phone-rules" style="display: none;">
+                    <div class="rules-content">
+                        <h4>Phone Number Format Rules:</h4>
+                        <div id="providerRules"></div>
+                        <button type="button" class="close-rules" onclick="hidePhoneRules()">×</button>
+                    </div>
+                </div>
+                <div id="phoneError" class="error-message" style="display: none;">
+                    <span class="error-icon">!</span>
+                    <span class="error-text">Invalid phone number</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email" placeholder="shop@example.com">
+            </div>
+
+            <div class="form-group">
+                <label>City *</label>
+                <input type="text" name="city" placeholder="Enter your city (e.g., Addis Ababa, Dire Dawa, Mekelle, etc.)" required>
+            </div>
+
+            <div class="form-group">
+                <label>Shop Address *</label>
+                <input type="text" name="address" placeholder="Enter your shop address" required>
+            </div>
+
+            
+            <div class="form-group">
+                <label>Shop Images</label>
+                <div class="image-upload-container">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">+</div>
+                        <p>Click to upload shop images</p>
+                        <p style="font-size: 12px; opacity: 0.7;">PNG, JPG up to 10MB each</p>
+                    </div>
+                    <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Register Shop</button>
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='functional-interface.html'">Cancel</button>
+        </form>
+    </div>
+
+    <script>
+        let uploadedImages = [];
+
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.style.display = 'block';
+            status.style.background = type === 'success' ? 'rgba(16, 185, 129, 0.9)' : 'rgba(239, 68, 68, 0.9)';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 5000);
+        }
+
+        // Image Upload Functionality
+        function initializeImageUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            const imageInput = document.getElementById('imageInput');
+            const imagePreview = document.getElementById('imagePreview');
+
+            // Click to upload
+            uploadArea.addEventListener('click', () => {
+                imageInput.click();
+            });
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+
+            // File input change
+            imageInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+
+        function handleFiles(files) {
+            console.log('Processing files:', files);
+            
+            const validFiles = Array.from(files).filter(file => {
+                console.log('Checking file:', file.name, file.type, file.size);
+                
+                if (!file.type.startsWith('image/')) {
+                    showStatus(`${file.name} is not an image file`, 'error');
+                    return false;
+                }
+                if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                    showStatus(`${file.name} is too large (max 10MB)`, 'error');
+                    return false;
+                }
+                return true;
+            });
+
+            console.log('Valid files:', validFiles.length);
+
+            validFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                
+                reader.onloadstart = () => {
+                    console.log(`Starting to read ${file.name}...`);
+                };
+                
+                reader.onload = (e) => {
+                    console.log(`Successfully read ${file.name}`);
+                    
+                    const imageData = {
+                        name: file.name,
+                        size: file.size,
+                        type: file.type,
+                        data: e.target.result
+                    };
+                    
+                    uploadedImages.push(imageData);
+                    console.log(`Added image ${uploadedImages.length}:`, imageData.name);
+                    
+                    displayImage(imageData, uploadedImages.length - 1);
+                    updateImageInfo();
+                    
+                    showStatus(`✅ ${file.name} uploaded successfully!`, 'success');
+                };
+                
+                reader.onerror = (error) => {
+                    console.error('Error reading file:', error);
+                    showStatus(`❌ Error reading ${file.name}`, 'error');
+                };
+                
+                reader.readAsDataURL(file);
+            });
+            
+            if (validFiles.length === 0) {
+                showStatus('No valid images to upload', 'error');
+            }
+        }
+
+        function displayImage(imageData, index) {
+            const imagePreview = document.getElementById('imagePreview');
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+            previewItem.innerHTML = `
+                <img src="${imageData.data}" alt="${imageData.name}">
+                <button class="remove-btn" onclick="removeImage(${index})">×</button>
+            `;
+            imagePreview.appendChild(previewItem);
+        }
+
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
+            refreshImagePreview();
+            updateImageInfo();
+        }
+
+        function refreshImagePreview() {
+            const imagePreview = document.getElementById('imagePreview');
+            imagePreview.innerHTML = '';
+            uploadedImages.forEach((imageData, index) => {
+                displayImage(imageData, index);
+            });
+        }
+
+        function updateImageInfo() {
+            const info = document.querySelector('.image-info');
+            if (!info) {
+                const container = document.querySelector('.image-upload-container');
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'image-info';
+                container.appendChild(infoDiv);
+            }
+            
+            const infoDiv = document.querySelector('.image-info');
+            if (uploadedImages.length > 0) {
+                const totalSize = uploadedImages.reduce((sum, img) => sum + img.size, 0);
+                const sizeMB = (totalSize / (1024 * 1024)).toFixed(2);
+                infoDiv.textContent = `${uploadedImages.length} image(s) uploaded (${sizeMB} MB)`;
+            } else {
+                infoDiv.textContent = '';
+            }
+        }
+
+        document.getElementById('shopForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            try {
+                // Validate required fields
+                const requiredFields = ['shopName', 'ownerName', 'phoneNumber', 'city', 'address'];
+                const missingFields = requiredFields.filter(field => {
+                    const input = document.querySelector(`[name="${field}"]`);
+                    return !input || !input.value.trim();
+                });
+                
+                if (missingFields.length > 0) {
+                    showStatus('Please fill in all required fields', 'error');
+                    return;
+                }
+                
+                const formData = new FormData(this);
+                const shopData = Object.fromEntries(formData);
+                
+                // Add images to shop data with proper format
+                shopData.images = uploadedImages.map(img => ({
+                    name: img.name,
+                    data: img.data,
+                    size: img.size,
+                    type: img.type
+                }));
+                
+                // Save to localStorage with error handling
+                const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+                shopData.id = Date.now().toString();
+                shopData.createdAt = new Date().toISOString();
+                
+                shops.push(shopData);
+                
+                try {
+                    localStorage.setItem('registeredShops', JSON.stringify(shops));
+                    
+                    // Verify storage was successful
+                    const storedShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+                    const currentShop = storedShops.find(s => s.id === shopData.id);
+                    
+                    if (currentShop && currentShop.images && currentShop.images.length > 0) {
+                        showStatus(`✅ Shop registered successfully with ${uploadedImages.length} images! Redirecting...`, 'success');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'shops.html';
+                        }, 2000);
+                    } else {
+                        showStatus('❌ Error: Images were not saved properly. Please try again.', 'error');
+                    }
+                } catch (storageError) {
+                    console.error('Storage error:', storageError);
+                    showStatus('❌ Error saving shop data. Please check browser storage permissions.', 'error');
+                }
+            } catch (error) {
+                console.error('Form submission error:', error);
+                showStatus('❌ Error submitting form. Please try again.', 'error');
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeImageUpload();
+            initializePhoneValidation();
+        });
+
+        // Phone Validation Functionality
+        function initializePhoneValidation() {
+            const phoneProvider = document.getElementById('phoneProvider');
+            const phoneNumber = document.getElementById('phoneNumber');
+            const phoneHelpBtn = document.getElementById('phoneHelpBtn');
+            const phoneRules = document.getElementById('phoneRules');
+            const providerRules = document.getElementById('providerRules');
+            const phoneError = document.getElementById('phoneError');
+
+            // Provider-specific validation rules
+            const providerValidation = {
+                ethio: {
+                    name: 'Ethio Telecom',
+                    international: /^\+2519\d{8}$/,
+                    local: /^09\d{8}$/,
+                    internationalFormat: '+2519XXXXXXXX',
+                    localFormat: '09XXXXXXXX',
+                    errorMessage: 'Ethio Telecom number must be +2519XXXXXXXX (13 digits) or 09XXXXXXXX (10 digits)'
+                },
+                safaricom: {
+                    name: 'Safaricom Ethiopia',
+                    international: /^\+2517\d{8}$/,
+                    local: /^07\d{8}$/,
+                    internationalFormat: '+2517XXXXXXXX',
+                    localFormat: '07XXXXXXXX',
+                    errorMessage: 'Safaricom Ethiopia number must be +2517XXXXXXXX (13 digits) or 07XXXXXXXX (10 digits)'
+                }
+            };
+
+            // Show provider-specific rules
+            function showProviderRules(provider) {
+                const rules = providerValidation[provider];
+                if (rules) {
+                    providerRules.innerHTML = `
+                        <p><strong>${rules.name}:</strong></p>
+                        <p>International Format: <code>${rules.internationalFormat}</code></p>
+                        <p>Local Format: <code>${rules.localFormat}</code></p>
+                        <p><em>Enter exactly 8 digits after the prefix</em></p>
+                    `;
+                }
+            }
+
+            // Show phone rules
+            function showPhoneRules() {
+                const provider = phoneProvider.value;
+                if (provider) {
+                    showProviderRules(provider);
+                    phoneRules.style.display = 'block';
+                } else {
+                    // Show all provider rules
+                    providerRules.innerHTML = `
+                        <p><strong>Ethio Telecom:</strong></p>
+                        <p>International Format: <code>+2519XXXXXXXX</code></p>
+                        <p>Local Format: <code>09XXXXXXXX</code></p>
+                        <p><strong>Safaricom Ethiopia:</strong></p>
+                        <p>International Format: <code>+2517XXXXXXXX</code></p>
+                        <p>Local Format: <code>07XXXXXXXX</code></p>
+                        <p><em>Enter exactly 8 digits after the prefix</em></p>
+                    `;
+                    phoneRules.style.display = 'block';
+                }
+            }
+
+            // Hide phone rules
+            function hidePhoneRules() {
+                phoneRules.style.display = 'none';
+            }
+
+            // Validate phone number based on provider
+            function validatePhone() {
+                const provider = phoneProvider.value;
+                const number = phoneNumber.value;
+                
+                if (!provider || !number) {
+                    hideError();
+                    return false;
+                }
+
+                const rules = providerValidation[provider];
+                if (!rules) {
+                    hideError();
+                    return false;
+                }
+
+                const cleanNumber = number.replace(/\D/g, '');
+                
+                if (rules.international.test(cleanNumber) || rules.local.test(cleanNumber)) {
+                    showValid();
+                    hideError();
+                    return true;
+                } else {
+                    showInvalid();
+                    showError(rules.errorMessage);
+                    return false;
+                }
+            }
+
+            function showError(message) {
+                phoneError.querySelector('.error-text').textContent = message;
+                phoneError.style.display = 'flex';
+            }
+
+            function hideError() {
+                phoneError.style.display = 'none';
+            }
+
+            function showValid() {
+                phoneNumber.classList.remove('invalid');
+                phoneNumber.classList.add('valid');
+            }
+
+            function showInvalid() {
+                phoneNumber.classList.remove('valid');
+                phoneNumber.classList.add('invalid');
+            }
+
+            // Auto-format phone number
+            function formatPhoneNumber(value) {
+                const cleanValue = value.replace(/\D/g, '');
+                const provider = phoneProvider.value;
+                
+                if (provider === 'ethio') {
+                    if (cleanValue.startsWith('+2519')) {
+                        // International format: +2519XXXXXXXX
+                        if (cleanValue.length <= 4) {
+                            return cleanValue;
+                        } else if (cleanValue.length <= 12) {
+                            return cleanValue;
+                        } else {
+                            return cleanValue.slice(0, 13);
+                        }
+                    } else if (cleanValue.startsWith('09')) {
+                        // Local format: 09XXXXXXXX
+                        if (cleanValue.length <= 2) {
+                            return cleanValue;
+                        } else if (cleanValue.length <= 10) {
+                            return cleanValue;
+                        } else {
+                            return cleanValue.slice(0, 10);
+                        }
+                    }
+                } else if (provider === 'safaricom') {
+                    if (cleanValue.startsWith('+2517')) {
+                        // International format: +2517XXXXXXXX
+                        if (cleanValue.length <= 4) {
+                            return cleanValue;
+                        } else if (cleanValue.length <= 12) {
+                            return cleanValue;
+                        } else {
+                            return cleanValue.slice(0, 13);
+                        }
+                    } else if (cleanValue.startsWith('07')) {
+                        // Local format: 07XXXXXXXX
+                        if (cleanValue.length <= 2) {
+                            return cleanValue;
+                        } else if (cleanValue.length <= 10) {
+                            return cleanValue;
+                        } else {
+                            return cleanValue.slice(0, 10);
+                        }
+                    }
+                }
+                
+                // Allow typing but don't format invalid prefixes
+                return cleanValue;
+            }
+
+            // Event listeners
+            phoneProvider.addEventListener('change', function() {
+                phoneNumber.classList.remove('valid', 'invalid');
+                hideError();
+                if (phoneNumber.value) {
+                    validatePhone();
+                }
+            });
+
+            phoneNumber.addEventListener('input', function() {
+                this.value = formatPhoneNumber(this.value);
+                validatePhone();
+            });
+
+            phoneNumber.addEventListener('blur', validatePhone);
+
+            phoneHelpBtn.addEventListener('click', showPhoneRules);
+
+            // Add validation to form submission
+            const form = document.getElementById('shopForm');
+            form.addEventListener('submit', function(e) {
+                if (!validatePhone()) {
+                    e.preventDefault();
+                    showStatus('Please select a provider and enter a valid phone number', 'error');
+                    phoneProvider.focus();
+                    return;
+                }
+                
+                if (!phoneProvider.value) {
+                    e.preventDefault();
+                    showStatus('Please select a phone provider', 'error');
+                    phoneProvider.focus();
+                }
+            });
+
+            // Make hidePhoneRules globally accessible
+            window.hidePhoneRules = hidePhoneRules;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dilla Electronics - Ethiopian Electronics Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #312e81 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #fbbf24;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .registration-form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: none;
+        }
+
+        .registration-form h3 {
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .registration-form p {
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.5);
+        }
+
+        .form-group select:focus {
+            background-color: magenta;
+            color: white;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.9);
+            color: #fca5a5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .product-table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .product-table th,
+        .product-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .product-table th {
+            background: rgba(59, 130, 246, 0.8);
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🇪🇹 Dilla Electronics</div>
+        <div class="subtitle">Ethiopian Electronics Marketplace Platform</div>
+        
+        <div class="button-group">
+            <a href="shops.html" class="btn btn-primary">
+                <span>×</span> Browse Shops
+            </a>
+            <button class="btn btn-primary" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="toggleProductManagement()">
+                <span>×</span> Product Management
+            </button>
+        </div>
+
+        <!-- Product Management Section -->
+        <div class="registration-form" id="productManagementSection" style="display: none;">
+            <h3>Product Management</h3>
+            <p>Add and manage your products</p>
+            <div class="product-table-container">
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Product</th>
+                            <th>RAM</th>
+                            <th>Storage</th>
+                            <th>Stock</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                        <!-- Products will be added here -->
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-info btn-small" onclick="addProduct()">+ Add Product</button>
+                <button type="button" class="btn btn-secondary btn-small" onclick="viewAllProducts()">View All Products</button>
+            </div>
+        </div>
+
+        <!-- Registration Forms Section -->
+        <div class="registration-sections">
+            <!-- Shop Registration Form -->
+            <div class="registration-form" id="shopRegistrationForm" style="display: none;">
+                <h3>Shop Registration</h3>
+                <p>Register your electronics shop</p>
+                <form id="shopRegForm">
+                    <div class="form-group">
+                        <label for="shopName">Shop Name *</label>
+                        <input type="text" id="shopName" placeholder="Enter shop name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ownerName">Owner Name *</label>
+                        <input type="text" id="ownerName" placeholder="Enter owner name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="shopPhone">Phone Number *</label>
+                        <input type="tel" id="shopPhone" placeholder="+251 9XX XXX XXX" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="shopCity">City *</label>
+                        <select id="shopCity" required onchange="handleCityChange()">
+                            <option value="">Select City</option>
+                            <option value="Addis Ababa">Addis Ababa</option>
+                            <option value="Hawassa">Hawassa</option>
+                            <option value="Bahir Dar">Bahir Dar</option>
+                            <option value="Dire Dawa">Dire Dawa</option>
+                            <option value="Mekelle">Mekelle</option>
+                            <option value="Gondar">Gondar</option>
+                            <option value="Jimma">Jimma</option>
+                            <option value="Adama">Adama</option>
+                            <option value="Other">Other (Specify)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="customCityGroup" style="display: none;">
+                        <label for="customCity">Custom City *</label>
+                        <input type="text" id="customCity" placeholder="Enter your city name">
+                    </div>
+                    <div class="form-group">
+                        <label for="shopAddress">Address *</label>
+                        <input type="text" id="shopAddress" placeholder="Enter shop address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="shopImage">Shop Image *</label>
+                        <input type="file" id="shopImage" accept="image/*" onchange="previewShopImage(event)" required>
+                        <div id="shopImagePreview" style="margin-top: 10px; text-align: center;">
+                            <img id="shopImagePreviewImg" style="max-width: 200px; max-height: 150px; border-radius: 8px; display: none;">
+                        </div>
+                    </div>
+                    
+                    <!-- Comprehensive Product Form Inside Shop Registration -->
+                    <div class="form-group">
+                        <label><strong>+ Add Products to Your Shop</strong></label>
+                        <button type="button" class="btn btn-secondary btn-small" onclick="toggleShopProductForm()">Add Product</button>
+                    </div>
+                    
+                    <div id="shopProductFormSection" style="display: none; margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                        <h4 style="color: white; margin-bottom: 15px;">Add Product Details</h4>
+                        
+                        <div class="form-group">
+                            <label>Product Type</label>
+                            <select id="shopProductType" required onchange="updateProductForm()">
+                                <option value="">Select Product Type</option>
+                                <option value="Computer">Computer</option>
+                                <option value="Phone">Phone</option>
+                                <option value="Tablet">Tablet</option>
+                                <option value="Accessories">Accessories</option>
+                            </select>
+                        </div>
+
+                        <div id="dynamicProductFields">
+                            <!-- Dynamic product fields will be inserted here based on product type -->
+                        </div>
+
+                        <div class="form-actions" style="margin-top: 20px;">
+                            <button type="button" class="btn btn-primary btn-small" onclick="saveShopProduct()">Save Product</button>
+                            <button type="button" class="btn btn-secondary btn-small" onclick="toggleShopProductForm()">Cancel</button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-small">Register Shop</button>
+                    <div class="success-message" id="shopSuccessMessage">
+                        Shop registered successfully!
+                    </div>
+                    <div class="error-message" id="shopErrorMessage">
+                        Please fill in all required fields.
+                    </div>
+                </form>
+            </div>
+
+            <!-- Visitor Registration Form -->
+            <div class="registration-form" id="visitorRegistrationForm" style="display: none;">
+                <h3>Visitor Registration</h3>
+                <p>Register to browse shops</p>
+                <form id="visitorRegForm">
+                    <div class="form-group">
+                        <label for="visitorName">Full Name *</label>
+                        <input type="text" id="visitorName" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="visitorPhone">Phone Number *</label>
+                        <input type="tel" id="visitorPhone" placeholder="+251 9XX XXX XXX" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="visitorCity">City *</label>
+                        <select id="visitorCity" required onchange="handleVisitorCityChange()">
+                            <option value="">Select City</option>
+                            <option value="Addis Ababa">Addis Ababa</option>
+                            <option value="Hawassa">Hawassa</option>
+                            <option value="Bahir Dar">Bahir Dar</option>
+                            <option value="Dire Dawa">Dire Dawa</option>
+                            <option value="Mekelle">Mekelle</option>
+                            <option value="Gondar">Gondar</option>
+                            <option value="Jimma">Jimma</option>
+                            <option value="Adama">Adama</option>
+                            <option value="Other">Other (Specify)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="customVisitorCityGroup" style="display: none;">
+                        <label for="customVisitorCity">Custom City *</label>
+                        <input type="text" id="customVisitorCity" placeholder="Enter your city name">
+                    </div>
+                    <div class="form-group">
+                        <label for="visitorEmail">Email Address</label>
+                        <input type="email" id="visitorEmail" placeholder="visitor@example.com">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-small">Register as Visitor</button>
+                    <div class="success-message" id="visitorSuccessMessage">
+                        Visitor registered successfully!
+                    </div>
+                    <div class="error-message" id="visitorErrorMessage">
+                        Please fill in all required fields.
+                    </div>
+                </form>
+            </div>
+        </div>
+
+            </div>
+
+    <script>
+        // Product Management Variables
+        let shopProducts = [];
+        
+        // Load products from localStorage on page load
+        window.addEventListener('load', function() {
+            const savedProducts = localStorage.getItem('shopProducts');
+            if (savedProducts) {
+                shopProducts = JSON.parse(savedProducts);
+            }
+        });
+        
+        // Toggle Shop Registration Form
+        function toggleShopRegistration() {
+            const shopForm = document.getElementById('shopRegistrationForm');
+            const visitorForm = document.getElementById('visitorRegistrationForm');
+            const productForm = document.getElementById('productManagementSection');
+            
+            // Hide other forms if open
+            visitorForm.style.display = 'none';
+            productForm.style.display = 'none';
+            
+            // Toggle shop form
+            if (shopForm.style.display === 'none' || shopForm.style.display === '') {
+                shopForm.style.display = 'block';
+            } else {
+                shopForm.style.display = 'none';
+            }
+        }
+
+        // Toggle Visitor Registration Form
+        function toggleVisitorRegistration() {
+            const visitorForm = document.getElementById('visitorRegistrationForm');
+            const shopForm = document.getElementById('shopRegistrationForm');
+            const productForm = document.getElementById('productManagementSection');
+            
+            // Hide other forms if open
+            shopForm.style.display = 'none';
+            productForm.style.display = 'none';
+            
+            // Toggle visitor form
+            if (visitorForm.style.display === 'none' || visitorForm.style.display === '') {
+                visitorForm.style.display = 'block';
+            } else {
+                visitorForm.style.display = 'none';
+            }
+        }
+
+        // Update Product Form Based on Type
+        function updateProductForm() {
+            const productType = document.getElementById('shopProductType').value;
+            const dynamicFields = document.getElementById('dynamicProductFields');
+            
+            // Clear existing fields
+            dynamicFields.innerHTML = '';
+            
+            if (productType === 'Phone') {
+                dynamicFields.innerHTML = `
+                    <div class="form-group">
+                        <label>Network</label>
+                        <select id="shopNetwork" required>
+                            <option value="">Select Network</option>
+                            <option value="4G">4G</option>
+                            <option value="5G">5G</option>
+                            <option value="WiFi">WiFi</option>
+                            <option value="Bluetooth">Bluetooth</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Color</label>
+                        <input type="text" id="shopColor" placeholder="e.g., Black">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fingerprint</label>
+                        <select id="shopFingerprint">
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Product Name *</label>
+                        <input type="text" id="shopProductName" placeholder="e.g., Samsung A05" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Brand *</label>
+                        <input type="text" id="shopProductBrand" placeholder="e.g., Samsung" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Model *</label>
+                        <input type="text" id="shopProductModel" placeholder="e.g., A057F" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>RAM (GB) *</label>
+                        <select id="shopProductRAM" required>
+                            <option value="">Select RAM</option>
+                            <option value="4GB">4GB</option>
+                            <option value="8GB">8GB</option>
+                            <option value="16GB">16GB</option>
+                            <option value="32GB">32GB</option>
+                            <option value="64GB">64GB</option>
+                            <option value="128GB">128GB</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Storage (GB) *</label>
+                        <select id="shopStorageSize" required>
+                            <option value="">Select Storage</option>
+                            <option value="64GB">64GB</option>
+                            <option value="128GB">128GB</option>
+                            <option value="256GB">256GB</option>
+                            <option value="512GB">512GB</option>
+                            <option value="1TB">1TB</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price (ETB) *</label>
+                        <input type="number" id="shopProductPrice" placeholder="e.g., 38000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Stock Quantity *</label>
+                        <input type="number" id="shopStockQuantity" placeholder="e.g., 5" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Warranty</label>
+                        <input type="text" id="shopWarranty" placeholder="e.g., 1 Year">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="shopProductNotes" placeholder="e.g., Original charger included" rows="2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="shopProductDescription" placeholder="Describe the product..." rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Front Image *</label>
+                        <input type="file" id="shopFrontImage" accept="image/*" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Back Image *</label>
+                        <input type="file" id="shopBackImage" accept="image/*" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Product Video (Optional)</label>
+                        <input type="file" id="shopProductVideo" accept="video/*">
+                    </div>
+                `;
+            } else if (productType === 'Accessories') {
+                dynamicFields.innerHTML = `
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="shopCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="Headphones">Headphones</option>
+                            <option value="Mouse">Mouse</option>
+                            <option value="Keyboard">Keyboard</option>
+                            <option value="Charger">Charger</option>
+                            <option value="Cable">Cable</option>
+                            <option value="Case">Phone Case</option>
+                            <option value="Speaker">Speaker</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Compatibility</label>
+                        <select id="shopCompatibility" required>
+                            <option value="">Select Compatibility</option>
+                            <option value="Universal">Universal</option>
+                            <option value="USB-C">USB-C</option>
+                            <option value="USB-A">USB-A</option>
+                            <option value="Lightning">Lightning</option>
+                            <option value="Laptop">Laptop</option>
+                            <option value="Phone">Phone</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Product Name *</label>
+                        <input type="text" id="shopProductName" placeholder="e.g., Wireless Mouse" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Brand *</label>
+                        <input type="text" id="shopProductBrand" placeholder="e.g., Logitech" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Model *</label>
+                        <input type="text" id="shopProductModel" placeholder="e.g., M185" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price (ETB) *</label>
+                        <input type="number" id="shopProductPrice" placeholder="e.g., 38000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Stock Quantity *</label>
+                        <input type="number" id="shopStockQuantity" placeholder="e.g., 5" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Warranty</label>
+                        <input type="text" id="shopWarranty" placeholder="e.g., 1 Year">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="shopProductNotes" placeholder="e.g., Original charger included" rows="2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="shopProductDescription" placeholder="Describe the product..." rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Front Image *</label>
+                        <input type="file" id="shopFrontImage" accept="image/*" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Back Image *</label>
+                        <input type="file" id="shopBackImage" accept="image/*" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Product Video (Optional)</label>
+                        <input type="file" id="shopProductVideo" accept="video/*">
+                    </div>
+                `;
+            } else if (productType === 'Computer' || productType === 'Laptop') {
+                dynamicFields.innerHTML = `
+                    <div class="form-group">
+                        <label>Generation</label>
+                        <input type="text" id="shopProductGeneration" placeholder="e.g., 12th Gen">
+                    </div>
+
+                    <div class="form-group">
+                        <label>RAM (GB) *</label>
+                        <select id="shopProductRAM" required>
+                            <option value="">Select RAM</option>
+                            <option value="4GB">4GB</option>
+                            <option value="8GB">8GB</option>
+                            <option value="16GB">16GB</option>
+                            <option value="32GB">32GB</option>
+                            <option value="64GB">64GB</option>
+                            <option value="128GB">128GB</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Storage Type *</label>
+                        <select id="shopStorageType" required>
+                            <option value="">Select Storage Type</option>
+                            <option value="SSD">SSD</option>
+                            <option value="HDD">HDD</option>
+                            <option value="NVMe">NVMe</option>
+                            <option value="eMMC">eMMC</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Storage Size (GB) *</label>
+                        <select id="shopStorageSize" required>
+                            <option value="">Select Storage Size</option>
+                            <option value="128GB">128GB</option>
+                            <option value="256GB">256GB</option>
+                            <option value="512GB">512GB</option>
+                            <option value="1TB">1TB</option>
+                            <option value="2TB">2TB</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Battery Life</label>
+                        <input type="text" id="shopBatteryLife" placeholder="e.g., 5-7 hours">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Operating System</label>
+                        <input type="text" id="shopOperatingSystem" placeholder="e.g., Windows 11">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <select id="shopProductCondition">
+                            <option value="">Select Condition</option>
+                            <option value="New">New</option>
+                            <option value="Like New">Like New</option>
+                            <option value="Good">Good</option>
+                            <option value="Fair">Fair</option>
+                            <option value="Used">Used</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Screen Size (inch)</label>
+                        <input type="text" id="shopScreenSize" placeholder="e.g., 15.6">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Resolution</label>
+                        <input type="text" id="shopResolution" placeholder="e.g., Full HD">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Refresh Rate (Hz)</label>
+                        <input type="text" id="shopRefreshRate" placeholder="e.g., 60Hz">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price (ETB) *</label>
+                        <input type="number" id="shopProductPrice" placeholder="e.g., 38000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Stock Quantity *</label>
+                        <input type="number" id="shopStockQuantity" placeholder="e.g., 5" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Warranty</label>
+                        <input type="text" id="shopWarranty" placeholder="e.g., 1 Year">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="shopProductNotes" placeholder="e.g., Original charger included" rows="2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="shopProductDescription" placeholder="Describe the product..." rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Front Image *</label>
+                        <input type="file" id="shopFrontImage" accept="image/*" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Back Image *</label>
+                        <input type="file" id="shopBackImage" accept="image/*" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Product Video (Optional)</label>
+                        <input type="file" id="shopProductVideo" accept="video/*">
+                    </div>
+                `;
+            } else {
+                // Default form for other types (Tablet)
+                dynamicFields.innerHTML = `
+                    <div class="form-group">
+                        <label>Product Name *</label>
+                        <input type="text" id="shopProductName" placeholder="e.g., Dell Inspiron 15" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Brand *</label>
+                        <input type="text" id="shopProductBrand" placeholder="e.g., Dell" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Model *</label>
+                        <input type="text" id="shopProductModel" placeholder="e.g., 3520" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>RAM (GB) *</label>
+                        <select id="shopProductRAM" required>
+                            <option value="">Select RAM</option>
+                            <option value="4GB">4GB</option>
+                            <option value="8GB">8GB</option>
+                            <option value="16GB">16GB</option>
+                            <option value="32GB">32GB</option>
+                            <option value="64GB">64GB</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Storage Type *</label>
+                        <select id="shopStorageType" required>
+                            <option value="">Select Storage Type</option>
+                            <option value="SSD">SSD</option>
+                            <option value="HDD">HDD</option>
+                            <option value="NVMe">NVMe</option>
+                            <option value="eMMC">eMMC</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Storage Size (GB) *</label>
+                        <select id="shopStorageSize" required>
+                            <option value="">Select Storage Size</option>
+                            <option value="128GB">128GB</option>
+                            <option value="256GB">256GB</option>
+                            <option value="512GB">512GB</option>
+                            <option value="1TB">1TB</option>
+                            <option value="2TB">2TB</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Battery Life</label>
+                        <input type="text" id="shopBatteryLife" placeholder="e.g., 5-7 hours">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Operating System</label>
+                        <input type="text" id="shopOperatingSystem" placeholder="e.g., Windows 11">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <select id="shopProductCondition">
+                            <option value="">Select Condition</option>
+                            <option value="New">New</option>
+                            <option value="Like New">Like New</option>
+                            <option value="Good">Good</option>
+                            <option value="Fair">Fair</option>
+                            <option value="Used">Used</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Screen Size (inch)</label>
+                        <input type="text" id="shopScreenSize" placeholder="e.g., 15.6">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Resolution</label>
+                        <input type="text" id="shopResolution" placeholder="e.g., Full HD">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Refresh Rate (Hz)</label>
+                        <input type="text" id="shopRefreshRate" placeholder="e.g., 60Hz">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price (ETB) *</label>
+                        <input type="number" id="shopProductPrice" placeholder="e.g., 38000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Stock Quantity *</label>
+                        <input type="number" id="shopStockQuantity" placeholder="e.g., 5" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Warranty</label>
+                        <input type="text" id="shopWarranty" placeholder="e.g., 1 Year">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="shopProductNotes" placeholder="e.g., Original charger included" rows="2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="shopProductDescription" placeholder="Describe the product..." rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Front Image *</label>
+                        <input type="file" id="shopFrontImage" accept="image/*" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Back Image *</label>
+                        <input type="file" id="shopBackImage" accept="image/*" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Product Video (Optional)</label>
+                        <input type="file" id="shopProductVideo" accept="video/*">
+                    </div>
+                `;
+            }
+        }
+
+        // Toggle Shop Product Form
+        function toggleShopProductForm() {
+            const formSection = document.getElementById('shopProductFormSection');
+            formSection.style.display = formSection.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Save Shop Product
+        async function saveShopProduct() {
+            const productType = document.getElementById('shopProductType').value;
+            const productData = {
+                id: Date.now().toString(),
+                productType: productType,
+                name: document.getElementById('shopProductName').value,
+                brand: document.getElementById('shopProductBrand').value,
+                model: document.getElementById('shopProductModel').value,
+                addedAt: new Date().toISOString(),
+                source: 'shop',
+                orderIndex: shopProducts.length // Track order for chronological display
+            };
+            
+            // Add type-specific fields
+            if (productType === 'Phone') {
+                productData.network = document.getElementById('shopNetwork')?.value;
+                productData.color = document.getElementById('shopColor')?.value;
+                productData.fingerprint = document.getElementById('shopFingerprint')?.value;
+                productData.ram = document.getElementById('shopProductRAM')?.value;
+                productData.storageSize = document.getElementById('shopStorageSize')?.value;
+            } else if (productType === 'Accessories') {
+                productData.category = document.getElementById('shopCategory')?.value;
+                productData.compatibility = document.getElementById('shopCompatibility')?.value;
+            } else if (productType === 'Computer' || productType === 'Laptop') {
+                productData.generation = document.getElementById('shopProductGeneration')?.value;
+                productData.ram = document.getElementById('shopProductRAM')?.value;
+                productData.storageType = document.getElementById('shopStorageType')?.value;
+                productData.storageSize = document.getElementById('shopStorageSize')?.value;
+                productData.batteryLife = document.getElementById('shopBatteryLife')?.value;
+                productData.operatingSystem = document.getElementById('shopOperatingSystem')?.value;
+                productData.condition = document.getElementById('shopProductCondition')?.value;
+                productData.screenSize = document.getElementById('shopScreenSize')?.value;
+                productData.resolution = document.getElementById('shopResolution')?.value;
+                productData.refreshRate = document.getElementById('shopRefreshRate')?.value;
+            } else {
+                // Default fields for other types (Tablet)
+                productData.ram = document.getElementById('shopProductRAM')?.value;
+                productData.storageType = document.getElementById('shopStorageType')?.value;
+                productData.storageSize = document.getElementById('shopStorageSize')?.value;
+                productData.condition = document.getElementById('shopProductCondition')?.value;
+                productData.screenSize = document.getElementById('shopScreenSize')?.value;
+                productData.resolution = document.getElementById('shopResolution')?.value;
+                productData.refreshRate = document.getElementById('shopRefreshRate')?.value;
+            }
+            
+            // Common fields for all types
+            productData.price = document.getElementById('shopProductPrice')?.value;
+            productData.stock = document.getElementById('shopStockQuantity')?.value;
+            productData.warranty = document.getElementById('shopWarranty')?.value;
+            productData.notes = document.getElementById('shopProductNotes')?.value;
+            productData.description = document.getElementById('shopProductDescription')?.value;
+            
+            // Validate required fields
+            const phoneFields = ['network', 'color', 'fingerprint'];
+            const accessoryFields = ['category', 'compatibility'];
+            const computerFields = ['generation', 'batteryLife', 'operatingSystem', 'screenSize', 'resolution', 'refreshRate'];
+            const commonFields = ['productType', 'name', 'brand', 'model', 'ram', 'storageSize', 'price', 'stock'];
+            
+            let missingFields = [];
+            
+            // Check common required fields
+            commonFields.forEach(field => {
+                if (!productData[field]) {
+                    missingFields.push(field);
+                }
+            });
+            
+            // Check type-specific required fields
+            if (productType === 'Phone') {
+                phoneFields.forEach(field => {
+                    if (!productData[field]) {
+                        missingFields.push(field);
+                    }
+                });
+            } else if (productType === 'Accessories') {
+                accessoryFields.forEach(field => {
+                    if (!productData[field]) {
+                        missingFields.push(field);
+                    }
+                });
+            } else if (productType === 'Computer' || productType === 'Laptop') {
+                computerFields.forEach(field => {
+                    if (!productData[field]) {
+                        missingFields.push(field);
+                    }
+                });
+            }
+            
+            if (missingFields.length > 0) {
+                alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
+                return;
+            }
+            
+            // Convert images and video to base64
+            const frontImageFile = document.getElementById('shopFrontImage').files[0];
+            const backImageFile = document.getElementById('shopBackImage').files[0];
+            const videoFile = document.getElementById('shopProductVideo').files[0];
+            
+            if (frontImageFile) {
+                productData.frontImage = await fileToBase64(frontImageFile);
+            }
+            if (backImageFile) {
+                productData.backImage = await fileToBase64(backImageFile);
+            }
+            if (videoFile) {
+                productData.video = await fileToBase64(videoFile);
+            }
+            
+            // Add to products array
+            shopProducts.push(productData);
+            
+            // Save to localStorage
+            localStorage.setItem('shopProducts', JSON.stringify(shopProducts));
+            
+            // Reset form and hide
+            document.getElementById('shopProductFormSection').querySelector('form')?.reset();
+            toggleShopProductForm();
+            
+            // Show success message
+            alert('Product added successfully to your shop!');
+        }
+
+        // File to Base64 converter
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Shop Registration Form Handler
+        document.getElementById('shopRegForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const successMessage = document.getElementById('shopSuccessMessage');
+            const errorMessage = document.getElementById('shopErrorMessage');
+            
+            // Hide messages
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // Get form data
+            const shopData = {
+                id: Date.now().toString(),
+                shopName: document.getElementById('shopName').value,
+                ownerName: document.getElementById('ownerName').value,
+                phone: document.getElementById('shopPhone').value,
+                city: document.getElementById('shopCity').value,
+                address: document.getElementById('shopAddress').value,
+                registeredAt: new Date().toISOString(),
+                type: 'shop',
+                status: 'pending',
+                products: shopProducts || []
+            };
+            
+            // Validate required fields
+            if (!shopData.shopName || !shopData.ownerName || !shopData.phone || !shopData.city || !shopData.address) {
+                errorMessage.textContent = 'Please fill in all required fields.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Save to localStorage
+            const existingShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            existingShops.push(shopData);
+            localStorage.setItem('registeredShops', JSON.stringify(existingShops));
+            
+            // Show success message
+            successMessage.textContent = `Shop "${shopData.shopName}" registered successfully!`;
+            successMessage.style.display = 'block';
+            
+            // Reset form
+            this.reset();
+            
+            // Hide form after successful registration
+            setTimeout(() => {
+                document.getElementById('shopRegistrationForm').style.display = 'none';
+                successMessage.style.display = 'none';
+            }, 3000);
+        });
+
+        // Visitor Registration Form Handler
+        document.getElementById('visitorRegForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const successMessage = document.getElementById('visitorSuccessMessage');
+            const errorMessage = document.getElementById('visitorErrorMessage');
+            
+            // Hide messages
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // Get form data
+            const visitorData = {
+                id: Date.now().toString(),
+                fullName: document.getElementById('visitorName').value,
+                phone: document.getElementById('visitorPhone').value,
+                city: document.getElementById('visitorCity').value,
+                email: document.getElementById('visitorEmail').value,
+                registeredAt: new Date().toISOString(),
+                type: 'visitor'
+            };
+            
+            // Validate required fields
+            if (!visitorData.fullName || !visitorData.phone || !visitorData.city) {
+                errorMessage.textContent = 'Please fill in all required fields.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Save to localStorage
+            const existingVisitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+            existingVisitors.push(visitorData);
+            localStorage.setItem('registeredVisitors', JSON.stringify(existingVisitors));
+            
+            // Show success message
+            successMessage.textContent = `Visitor "${visitorData.fullName}" registered successfully!`;
+            successMessage.style.display = 'block';
+            
+            // Reset form
+            this.reset();
+            
+            // Hide form after successful registration
+            setTimeout(() => {
+                document.getElementById('visitorRegistrationForm').style.display = 'none';
+                successMessage.style.display = 'none';
+            }, 3000);
+        });
+
+        // Handle City Change
+        function handleCityChange() {
+            const citySelect = document.getElementById('shopCity');
+            const customCityGroup = document.getElementById('customCityGroup');
+            const customCityInput = document.getElementById('customCity');
+            
+            if (citySelect.value === 'Other') {
+                customCityGroup.style.display = 'block';
+                customCityInput.required = true;
+            } else {
+                customCityGroup.style.display = 'none';
+                customCityInput.required = false;
+            }
+        }
+
+        // Handle Visitor City Change
+        function handleVisitorCityChange() {
+            const citySelect = document.getElementById('visitorCity');
+            const customCityGroup = document.getElementById('customVisitorCityGroup');
+            const customCityInput = document.getElementById('customVisitorCity');
+            
+            if (citySelect.value === 'Other') {
+                customCityGroup.style.display = 'block';
+                customCityInput.required = true;
+            } else {
+                customCityGroup.style.display = 'none';
+                customCityInput.required = false;
+            }
+        }
+
+                
+        // Toggle Product Management Form
+        function toggleProductManagement() {
+            const section = document.getElementById('productManagementSection');
+            const shopForm = document.getElementById('shopRegistrationForm');
+            const visitorForm = document.getElementById('visitorRegistrationForm');
+            
+            // Hide other forms if open
+            shopForm.style.display = 'none';
+            visitorForm.style.display = 'none';
+            
+            // Toggle product form
+            if (section.style.display === 'none' || section.style.display === '') {
+                section.style.display = 'block';
+            } else {
+                section.style.display = 'none';
+            }
+        }
+
+        // Add Product
+        function addProduct() {
+            currentEditingIndex = -1;
+            alert('Product form would open here with all fields');
+        }
+
+        // View All Products
+        function viewAllProducts() {
+            if (shopProducts.length === 0) {
+                alert('No products added yet!');
+            } else {
+                // Sort products by orderIndex (chronological - newest first)
+                const sortedProducts = [...shopProducts].sort((a, b) => b.orderIndex - a.orderIndex);
+                
+                let productList = 'All Products (Newest First):\n\n';
+                sortedProducts.forEach((product, index) => {
+                    productList += `${index + 1}. ${product.name}\n`;
+                    productList += `   Type: ${product.productType}\n`;
+                    productList += `   Brand: ${product.brand}\n`;
+                    productList += `   Model: ${product.model}\n`;
+                    productList += `   Price: ${product.price || 'N/A'} ETB\n`;
+                    productList += `   Stock: ${product.stock || 'N/A'} units\n`;
+                    productList += `   Added: ${new Date(product.addedAt).toLocaleString()}\n`;
+                    
+                    // Show image indicators
+                    if (product.frontImage) {
+                        productList += `   📸 Front Image: Available\n`;
+                    }
+                    if (product.backImage) {
+                        productList += `   📸 Back Image: Available\n`;
+                    }
+                    if (product.video) {
+                        productList += `   🎥 Video: Available\n`;
+                    }
+                    
+                    // Add type-specific details
+                    if (product.ProductType === 'Phone') {
+                        productList += `   Network: ${product.network || 'N/A'}\n`;
+                        productList += `   Color: ${product.color || 'N/A'}\n`;
+                        productList += `   Fingerprint: ${product.fingerprint || 'N/A'}\n`;
+                    } else if (product.ProductType === 'Accessories') {
+                        productList += `   Category: ${product.category || 'N/A'}\n`;
+                        productList += `   Compatibility: ${product.compatibility || 'N/A'}\n`;
+                    } else if (product.ProductType === 'Computer') {
+                        productList += `   Generation: ${product.generation || 'N/A'}\n`;
+                        productList += `   RAM: ${product.ram || 'N/A'}\n`;
+                        productList += `   Storage: ${product.storageSize || 'N/A'} ${product.storageType || ''}\n`;
+                        productList += `   Battery: ${product.batteryLife || 'N/A'}\n`;
+                        productList += `   OS: ${product.operatingSystem || 'N/A'}\n`;
+                        productList += `   Screen: ${product.screenSize || 'N/A'}\n`;
+                        productList += `   Resolution: ${product.resolution || 'N/A'}\n`;
+                        productList += `   Refresh: ${product.refreshRate || 'N/A'}\n`;
+                    }
+                    
+                    productList += `   Warranty: ${product.warranty || 'N/A'}\n`;
+                    productList += `   Notes: ${product.notes || 'N/A'}\n`;
+                    productList += `   Description: ${product.description || 'N/A'}\n`;
+                    productList += '\n' + '='.repeat(50) + '\n\n';
+                });
+                
+                // Create a modal-like display instead of alert
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0, 0, 0, 0.9);
+                    color: white;
+                    padding: 30px;
+                    border-radius: 15px;
+                    z-index: 10000;
+                    max-width: 600px;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                    border: 2px solid #3b82f6;
+                `;
+                
+                modal.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="margin: 0; color: #3b82f6;">All Products (${sortedProducts.length})</h3>
+                        <button onclick="this.parentElement.parentElement.remove()" style="background: #ef4444; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">✕ Close</button>
+                    </div>
+                    <div style="white-space: pre-line; font-family: monospace; font-size: 12px; line-height: 1.4;">${productList}</div>
+                `;
+                
+                document.body.appendChild(modal);
+            }
+        }
+
+        // Track page visits
+        localStorage.setItem('mainPageVisits', (parseInt(localStorage.getItem('mainPageVisits') || '0') + 1).toString());
+        
+        // Set platform info
+        if (!localStorage.getItem('platformInitialized')) {
+            localStorage.setItem('platformInitialized', 'true');
+            localStorage.setItem('platformVersion', '1.0.0');
+            localStorage.setItem('lastVisit', new Date().toISOString());
+        }
+    </script>
+</body>
+</html>

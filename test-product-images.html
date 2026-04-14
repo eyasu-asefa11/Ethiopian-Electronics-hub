@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Product Image Fix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+        .test-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .product-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        .product-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .product-price {
+            color: #007bff;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ Test Product Image Fix</h1>
+        
+        <div class="success">
+            <strong>✅ Fixed:</strong> Product images now display correctly for both you and customers!
+        </div>
+        
+        <div class="info">
+            <strong>🔧 What was fixed:</strong>
+            <ul>
+                <li>Image format compatibility - Added <code>images</code> array support</li>
+                <li>Error handling - Multiple fallback image sources</li>
+                <li>Display consistency - All components now use same image logic</li>
+                <li>Debug logging - Better error tracking in console</li>
+            </ul>
+        </div>
+        
+        <div class="test-section">
+            <h3>🧪 Test Your Product Images</h3>
+            <p>Click the buttons below to test if your product images display correctly:</p>
+            
+            <button class="btn" onclick="checkCurrentProducts()">📋 Check Current Products</button>
+            <button class="btn btn-success" onclick="createTestProduct()">⚡ Create Test Product</button>
+            <button class="btn" onclick="clearTestProducts()">🗑️ Clear Test Products</button>
+            <button class="btn" onclick="goToAddProduct()">➕ Add New Product</button>
+        </div>
+        
+        <div id="result"></div>
+        <div id="productPreview" class="product-preview"></div>
+    </div>
+
+    <script>
+        function checkCurrentProducts() {
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const currentShop = JSON.parse(localStorage.getItem('currentShop') || '{}');
+            
+            console.log('Checking current products...');
+            console.log('Shops:', shops);
+            console.log('Current shop:', currentShop);
+            
+            let allProducts = [];
+            
+            shops.forEach(shop => {
+                if (shop.products && shop.products.length > 0) {
+                    shop.products.forEach(product => {
+                        allProducts.push({
+                            ...product,
+                            shopName: shop.shopName || shop.electronicsHouseName
+                        });
+                    });
+                }
+            });
+            
+            if (allProducts.length === 0) {
+                document.getElementById('result').innerHTML = 
+                    '<div class="info">ℹ️ No products found. You need to add products first.</div>';
+                document.getElementById('productPreview').innerHTML = '';
+            } else {
+                displayProducts(allProducts);
+                document.getElementById('result').innerHTML = 
+                    `<div class="success">✅ Found ${allProducts.length} product(s). Check below for image display.</div>`;
+            }
+        }
+        
+        function createTestProduct() {
+            const currentShop = JSON.parse(localStorage.getItem('currentShop') || '{}');
+            
+            if (!currentShop.id) {
+                document.getElementById('result').innerHTML = 
+                    '<div class="info">ℹ️ No current shop found. Please register a shop first.</div>';
+                return;
+            }
+            
+            // Create test product with multiple image formats
+            const testProduct = {
+                id: 'test-product-' + Date.now(),
+                name: 'Test Product ' + Date.now().toString().slice(-4),
+                brand: 'TestBrand',
+                price: 9999,
+                category: 'Electronics',
+                description: 'This is a test product to verify image display',
+                status: 'In Stock',
+                shop_id: currentShop.id,
+                shopName: currentShop.shopName || currentShop.electronicsHouseName,
+                // Multiple image formats for testing
+                images: [
+                    'https://picsum.photos/seed/test1/300/200.jpg',
+                    'https://picsum.photos/seed/test2/300/200.jpg'
+                ],
+                image: 'https://picsum.photos/seed/main/300/200.jpg',
+                frontImage: 'https://picsum.photos/seed/front/300/200.jpg',
+                backImage: 'https://picsum.photos/seed/back/300/200.jpg',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Add to current shop
+            let shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const shopIndex = shops.findIndex(shop => shop.id === currentShop.id);
+            
+            if (shopIndex !== -1) {
+                if (!shops[shopIndex].products) {
+                    shops[shopIndex].products = [];
+                }
+                
+                shops[shopIndex].products.push(testProduct);
+                localStorage.setItem('registeredShops', JSON.stringify(shops));
+                localStorage.setItem('currentShop', JSON.stringify(shops[shopIndex]));
+                
+                document.getElementById('result').innerHTML = 
+                    '<div class="success">✅ Test product created! Check image display below.</div>';
+                
+                displayProducts([testProduct]);
+            } else {
+                document.getElementById('result').innerHTML = 
+                    '<div class="info">ℹ️ Current shop not found in registered shops.</div>';
+            }
+        }
+        
+        function clearTestProducts() {
+            let shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            
+            shops.forEach(shop => {
+                if (shop.products) {
+                    // Remove test products (products with "test" in name or id)
+                    shop.products = shop.products.filter(product => 
+                        !product.name.toLowerCase().includes('test') && 
+                        !product.id.toLowerCase().includes('test')
+                    );
+                }
+            });
+            
+            localStorage.setItem('registeredShops', JSON.stringify(shops));
+            
+            document.getElementById('result').innerHTML = 
+                '<div class="success">✅ Test products cleared!</div>';
+            document.getElementById('productPreview').innerHTML = '';
+        }
+        
+        function displayProducts(products) {
+            const preview = document.getElementById('productPreview');
+            
+            preview.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <h4>${product.name}</h4>
+                    <img 
+                        src="${product.images?.[0] || product.image || '/placeholder-product.jpg'}" 
+                        alt="${product.name}"
+                        onerror="this.src='/placeholder-product.jpg'"
+                    />
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-price">ETB ${product.price?.toLocaleString()}</div>
+                    <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                        Shop: ${product.shopName || 'Unknown'}
+                    </div>
+                    <div style="font-size: 10px; color: #999; margin-top: 5px;">
+                        Images: ${product.images?.length || 0} in array, 
+                        ${product.image ? 'main' : 'no main'}, 
+                        ${product.frontImage ? 'front' : 'no front'}, 
+                        ${product.backImage ? 'back' : 'no back'}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function goToAddProduct() {
+            window.location.href = 'http://localhost:3000/add-product';
+        }
+        
+        // Auto-check on page load
+        window.onload = function() {
+            checkCurrentProducts();
+        };
+    </script>
+</body>
+</html>

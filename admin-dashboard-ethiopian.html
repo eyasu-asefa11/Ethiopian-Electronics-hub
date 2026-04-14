@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Dilla Electronics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #312e81 100%);
+            min-height: 100vh;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(236, 72, 153, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 70px);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .sidebar-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-item.active {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: #fbbf24;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* Login Container */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-form {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .login-form h2 {
+            color: #1e3a8a;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #fbbf24;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #1e3a8a, #581c87);
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 58, 138, 0.4);
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            display: none;
+        }
+
+        .dashboard-content.active {
+            display: block;
+        }
+
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 2rem;
+            color: #fbbf24;
+        }
+
+        /* Statistics Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #fbbf24;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #fbbf24;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            margin-top: 0.5rem;
+        }
+
+        .search-result-item {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: #333;
+        }
+
+        .search-result-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Data Tables */
+        .data-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 1rem;
+            color: #fbbf24;
+        }
+
+        .data-table {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .data-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #1e3a8a, #581c87);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e1e1e1;
+            color: #333;
+        }
+
+        .data-table tr:hover {
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-pending {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .btn-approve {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #059669;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-table {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Container -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-form">
+            <h2>🇪🇹 Admin Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" name="phone" value="+251912345678" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" value="admin123" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+                <div id="loginError" style="color: red; margin-top: 1rem; text-align: center; display: none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-content" id="dashboardContent">
+        <header class="header">
+            <div class="logo">
+                🇪🇹 Dilla Electronics Admin
+            </div>
+            <div class="user-info">
+                <span id="adminPhone">+251912345678</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <div class="main-container">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-item active" onclick="showPage('overview')">
+                    📊 Overview
+                </div>
+                <div class="sidebar-item" onclick="showPage('shops')">
+                    🏪 Shops
+                </div>
+                <div class="sidebar-item" onclick="showPage('visitors')">
+                    👥 Visitors
+                </div>
+                <div class="sidebar-item" onclick="showPage('search')">
+                    🔍 Search
+                </div>
+                <div class="sidebar-item" onclick="showPage('export')">
+                    📤 Export
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="content">
+                <!-- Overview Page -->
+                <div id="overviewPage" class="page-content">
+                    <h1 class="page-title">Dashboard Overview</h1>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalShops">0</div>
+                            <div class="stat-label">Total Shops</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="activeUsers">0</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="todayViews">0</div>
+                            <div class="stat-label">Today's Views</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="pendingApprovals">0</div>
+                            <div class="stat-label">Pending Approvals</div>
+                        </div>
+                    </div>
+
+                    <div class="data-section">
+                        <h2 class="section-title">Recent Activity</h2>
+                        <div class="data-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Activity</th>
+                                        <th>User</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="activityTable">
+                                    <tr>
+                                        <td colspan="3" class="no-data">No recent activity</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shops Page -->
+                <div id="shopsPage" class="page-content" style="display: none;">
+                    <h1 class="page-title">Shop Management</h1>
+                    
+                    <div class="data-section">
+                        <h2 class="section-title">Registered Shops</h2>
+                        <div class="data-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Shop Name</th>
+                                        <th>Owner</th>
+                                        <th>City</th>
+                                        <th>Phone</th>
+                                        <th>Status</th>
+                                        <th>Products</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="shopsTable">
+                                    <tr>
+                                        <td colspan="7" class="no-data">Loading shops...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visitors Page -->
+                <div id="visitorsPage" class="page-content" style="display: none;">
+                    <h1 class="page-title">Visitor Management</h1>
+                    
+                    <div class="data-section">
+                        <h2 class="section-title">Registered Visitors</h2>
+                        <div class="data-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>City</th>
+                                        <th>Gender</th>
+                                        <th>Registered</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="visitorsTable">
+                                    <tr>
+                                        <td colspan="6" class="no-data">Loading visitors...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Page -->
+                <div id="searchPage" class="page-content" style="display: none;">
+                    <h1 class="page-title">Search</h1>
+                    
+                    <div class="search-section" style="position: relative;">
+                        <input type="search" id="mainSearch" class="search-input" placeholder="Search shops, products, owners...">
+                        <div class="search-results" id="searchResults"></div>
+                    </div>
+                </div>
+
+                <!-- Export Page -->
+                <div id="exportPage" class="page-content" style="display: none;">
+                    <h1 class="page-title">Export Data</h1>
+                    
+                    <div class="data-section">
+                        <h2 class="section-title">Export Options</h2>
+                        <button class="btn-export" onclick="exportShops()">Export Shops to Excel</button>
+                        <button class="btn-export" onclick="exportVisitors()">Export Visitors to Excel</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const sampleShops = [
+            {
+                shopName: "Samsung Store",
+                ownerName: "John Doe",
+                phone: "+251911234567",
+                city: "Addis Ababa",
+                status: "active",
+                products: ["Samsung Galaxy S21", "Samsung Galaxy Tab", "Samsung Watch"],
+                registeredAt: new Date().toISOString()
+            },
+            {
+                shopName: "iPhone Center",
+                ownerName: "Jane Smith",
+                phone: "+251922345678",
+                city: "Dire Dawa",
+                status: "pending",
+                products: ["iPhone 13", "iPhone 14", "iPhone 15"],
+                registeredAt: new Date().toISOString()
+            },
+            {
+                shopName: "Tech World",
+                ownerName: "Ahmed Ali",
+                phone: "+251933456789",
+                city: "Hawassa",
+                status: "active",
+                products: ["Laptops", "Tablets", "Accessories"],
+                registeredAt: new Date().toISOString()
+            }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            initializeSearch();
+        });
+
+        // Check login status
+        function checkLoginStatus() {
+            const isLoggedIn = sessionStorage.getItem('adminLoggedIn') === 'true';
+            if (isLoggedIn) {
+                showDashboard();
+            } else {
+                showLogin();
+            }
+        }
+
+        // Show login form
+        function showLogin() {
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('dashboardContent').classList.remove('active');
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('dashboardContent').classList.add('active');
+            loadDashboard();
+        }
+
+        // Handle login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+
+            if (phone === '+251912345678' && password === 'admin123') {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                sessionStorage.setItem('adminPhone', phone);
+                showDashboard();
+                document.getElementById('loginError').style.display = 'none';
+            } else {
+                document.getElementById('loginError').textContent = 'Invalid credentials!';
+                document.getElementById('loginError').style.display = 'block';
+            }
+        });
+
+        // Logout
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            sessionStorage.removeItem('adminPhone');
+            showLogin();
+        }
+
+        // Show page
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // Remove active class from all sidebar items
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageName + 'Page').style.display = 'block';
+            
+            // Add active class to clicked sidebar item
+            event.target.classList.add('active');
+        }
+
+        // Load dashboard
+        function loadDashboard() {
+            updateStats();
+            loadShops();
+            loadVisitors();
+            loadActivity();
+        }
+
+        // Update statistics
+        function updateStats() {
+            const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const registeredVisitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+            const shops = registeredShops.length > 0 ? registeredShops : sampleShops;
+            
+            document.getElementById('totalShops').textContent = shops.length;
+            document.getElementById('activeUsers').textContent = registeredVisitors.length;
+            document.getElementById('todayViews').textContent = parseInt(localStorage.getItem('mainPageVisits') || '0');
+            document.getElementById('pendingApprovals').textContent = shops.filter(s => (s.status || 'pending') === 'pending').length;
+        }
+
+        // Load shops
+        function loadShops() {
+            const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const shops = registeredShops.length > 0 ? registeredShops : sampleShops;
+            
+            const shopsTable = document.getElementById('shopsTable');
+            
+            if (shops.length === 0) {
+                shopsTable.innerHTML = '<tr><td colspan="7" class="no-data">No shops found</td></tr>';
+                return;
+            }
+
+            shopsTable.innerHTML = shops.map(shop => `
+                <tr>
+                    <td>${shop.shopName || shop.name}</td>
+                    <td>${shop.ownerName || shop.owner}</td>
+                    <td>${shop.city}</td>
+                    <td>${shop.phone}</td>
+                    <td><span class="status-badge status-${shop.status || 'pending'}">${(shop.status || 'pending').toUpperCase()}</span></td>
+                    <td>${shop.products ? shop.products.length : 0}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-approve" onclick="approveShop('${shop.shopName || shop.name}')">Approve</button>
+                            <button class="btn btn-delete" onclick="deleteShop('${shop.shopName || shop.name}')">Delete</button>
+                            ${shop.products && shop.products.length > 0 ? `<button class="btn btn-edit" onclick="viewShopProducts('${shop.shopName || shop.name}')">View Products</button>` : ''}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Load visitors
+        function loadVisitors() {
+            const registeredVisitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+            const visitorsTable = document.getElementById('visitorsTable');
+            
+            if (registeredVisitors.length === 0) {
+                visitorsTable.innerHTML = '<tr><td colspan="6" class="no-data">No visitors found</td></tr>';
+                return;
+            }
+
+            visitorsTable.innerHTML = registeredVisitors.map(visitor => `
+                <tr>
+                    <td>${visitor.firstName} ${visitor.lastName}</td>
+                    <td>${visitor.phone}</td>
+                    <td>${visitor.city}</td>
+                    <td>${visitor.gender}</td>
+                    <td>${visitor.registeredAt ? new Date(visitor.registeredAt).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-delete" onclick="deleteVisitor('${visitor.id}')">Remove</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Load activity
+        function loadActivity() {
+            const logs = JSON.parse(localStorage.getItem('systemLogs') || '[]');
+            const activityTable = document.getElementById('activityTable');
+            
+            if (logs.length === 0) {
+                activityTable.innerHTML = '<tr><td colspan="3" class="no-data">No recent activity</td></tr>';
+                return;
+            }
+
+            const recentLogs = logs.slice(-5).reverse();
+            activityTable.innerHTML = recentLogs.map(log => `
+                <tr>
+                    <td>${log.message}</td>
+                    <td>${log.user || 'System'}</td>
+                    <td>${new Date(log.timestamp).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Initialize search
+        function initializeSearch() {
+            const searchInput = document.getElementById('mainSearch');
+            const searchResults = document.getElementById('searchResults');
+
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase().trim();
+                
+                if (query.length === 0) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
+
+                const results = performSearch(query);
+                displaySearchResults(results);
+            });
+
+            // Hide search results when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.search-section')) {
+                    searchResults.style.display = 'none';
+                }
+            });
+        }
+
+        // Perform search
+        function performSearch(query) {
+            const results = [];
+            
+            // Load actual registered shops from localStorage
+            const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const registeredVisitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+            
+            // Use registered shops if available, otherwise use sample shops
+            const shops = registeredShops.length > 0 ? registeredShops : sampleShops;
+            
+            // Search through shops
+            shops.forEach(shop => {
+                const shopName = shop.shopName || shop.name;
+                const ownerName = shop.ownerName || shop.owner;
+                
+                // Search shop name (contains, not just startsWith)
+                if (shopName && shopName.toLowerCase().includes(query)) {
+                    results.push({
+                        type: 'shop',
+                        name: shopName,
+                        owner: ownerName,
+                        city: shop.city,
+                        status: shop.status || 'pending'
+                    });
+                }
+                
+                // Search owner name (contains, not just startsWith)
+                if (ownerName && ownerName.toLowerCase().includes(query)) {
+                    results.push({
+                        type: 'shop',
+                        name: shopName,
+                        owner: ownerName,
+                        city: shop.city,
+                        status: shop.status || 'pending'
+                    });
+                }
+                
+                // Search city
+                if (shop.city && shop.city.toLowerCase().includes(query)) {
+                    results.push({
+                        type: 'shop',
+                        name: shopName,
+                        owner: ownerName,
+                        city: shop.city,
+                        status: shop.status || 'pending'
+                    });
+                }
+                
+                // Search products
+                if (shop.products && shop.products.length > 0) {
+                    shop.products.forEach(product => {
+                        if (product && product.toLowerCase().includes(query)) {
+                            results.push({
+                                type: 'product',
+                                name: product,
+                                shop: shopName,
+                                city: shop.city
+                            });
+                        }
+                    });
+                }
+            });
+            
+            // Search through visitors
+            registeredVisitors.forEach(visitor => {
+                const fullName = `${visitor.firstName} ${visitor.lastName}`.toLowerCase();
+                
+                // Search visitor name
+                if (fullName.includes(query)) {
+                    results.push({
+                        type: 'visitor',
+                        name: `${visitor.firstName} ${visitor.lastName}`,
+                        city: visitor.city,
+                        phone: visitor.phone
+                    });
+                }
+                
+                // Search visitor city
+                if (visitor.city && visitor.city.toLowerCase().includes(query)) {
+                    results.push({
+                        type: 'visitor',
+                        name: `${visitor.firstName} ${visitor.lastName}`,
+                        city: visitor.city,
+                        phone: visitor.phone
+                    });
+                }
+            });
+            
+            return results;
+        }
+
+        // Display search results
+        function displaySearchResults(results) {
+            const searchResults = document.getElementById('searchResults');
+            
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
+                searchResults.style.display = 'block';
+                return;
+            }
+
+            searchResults.innerHTML = results.map(result => {
+                let details = '';
+                let statusColor = 'active';
+                
+                if (result.type === 'shop') {
+                    details = `Shop - Owner: ${result.owner}, City: ${result.city}`;
+                    statusColor = result.status || 'pending';
+                } else if (result.type === 'product') {
+                    details = `Product from ${result.shop}, City: ${result.city}`;
+                    statusColor = 'active';
+                } else if (result.type === 'visitor') {
+                    details = `Visitor - Phone: ${result.phone}, City: ${result.city}`;
+                    statusColor = 'active';
+                }
+                
+                return `
+                    <div class="search-result-item">
+                        <strong>${result.name}</strong>
+                        <br>
+                        <small>${details}</small>
+                        <br>
+                        <span class="status-badge status-${statusColor}">${result.type.toUpperCase()}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            searchResults.style.display = 'block';
+        }
+
+        // Approve shop
+        function approveShop(shopName) {
+            const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const shopIndex = registeredShops.findIndex(s => (s.shopName || s.name) === shopName);
+            
+            if (shopIndex !== -1) {
+                registeredShops[shopIndex].status = 'active';
+                localStorage.setItem('registeredShops', JSON.stringify(registeredShops));
+                loadShops();
+                updateStats();
+                alert(`Shop "${shopName}" approved successfully!`);
+            }
+        }
+
+        // Delete shop
+        function deleteShop(shopName) {
+            if (confirm(`Are you sure you want to delete "${shopName}"?`)) {
+                const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+                const updatedShops = registeredShops.filter(s => (s.shopName || s.name) !== shopName);
+                localStorage.setItem('registeredShops', JSON.stringify(updatedShops));
+                loadShops();
+                updateStats();
+                alert(`Shop "${shopName}" deleted successfully!`);
+            }
+        }
+
+        // Delete visitor
+        function deleteVisitor(visitorId) {
+            if (confirm('Are you sure you want to remove this visitor?')) {
+                const registeredVisitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+                const updatedVisitors = registeredVisitors.filter(v => v.id !== visitorId);
+                localStorage.setItem('registeredVisitors', JSON.stringify(updatedVisitors));
+                loadVisitors();
+                updateStats();
+            }
+        }
+
+        // Export shops
+        function exportShops() {
+            let csvContent = "Shop Name,Owner,Phone,City,Status,Products,Registered Date\n";
+            
+            const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const shops = registeredShops.length > 0 ? registeredShops : sampleShops;
+            
+            shops.forEach(shop => {
+                const shopName = shop.shopName || shop.name;
+                const ownerName = shop.ownerName || shop.owner;
+                const status = shop.status || 'pending';
+                const products = shop.products ? shop.products.join('; ') : '';
+                const registeredDate = shop.registeredAt ? new Date(shop.registeredAt).toLocaleDateString() : 'N/A';
+                
+                csvContent += `"${shopName}","${ownerName}","${shop.phone}","${shop.city}","${status}","${products}","${registeredDate}"\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'shops_export.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Export visitors
+        function exportVisitors() {
+            let csvContent = "Name,Phone,City,Gender,Address,Registered Date\n";
+            
+            const registeredVisitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+            
+            registeredVisitors.forEach(visitor => {
+                const fullName = `${visitor.firstName} ${visitor.lastName}`;
+                const registeredDate = visitor.registeredAt ? new Date(visitor.registeredAt).toLocaleDateString() : 'N/A';
+                
+                csvContent += `"${fullName}","${visitor.phone}","${visitor.city}","${visitor.gender}","${visitor.address}","${registeredDate}"\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'visitors_export.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // View Shop Products
+        function viewShopProducts(shopName) {
+            const registeredShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const shop = registeredShops.find(s => (s.shopName || s.name) === shopName);
+            
+            if (!shop || !shop.products || shop.products.length === 0) {
+                alert('No products found for this shop');
+                return;
+            }
+
+            // Create modal content
+            const modalContent = `
+                <div style="max-height: 70vh; overflow-y: auto;">
+                    <h3 style="color: #fbbf24; margin-bottom: 1rem;">Products for ${shopName}</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Owner:</strong> ${shop.ownerName || shop.owner}<br>
+                        <strong>City:</strong> ${shop.city}<br>
+                        <strong>Phone:</strong> ${shop.phone}
+                    </div>
+                    ${shop.products.map((product, index) => `
+                        <div style="margin-bottom: 2rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <h4 style="color: #fbbf24; margin-bottom: 1rem;">${product.name}</h4>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(251,191,36,0.1); font-weight: 600; width: 40%;">Brand</td>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);">${product.brand}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(251,191,36,0.1); font-weight: 600;">Model</td>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);">${product.model}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(251,191,36,0.1); font-weight: 600;">RAM</td>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);">${product.ram}GB</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(251,191,36,0.1); font-weight: 600;">Storage</td>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);">${product.storage}GB</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(251,191,36,0.1); font-weight: 600;">Network</td>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);">${product.network || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(251,191,36,0.1); font-weight: 600;">Color</td>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);">${product.color || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(251,191,36,0.1); font-weight: 600;">Fingerprint</td>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);">${product.fingerprint || 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(251,191,36,0.1); font-weight: 600;">Stock</td>
+                                    <td style="padding: 0.5rem; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05);">${product.stock} units</td>
+                                </tr>
+                            </table>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // Create and show modal
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(5px);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            `;
+
+            modal.innerHTML = `
+                <div style="background: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #312e81 100%); padding: 2rem; border-radius: 15px; width: 90%; max-width: 800px; max-height: 80vh; overflow-y: auto; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 1rem;">
+                        <h2 style="color: #fbbf24; font-size: 1.5rem; font-weight: bold; margin: 0;">Shop Products</h2>
+                        <button onclick="this.closest('.modal').remove()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; opacity: 0.7;">&times;</button>
+                    </div>
+                    ${modalContent}
+                </div>
+            `;
+
+            modal.className = 'modal';
+            modal.onclick = function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            };
+
+            document.body.appendChild(modal);
+        }
+    </script>
+</body>
+</html>
