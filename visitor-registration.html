@@ -142,7 +142,11 @@
                 <input type="text" name="fullName" placeholder="Enter your full name" required>
             </div>
 
-            
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email" placeholder="Enter your email address">
+            </div>
+
             <div class="form-group">
                 <label>Phone Number *</label>
                 <input type="tel" name="phone" placeholder="Enter your phone number" required>
@@ -151,6 +155,19 @@
             <div class="form-group">
                 <label>City *</label>
                 <input type="text" name="city" placeholder="Enter your city" required>
+            </div>
+
+            <div class="form-group">
+                <label>Interests</label>
+                <select name="interests">
+                    <option value="">Select your interests</option>
+                    <option value="Smartphones">Smartphones</option>
+                    <option value="Laptops">Laptops</option>
+                    <option value="Tablets">Tablets</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Computer Parts">Computer Parts</option>
+                    <option value="Electronics">All Electronics</option>
+                </select>
             </div>
 
             
@@ -175,21 +192,46 @@
         document.getElementById('visitorForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            // Get URL parameters to track registration source
+            const urlParams = new URLSearchParams(window.location.search);
+            const registrationSource = urlParams.get('source') || 'direct';
+            const referrer = document.referrer || 'direct';
+            
             // Get form data
             const formData = new FormData(this);
             const visitorData = {
                 id: Date.now().toString(),
                 fullName: formData.get('fullName'),
                 phone: formData.get('phone'),
+                email: formData.get('email'),
                 city: formData.get('city'),
+                interests: formData.get('interests'),
                 registeredAt: new Date().toISOString(),
-                type: 'visitor'
+                type: 'visitor',
+                registrationSource: registrationSource,
+                referrer: referrer,
+                userAgent: navigator.userAgent,
+                ipAddress: 'Unknown', // In production, get from server
+                sessionId: sessionStorage.getItem('sessionId') || Date.now().toString()
             };
             
-            // Save to localStorage
+            // Save to localStorage with verification
+            console.log('Saving visitor data:', visitorData);
             const existingVisitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
             existingVisitors.push(visitorData);
             localStorage.setItem('registeredVisitors', JSON.stringify(existingVisitors));
+            
+            // Verify save was successful
+            const savedVisitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+            const savedVisitor = savedVisitors.find(v => v.id === visitorData.id);
+            if (savedVisitor) {
+                console.log('Visitor saved successfully:', savedVisitor);
+                console.log('Total visitors in storage:', savedVisitors.length);
+            } else {
+                console.error('Visitor not found in localStorage after save!');
+                showStatus('Error: Visitor data not saved properly!', 'error');
+                return;
+            }
             
             // Show success message
             showStatus('Visitor registered successfully! Redirecting...', 'success');

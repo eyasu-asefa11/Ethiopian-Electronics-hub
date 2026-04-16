@@ -1945,6 +1945,11 @@
                     return processedProduct;
                 });
 
+                // Get URL parameters to track registration source
+                const urlParams = new URLSearchParams(window.location.search);
+                const registrationSource = urlParams.get('source') || 'direct';
+                const referrer = document.referrer || 'direct';
+                
                 const shopData = {
                     id: Date.now().toString(),
                     shopName: formData.get('shopName'),
@@ -1957,7 +1962,12 @@
                     images: processedImages,
                     products: processedProducts,
                     createdAt: new Date().toISOString(),
-                    status: 'pending'
+                    status: 'pending',
+                    registrationSource: registrationSource,
+                    referrer: referrer,
+                    userAgent: navigator.userAgent,
+                    ipAddress: 'Unknown', // In production, get from server
+                    sessionId: sessionStorage.getItem('sessionId') || Date.now().toString()
                 };
 
                 console.log('Saving shop data:', shopData);
