@@ -1878,7 +1878,7 @@
         }
 
         // Form Submission
-        document.getElementById('shopForm').addEventListener('submit', async function(e) {
+        document.getElementById('shopForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
             // Validate phone number
@@ -1894,65 +1894,100 @@
                 // Get form data
                 const formData = new FormData(this);
 
-                // Add city_id (assuming city names map to IDs - you may need to adjust this)
-                const cityName = formData.get('city');
-                const cityMapping = {
-                    'Addis Ababa': 1,
-                    'Hawassa': 2,
-                    'Bahir Dar': 3,
-                    'Mekelle': 4,
-                    'Dire Dawa': 5,
-                    'Adama': 6,
-                    'Jimma': 7,
-                    'Jijiga': 8,
-                    'Shashamane': 9,
-                    'Debre Birhan': 10,
-                    'Dessie': 11
-                };
-                const city_id = cityMapping[cityName] || 1; // Default to Addis Ababa
-
-                // Create shop registration data
-                const shopData = {
-                    shop_name_en: formData.get('shopName'),
-                    shop_name_am: formData.get('shopName'), // Use English name as fallback for Amharic
-                    description: formData.get('description'),
-                    phone: formData.get('phone'),
-                    telegram: formData.get('telegram'),
-                    city_id: city_id,
-                    address: formData.get('address'),
-                    owner_name: formData.get('ownerName'),
-                    owner_phone: formData.get('phone')
-                };
-
-                // Add images if any
-                if (uploadedImages && uploadedImages.length > 0) {
-                    // For now, we'll handle images separately or skip them in this basic implementation
-                    // You can enhance this to upload images to the server
-                    console.log('Images to upload:', uploadedImages.length);
-                }
-
-                // Send registration request to backend
-                const response = await fetch('http://localhost:5000/shops/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(shopData)
+                // Process images for proper storage
+                const processedImages = uploadedImages.map(img => {
+                    if (typeof img === 'object' && img.data) {
+                        return {
+                            name: img.name,
+                            data: img.data,
+                            size: img.size,
+                            type: img.type
+                        };
+                    }
+                    return img;
                 });
 
-                const result = await response.json();
+                // Process products with proper image handling
+                const processedProducts = products.map(product => {
+                    const processedProduct = { ...product };
+                    
+                    console.log('Processing product:', product.id, product.name);
+                    
+                    // Handle product front image
+                    if (productFrontImages[product.id]) {
+                        processedProduct.frontImage = productFrontImages[product.id];
+                        console.log('Added front image to product:', product.id);
+                    }
+                    
+                    // Handle product back image
+                    if (productBackImages[product.id]) {
+                        processedProduct.backImage = productBackImages[product.id];
+                        console.log('Added back image to product:', product.id);
+                    }
+                    
+                    // Handle product video
+                    if (productVideos[product.id]) {
+                        processedProduct.video = productVideos[product.id];
+                        console.log('Added video to product:', product.id, 'Video length:', productVideos[product.id].length);
+                    } else if (product.video) {
+                        // Video is already in product object (from handleProductSubmit)
+                        processedProduct.video = product.video;
+                        console.log('Product already has video:', product.id, 'Video length:', product.video.length);
+                    } else {
+                        console.log('No video found for product:', product.id);
+                    }
+                    
+                    // Ensure video is properly stored
+                    if (processedProduct.video) {
+                        console.log('Final video check for product', product.id, '- Video exists:', !!processedProduct.video, 'Type:', typeof processedProduct.video);
+                    }
+                    
+                    return processedProduct;
+                });
 
-                if (response.ok) {
-                    showStatus('Shop registered successfully! Redirecting to your shop...', 'success');
+                const shopData = {
+                    id: Date.now().toString(),
+                    shopName: formData.get('shopName'),
+                    ownerName: formData.get('ownerName'),
+                    description: formData.get('description'),
+                    phone: formData.get('phone'),
+                    phoneProvider: formData.get('phoneProvider'),
+                    city: formData.get('city'),
+                    address: formData.get('address'),
+                    images: processedImages,
+                    products: processedProducts,
+                    createdAt: new Date().toISOString(),
+                    status: 'pending'
+                };
 
-                    // Redirect to view the registered shop after 2 seconds
-                    setTimeout(() => {
-                        // For now, redirect to shops page. You can enhance this to go directly to the specific shop
-                        window.location.href = 'shops.html';
-                    }, 2000);
+                console.log('Saving shop data:', shopData);
+                console.log('Products with videos:', shopData.products.filter(p => p.video).map(p => ({id: p.id, name: p.name, hasVideo: !!p.video, videoLength: p.video?.length})));
+
+                // Save to localStorage (works on GitHub Pages)
+                const existingShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+                existingShops.push(shopData);
+                localStorage.setItem('registeredShops', JSON.stringify(existingShops));
+
+                // Verify save
+                const savedShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+                const savedShop = savedShops.find(s => s.id === shopData.id);
+                if (savedShop) {
+                    console.log('Shop saved successfully. Products with videos:', savedShop.products.filter(p => p.video).length);
+                    savedShop.products.forEach((product, index) => {
+                        console.log(`Product ${index + 1}: ${product.name} - Has video: ${!!product.video}`);
+                    });
                 } else {
-                    showStatus(result.error || 'Registration failed', 'error');
+                    console.error('Shop not found in localStorage after save!');
                 }
+
+                // Show success message
+                showStatus('Shop registered successfully! Redirecting...', 'success');
+
+                // Redirect after 2 seconds
+                setTimeout(() => {
+                    // For now, redirect to shops page. You can enhance this to go directly to the specific shop
+                    window.location.href = 'shops.html';
+                }, 2000);
 
             } catch (error) {
                 console.error('Registration error:', error);
