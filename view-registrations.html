@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Registrations - Ethio Electronics Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #312e81 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .shop-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .shop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .shop-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .shop-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .status-approved {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .shop-details {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .shop-details p {
+            margin-bottom: 8px;
+        }
+
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .image-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .video-item {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .products-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .product-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .product-details {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        .no-data {
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            padding: 40px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: rgba(220, 38, 38, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">
+        ← Back to Home
+    </a>
+
+    <div class="container">
+        <div class="header">
+            <h1>📋 Registered Shops & Products</h1>
+            <p>View all registered shops and their uploaded content</p>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 30px;">
+            <a href="register-shop-enhanced.html" class="btn">+ Register New Shop</a>
+            <a href="visitor-registration.html" class="btn">👥 Visitor Registration</a>
+            <button onclick="clearAllData()" class="btn btn-danger">🗑️ Clear All Data</button>
+        </div>
+
+        <div id="registrationsContainer">
+            <!-- Registrations will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        function loadRegistrations() {
+            const container = document.getElementById('registrationsContainer');
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const visitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+
+            if (shops.length === 0 && visitors.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <h3>No registrations found</h3>
+                        <p>Start by registering a shop or visitor!</p>
+                        <a href="register-shop-enhanced.html" class="btn">Register First Shop</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+
+            // Display shops
+            if (shops.length > 0) {
+                html += '<h2 style="color: white; margin-bottom: 20px;">🏪 Registered Shops</h2>';
+                shops.forEach(shop => {
+                    html += `
+                        <div class="shop-card">
+                            <div class="shop-header">
+                                <div class="shop-name">${shop.shopName}</div>
+                                <div class="shop-status status-${shop.status}">${shop.status.toUpperCase()}</div>
+                            </div>
+                            <div class="shop-details">
+                                <p><strong>Owner:</strong> ${shop.ownerName}</p>
+                                <p><strong>Phone:</strong> ${shop.phone} (${shop.phoneProvider})</p>
+                                <p><strong>City:</strong> ${shop.city}</p>
+                                <p><strong>Address:</strong> ${shop.address}</p>
+                                <p><strong>Description:</strong> ${shop.description}</p>
+                                <p><strong>Registered:</strong> ${new Date(shop.createdAt).toLocaleString()}</p>
+                            </div>
+                    `;
+
+                    // Display shop images
+                    if (shop.images && shop.images.length > 0) {
+                        console.log('Displaying shop images:', shop.images.length, 'images found');
+                        html += '<h4 style="color: white; margin-top: 15px;">Shop Images:</h4>';
+                        html += '<div class="images-grid">';
+                        shop.images.forEach((image, index) => {
+                            let imageSrc = image;
+                            console.log(`Processing shop image ${index + 1}:`, typeof image, image?.length || 'N/A');
+                            
+                            // Handle different image formats
+                            if (typeof image === 'object' && image.data) {
+                                imageSrc = image.data;
+                                console.log('Using object.data for image:', imageSrc.length);
+                            } else if (typeof image === 'string' && (image.startsWith('data:') || image.startsWith('blob:'))) {
+                                imageSrc = image;
+                                console.log('Using string image:', imageSrc.length);
+                            } else if (typeof image === 'string') {
+                                imageSrc = image;
+                                console.log('Using direct string image:', imageSrc.length);
+                            }
+                            
+                            html += `
+                                <div class="image-item">
+                                    <img src="${imageSrc}" alt="Shop Image ${index + 1}" 
+                                         onclick="viewImage('${imageSrc}')"
+                                         onload="console.log('Shop image ${index + 1} loaded successfully')"
+                                         onerror="console.error('Image failed to load in view-registrations:', '${imageSrc}'); this.style.display='none'; this.parentElement.innerHTML+='<div style=\"padding:10px;text-align:center;color:red;background:#fee;border-radius:4px;font-size:12px;\">Image failed to load</div>'">
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                    } else {
+                        console.log('No shop images found for shop:', shop.id);
+                    }
+
+                    // Display products
+                    if (shop.products && shop.products.length > 0) {
+                        console.log('Displaying products:', shop.products.length, 'products found');
+                        html += '<div class="products-section">';
+                        html += '<h4 style="color: white; margin-bottom: 15px;">Products:</h4>';
+                        shop.products.forEach((product, productIndex) => {
+                            console.log(`Processing product ${productIndex + 1}:`, product.name, 'Has frontImage:', !!product.frontImage, 'Has backImage:', !!product.backImage, 'Has video:', !!product.video);
+                            
+                            html += `
+                                <div class="product-item">
+                                    <div class="product-name">${product.name}</div>
+                                    <div class="product-details">
+                                        <p><strong>Brand:</strong> ${product.brand || 'N/A'}</p>
+                                        <p><strong>Type:</strong> ${product.productType || 'N/A'}</p>
+                                        <p><strong>Price:</strong> ${product.price || 'N/A'} Birr</p>
+                                        <p><strong>Stock:</strong> ${product.stock || 'N/A'}</p>
+                                        <p><strong>Description:</strong> ${product.description || 'N/A'}</p>
+                                    </div>
+                            `;
+
+                            // Product images
+                            if (product.frontImage || product.backImage) {
+                                html += '<div style="margin-top: 10px;"><h5 style="color: white; font-size: 14px;">Product Images:</h5>';
+                                
+                                if (product.frontImage) {
+                                    let frontImageSrc = product.frontImage;
+                                    console.log('Processing front image:', typeof product.frontImage, product.frontImage?.length || 'N/A');
+                                    
+                                    if (typeof product.frontImage === 'object' && product.frontImage.data) {
+                                        frontImageSrc = product.frontImage.data;
+                                        console.log('Using frontImage object.data:', frontImageSrc.length);
+                                    }
+                                    html += `<img src="${frontImageSrc}" alt="Front" style="width: 100px; height: 100px; object-fit: cover; margin-right: 10px; border-radius: 8px; cursor: pointer;" onclick="viewImage('${frontImageSrc}')" onload="console.log('Front image loaded for product ${productIndex + 1}')" onerror="console.error('Product front image failed to load:', '${frontImageSrc}'); this.style.display='none'">`;
+                                }
+                                
+                                if (product.backImage) {
+                                    let backImageSrc = product.backImage;
+                                    console.log('Processing back image:', typeof product.backImage, product.backImage?.length || 'N/A');
+                                    
+                                    if (typeof product.backImage === 'object' && product.backImage.data) {
+                                        backImageSrc = product.backImage.data;
+                                        console.log('Using backImage object.data:', backImageSrc.length);
+                                    }
+                                    html += `<img src="${backImageSrc}" alt="Back" style="width: 100px; height: 100px; object-fit: cover; margin-right: 10px; border-radius: 8px; cursor: pointer;" onclick="viewImage('${backImageSrc}')" onload="console.log('Back image loaded for product ${productIndex + 1}')" onerror="console.error('Product back image failed to load:', '${backImageSrc}'); this.style.display='none'">`;
+                                }
+                                html += '</div>';
+                            } else {
+                                console.log(`No images found for product ${productIndex + 1}: ${product.name}`);
+                            }
+
+                            // Product video
+                            if (product.video) {
+                                let videoSrc = product.video;
+                                console.log('Processing video:', typeof product.video, product.video?.length || 'N/A');
+                                
+                                if (typeof product.video === 'object' && product.video.data) {
+                                    videoSrc = product.video.data;
+                                    console.log('Using video object.data:', videoSrc.length);
+                                }
+                                html += `
+                                    <div style="margin-top: 10px;">
+                                        <h5 style="color: white; font-size: 14px;">Product Video:</h5>
+                                        <div style="position: relative; display: inline-block; border: 2px solid #10b981; border-radius: 8px; overflow: hidden; cursor: pointer;" >
+                                            <video class="video-item" style="width: 200px; height: 150px; object-fit: cover; display: block;" 
+                                                   controls
+                                                   onloadeddata="console.log('Video loaded for product ${productIndex + 1}')"
+                                                   onerror="console.error('Product video failed to load:', '${videoSrc}'); this.style.display='none'; this.parentElement.innerHTML+='<div style=\"width:200px;height:150px;background:#fee;border-radius:6px;display:flex;align-items:center;justify-content:center;color:red;font-size:12px;font-weight:bold;\">Video Error</div>'"
+                                                   poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='150' viewBox='0 0 200 150'%3E%3Crect width='200' height='150' fill='%2310b981'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-family='Arial' font-size='14' font-weight='bold'%3E%F0%9F%8E%A5 CLICK TO PLAY%3C/text%3E%3C/svg%3E">
+                                                <source src="${videoSrc}" type="video/mp4">
+                                                <source src="${videoSrc}" type="video/webm">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 24px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); pointer-events: none;"></div>
+                                        </div>
+                                        <div style="margin-top: 8px; display: flex; gap: 10px; align-items: center;">
+                                            <a href="${videoSrc}" target="_blank" style="color: #3b82f6; font-size: 12px; text-decoration: none; padding: 4px 8px; background: rgba(59, 130, 246, 0.1); border-radius: 4px; border: 1px solid rgba(59, 130, 246, 0.3);">Open Video</a>
+                                            <span style="color: white; font-size: 11px; opacity: 0.7;">Click to play or open in new tab</span>
+                                        </div>
+                                    </div>
+                                `;
+                            } else {
+                                console.log(`No video found for product ${productIndex + 1}: ${product.name}`);
+                            }
+
+                            html += '</div>';
+                        });
+                        html += '</div>';
+                    }
+
+                    html += '</div>';
+                });
+            }
+
+            // Display visitors
+            if (visitors.length > 0) {
+                html += '<h2 style="color: white; margin: 30px 0 20px;">👥 Registered Visitors</h2>';
+                visitors.forEach(visitor => {
+                    html += `
+                        <div class="shop-card">
+                            <div class="shop-header">
+                                <div class="shop-name">${visitor.name}</div>
+                                <div class="shop-status status-pending">VISITOR</div>
+                            </div>
+                            <div class="shop-details">
+                                <p><strong>Email:</strong> ${visitor.email}</p>
+                                <p><strong>Phone:</strong> ${visitor.phone}</p>
+                                <p><strong>City:</strong> ${visitor.city}</p>
+                                <p><strong>Interests:</strong> ${visitor.interests}</p>
+                                <p><strong>Registered:</strong> ${new Date(visitor.createdAt).toLocaleString()}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            container.innerHTML = html;
+        }
+
+        function viewImage(imageSrc) {
+            window.open(imageSrc, '_blank');
+        }
+
+        
+        function clearAllData() {
+            if (confirm('Are you sure you want to delete all registration data? This cannot be undone!')) {
+                localStorage.removeItem('registeredShops');
+                localStorage.removeItem('registeredVisitors');
+                loadRegistrations();
+            }
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadRegistrations);
+    </script>
+</body>
+</html>

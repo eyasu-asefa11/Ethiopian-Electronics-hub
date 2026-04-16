@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Upload Test - Ethio Electronics Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #312e81 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .test-section h3 {
+            color: #3b82f6;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .video-preview {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .debug-info {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            color: white;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .shop-display {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .product-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .product-video {
+            margin: 10px 0;
+        }
+
+        .product-video video {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Video Upload Test</h1>
+            <p>Test video upload and display functionality</p>
+        </div>
+
+        <div class="test-section">
+            <h3>1. Quick Video Upload Test</h3>
+            <input type="file" id="videoTestInput" accept="video/*" style="margin: 10px 0;">
+            <button class="btn" onclick="testVideoUpload()">Test Upload</button>
+            <div id="videoTestPreview" class="video-preview"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Check Existing Shops with Videos</h3>
+            <button class="btn" onclick="loadShopsWithVideos()">Load Shops</button>
+            <div id="shopsDisplay" class="shop-display"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Debug Information</h3>
+            <button class="btn" onclick="showDebugInfo()">Show Debug</button>
+            <div id="debugInfo" class="debug-info"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="register-shop-enhanced.html" class="btn">Register Shop with Video</a>
+            <a href="view-registrations.html" class="btn">View All Registrations</a>
+            <a href="shops.html" class="btn">Browse Shops</a>
+        </div>
+    </div>
+
+    <script>
+        function testVideoUpload() {
+            const input = document.getElementById('videoTestInput');
+            const preview = document.getElementById('videoTestPreview');
+            
+            if (!input.files[0]) {
+                preview.innerHTML = '<p style="color: white;">Please select a video file first</p>';
+                return;
+            }
+            
+            const file = input.files[0];
+            console.log('Testing video upload:', file);
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const videoData = e.target.result;
+                console.log('Video data loaded, length:', videoData.length);
+                
+                preview.innerHTML = `
+                    <h4 style="color: white; margin-bottom: 10px;">Video Preview:</h4>
+                    <video controls style="width: 100%; max-width: 400px; border-radius: 8px;" 
+                           onerror="console.error('Video preview failed')">
+                        <source src="${videoData}" type="${file.type}">
+                        Your browser does not support the video tag.
+                    </video>
+                    <p style="color: white; margin-top: 10px;">
+                        File: ${file.name}<br>
+                        Size: ${(file.size / 1024 / 1024).toFixed(2)} MB<br>
+                        Type: ${file.type}<br>
+                        Data Length: ${videoData.length}
+                    </p>
+                `;
+            };
+            
+            reader.onerror = function(error) {
+                console.error('File reading error:', error);
+                preview.innerHTML = '<p style="color: red;">Failed to read video file</p>';
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        function loadShopsWithVideos() {
+            const display = document.getElementById('shopsDisplay');
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            
+            console.log('Loading shops, total:', shops.length);
+            
+            if (shops.length === 0) {
+                display.innerHTML = '<p style="color: white;">No shops registered yet</p>';
+                return;
+            }
+            
+            let html = '';
+            shops.forEach((shop, index) => {
+                html += `
+                    <div class="product-item">
+                        <h4 style="color: #3b82f6;">${shop.shopName || 'No Name'}</h4>
+                        <p style="color: white;">Products: ${shop.products ? shop.products.length : 0}</p>
+                `;
+                
+                if (shop.products && shop.products.length > 0) {
+                    shop.products.forEach((product, pIndex) => {
+                        html += `
+                            <div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                                <h5 style="color: white;">${product.name || 'No Name'}</h5>
+                                <p style="color: white; font-size: 12px;">
+                                    Brand: ${product.brand || 'N/A'}<br>
+                                    Price: ${product.price || 'N/A'}<br>
+                                    Has Video: ${product.video ? 'Yes' : 'No'}<br>
+                                    Video Length: ${product.video ? product.video.length : 0}
+                                </p>
+                        `;
+                        
+                        if (product.video) {
+                            html += `
+                                <div class="product-video">
+                                    <h6 style="color: white; margin-bottom: 5px;">Product Video:</h6>
+                                    <video controls style="width: 100%; max-width: 300px; border-radius: 8px;"
+                                           onerror="console.error('Video display failed for product ${product.name}'); this.style.display='none'; this.parentElement.innerHTML+='<p style=color:red>Video failed to load</p>'">
+                                        <source src="${product.video}" type="video/mp4">
+                                        <source src="${product.video}" type="video/webm">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <a href="${product.video}" target="_blank" style="color: #3b82f6; font-size: 12px;">Open Video in New Tab</a>
+                                </div>
+                            `;
+                        }
+                        
+                        html += '</div>';
+                    });
+                }
+                
+                html += '</div>';
+            });
+            
+            display.innerHTML = html;
+        }
+
+        function showDebugInfo() {
+            const debugDiv = document.getElementById('debugInfo');
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            
+            let debugText = '=== VIDEO DEBUG INFO ===\n\n';
+            debugText += `Total shops: ${shops.length}\n\n`;
+            
+            shops.forEach((shop, index) => {
+                debugText += `Shop ${index + 1}: ${shop.shopName}\n`;
+                debugText += `  Products: ${shop.products ? shop.products.length : 0}\n`;
+                
+                if (shop.products) {
+                    shop.products.forEach((product, pIndex) => {
+                        debugText += `    Product ${pIndex + 1}: ${product.name}\n`;
+                        debugText += `      Has video: ${product.video ? 'YES' : 'NO'}\n`;
+                        if (product.video) {
+                            debugText += `      Video type: ${typeof product.video}\n`;
+                            debugText += `      Video length: ${product.video.length}\n`;
+                            debugText += `      Video preview: ${product.video.substring(0, 50)}...\n`;
+                        }
+                    });
+                }
+                debugText += '\n';
+            });
+            
+            debugDiv.textContent = debugText;
+        }
+
+        // Auto-load shops when page opens
+        document.addEventListener('DOMContentLoaded', function() {
+            loadShopsWithVideos();
+        });
+    </script>
+</body>
+</html>

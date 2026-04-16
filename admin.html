@@ -317,10 +317,10 @@
             <h2 style="color: white; margin-bottom: 20px;">Search & Filter</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div>
-                    <input type="text" id="searchInput" placeholder="Search shops or visitors..." style="width: 100%; padding: 12px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; background: rgba(255, 255, 255, 0.9); color: white; font-size: 14px;">
+                    <input type="text" id="searchInput" placeholder="Search shops or visitors..." style="width: 100%; padding: 12px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; background: rgba(139, 92, 246, 0.2); color: white; font-size: 14px;">
                 </div>
                 <div>
-                    <select id="searchType" style="width: 100%; padding: 12px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; background: rgba(255, 255, 255, 0.9); color: white; font-size: 14px;">
+                    <select id="searchType" style="width: 100%; padding: 12px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; background: rgba(139, 92, 246, 0.2); color: white; font-size: 14px;">
                         <option value="all">All</option>
                         <option value="shops">Shops</option>
                         <option value="visitors">Visitors</option>
@@ -334,6 +334,10 @@
 
         
         <div class="actions-grid">
+            <div class="action-card" onclick="exportToExcel()">
+                <h3>Export to Excel</h3>
+                <p>Download all shops with products as Excel file</p>
+            </div>
             <div class="action-card" onclick="exportData()">
                 <h3>Export Data</h3>
                 <p>Download all shop data as CSV</p>
@@ -657,6 +661,40 @@
                 loadRecentVisitors();
             }, 30000);
         };
+
+        // Export to Excel function
+        function exportToExcel() {
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            
+            if (shops.length === 0) {
+                alert('No shops to export!');
+                return;
+            }
+            
+            // Create CSV content with shop names in first column and products below each shop
+            let csvContent = 'Shop Name,Owner Name,Phone,City,Address,Products,Description,Created At\n';
+            
+            shops.forEach((shop, index) => {
+                const productsText = shop.products && shop.products.length > 0 
+                    ? shop.products.map(p => `${p.name} (${p.productType})`).join('; ')
+                    : 'No products';
+                
+                csvContent += `"${shop.shopName || shop.name || ''}","${shop.ownerName || ''}","${shop.phone || ''}","${shop.city || ''}","${shop.address || ''}","${productsText}","${shop.description || ''}","${shop.createdAt || shop.registeredAt || ''}"\n`;
+            });
+            
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `shops_export_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showStatus('Excel file exported successfully! 📊', 'success');
+        }
 
         // Close modal on outside click
         window.onclick = function(event) {

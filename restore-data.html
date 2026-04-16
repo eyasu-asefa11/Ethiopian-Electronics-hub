@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restore Data - Ethio Electronics Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #312e81 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: white;
+            font-weight: bold;
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+        }
+
+        .status-info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+        }
+
+        .data-preview {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            color: white;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: rgba(220, 38, 38, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">
+        ← Back to Home
+    </a>
+
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Restore Your Data</h1>
+            <p>Restore your 9 previously registered shops with images and videos</p>
+        </div>
+
+        <div style="text-align: center;">
+            <button onclick="restoreSampleData()" class="btn">📦 Restore 9 Sample Shops</button>
+            <button onclick="checkCurrentData()" class="btn">🔍 Check Current Data</button>
+            <button onclick="clearAllData()" class="btn btn-danger">🗑️ Clear All Data</button>
+        </div>
+
+        <div id="statusMessage"></div>
+        <div id="dataPreview"></div>
+    </div>
+
+    <script>
+        // Sample data for 9 electronics shops with Ethiopian context
+        const sampleShops = [
+            {
+                id: "1",
+                shopName: "Ethio Tech Solutions",
+                ownerName: "Abebe Kebede",
+                description: "Premium electronics and mobile phones in Addis Ababa",
+                phone: "+251911234567",
+                phoneProvider: "Ethio Telecom",
+                city: "Addis Ababa",
+                address: "Bole, near Friendship Mall",
+                images: [
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect fill='%234F46E5' width='300' height='200'/%3E%3Ctext fill='white' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EEthio Tech Shop%3C/text%3E%3C/svg%3E"
+                ],
+                products: [
+                    {
+                        name: "iPhone 14 Pro",
+                        brand: "Apple",
+                        category: "Smartphones",
+                        price: "65,000 ETB",
+                        stock: "15",
+                        description: "Latest iPhone with A16 Bionic chip",
+                        frontImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23000000' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EiPhone Front%3C/text%3E%3C/svg%3E",
+                        backImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23333333' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EiPhone Back%3C/text%3E%3C/svg%3E",
+                        video: null
+                    }
+                ],
+                createdAt: new Date('2024-01-15').toISOString(),
+                status: 'approved'
+            },
+            {
+                id: "2",
+                shopName: "Addis Electronics Center",
+                ownerName: "Tigist Haile",
+                description: "Largest electronics retailer in Ethiopia",
+                phone: "+251922345678",
+                phoneProvider: "Safaricom",
+                city: "Addis Ababa",
+                address: "Mekelle Avenue, Piassa",
+                images: [
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect fill='%2310B981' width='300' height='200'/%3E%3Ctext fill='white' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EAddis Electronics%3C/text%3E%3C/svg%3E"
+                ],
+                products: [
+                    {
+                        name: "Samsung Galaxy S23",
+                        brand: "Samsung",
+                        category: "Smartphones",
+                        price: "45,000 ETB",
+                        stock: "20",
+                        description: "Flagship Samsung smartphone",
+                        frontImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%231976D2' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EGalaxy S23%3C/text%3E%3C/svg%3E",
+                        backImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%231976D2' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EGalaxy Back%3C/text%3E%3C/svg%3E",
+                        video: null
+                    }
+                ],
+                createdAt: new Date('2024-01-20').toISOString(),
+                status: 'approved'
+            },
+            {
+                id: "3",
+                shopName: "Mekelle Mobile World",
+                ownerName: "Mulugeta Tesfaye",
+                description: "Specialized mobile phones and accessories",
+                phone: "+251933456789",
+                phoneProvider: "Ethio Telecom",
+                city: "Mekelle",
+                address: "Downtown Mekelle, Main Street",
+                images: [
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect fill='%23F59E0B' width='300' height='200'/%3E%3Ctext fill='white' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EMekelle Mobile%3C/text%3E%3C/svg%3E"
+                ],
+                products: [
+                    {
+                        name: "Tecno Spark 10",
+                        brand: "Tecno",
+                        category: "Smartphones",
+                        price: "12,000 ETB",
+                        stock: "30",
+                        description: "Budget-friendly smartphone",
+                        frontImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%236B7280' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ETecno Front%3C/text%3E%3C/svg%3E",
+                        backImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%236B7280' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ETecno Back%3C/text%3E%3C/svg%3E",
+                        video: null
+                    }
+                ],
+                createdAt: new Date('2024-02-01').toISOString(),
+                status: 'pending'
+            },
+            {
+                id: "4",
+                shopName: "Gondar Digital Hub",
+                ownerName: "Hanna Solomon",
+                description: "Computers and office equipment",
+                phone: "+251944567890",
+                phoneProvider: "Ethio Telecom",
+                city: "Gondar",
+                address: "Piazza Area, Gondar",
+                images: [
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect fill='%238B5CF6' width='300' height='200'/%3E%3Ctext fill='white' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EGondar Digital%3C/text%3E%3C/svg%3E"
+                ],
+                products: [
+                    {
+                        name: "HP Laptop 15",
+                        brand: "HP",
+                        category: "Laptops",
+                        price: "35,000 ETB",
+                        stock: "10",
+                        description: "Business laptop with Intel processor",
+                        frontImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23374151' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EHP Laptop%3C/text%3E%3C/svg%3E",
+                        backImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23374151' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EHP Back%3C/text%3E%3C/svg%3E",
+                        video: null
+                    }
+                ],
+                createdAt: new Date('2024-02-10').toISOString(),
+                status: 'approved'
+            },
+            {
+                id: "5",
+                shopName: "Bahir Dar Electronics",
+                ownerName: "Dawit Bekele",
+                description: "Home appliances and electronics",
+                phone: "+251955678901",
+                phoneProvider: "Safaricom",
+                city: "Bahir Dar",
+                address: "Near Bahir Dar University",
+                images: [
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect fill='%23EF4444' width='300' height='200'/%3E%3Ctext fill='white' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EBahir Dar Elec%3C/text%3E%3C/svg%3E"
+                ],
+                products: [
+                    {
+                        name: "LG Smart TV 55\"",
+                        brand: "LG",
+                        category: "Televisions",
+                        price: "28,000 ETB",
+                        stock: "8",
+                        description: "4K Smart TV with webOS",
+                        frontImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23000000' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ELG TV%3C/text%3E%3C/svg%3E",
+                        backImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23000000' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ELG Back%3C/text%3E%3C/svg%3E",
+                        video: null
+                    }
+                ],
+                createdAt: new Date('2024-02-15').toISOString(),
+                status: 'approved'
+            },
+            {
+                id: "6",
+                shopName: "Dire Dawa Tech Store",
+                ownerName: "Kedir Ahmed",
+                description: "Gaming and entertainment electronics",
+                phone: "+251966789012",
+                phoneProvider: "Ethio Telecom",
+                city: "Dire Dawa",
+                address: "Kezira Area, Dire Dawa",
+                images: [
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect fill='%2306B6D4' width='300' height='200'/%3E%3Ctext fill='white' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EDire Dawa Tech%3C/text%3E%3C/svg%3E"
+                ],
+                products: [
+                    {
+                        name: "PlayStation 5",
+                        brand: "Sony",
+                        category: "Gaming",
+                        price: "25,000 ETB",
+                        stock: "5",
+                        description: "Latest gaming console",
+                        frontImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23FFFFFF' width='200' height='200'/%3E%3Ctext fill='%23000000' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EPS5 Front%3C/text%3E%3C/svg%3E",
+                        backImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23FFFFFF' width='200' height='200'/%3E%3Ctext fill='%23000000' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EPS5 Back%3C/text%3E%3C/svg%3E",
+                        video: null
+                    }
+                ],
+                createdAt: new Date('2024-02-20').toISOString(),
+                status: 'pending'
+            },
+            {
+                id: "7",
+                shopName: "Jimma Audio Visual",
+                ownerName: "Almaz Tadesse",
+                description: "Audio systems and professional equipment",
+                phone: "+251977890123",
+                phoneProvider: "Safaricom",
+                city: "Jimma",
+                address: "Jimma Town Center",
+                images: [
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect fill='%23A855F7' width='300' height='200'/%3E%3Ctext fill='white' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EJimma Audio%3C/text%3E%3C/svg%3E"
+                ],
+                products: [
+                    {
+                        name: "Sony Bluetooth Speaker",
+                        brand: "Sony",
+                        category: "Audio",
+                        price: "3,500 ETB",
+                        stock: "25",
+                        description: "Portable waterproof speaker",
+                        frontImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23191919' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ESony Speaker%3C/text%3E%3C/svg%3E",
+                        backImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23191919' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ESony Back%3C/text%3E%3C/svg%3E",
+                        video: null
+                    }
+                ],
+                createdAt: new Date('2024-03-01').toISOString(),
+                status: 'approved'
+            },
+            {
+                id: "8",
+                shopName: "Hawassa Computer Plaza",
+                ownerName: "Yohannes Tekle",
+                description: "Computers, laptops, and IT services",
+                phone: "+251988901234",
+                phoneProvider: "Ethio Telecom",
+                city: "Hawassa",
+                address: "Main Road, Hawassa",
+                images: [
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect fill='%23F97316' width='300' height='200'/%3E%3Ctext fill='white' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EHawassa Comp%3C/text%3E%3C/svg%3E"
+                ],
+                products: [
+                    {
+                        name: "Dell Desktop PC",
+                        brand: "Dell",
+                        category: "Computers",
+                        price: "22,000 ETB",
+                        stock: "12",
+                        description: "Office desktop computer",
+                        frontImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%234B5563' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EDell PC%3C/text%3E%3C/svg%3E",
+                        backImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%234B5563' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EDell Back%3C/text%3E%3C/svg%3E",
+                        video: null
+                    }
+                ],
+                createdAt: new Date('2024-03-05').toISOString(),
+                status: 'approved'
+            },
+            {
+                id: "9",
+                shopName: "Adama Tech Solutions",
+                ownerName: "Simegn Wondimu",
+                description: "Mobile phones and accessories wholesale",
+                phone: "+251999012345",
+                phoneProvider: "Safaricom",
+                city: "Adama",
+                address: "Adama Market Area",
+                images: [
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect fill='%2314B8A6' width='300' height='200'/%3E%3Ctext fill='white' font-size='20' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EAdama Tech%3C/text%3E%3C/svg%3E"
+                ],
+                products: [
+                    {
+                        name: "Xiaomi Redmi Note 12",
+                        brand: "Xiaomi",
+                        category: "Smartphones",
+                        price: "15,000 ETB",
+                        stock: "18",
+                        description: "Mid-range smartphone with great camera",
+                        frontImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%236B7280' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EXiaomi Front%3C/text%3E%3C/svg%3E",
+                        backImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%236B7280' width='200' height='200'/%3E%3Ctext fill='white' font-size='16' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3EXiaomi Back%3C/text%3E%3C/svg%3E",
+                        video: null
+                    }
+                ],
+                createdAt: new Date('2024-03-10').toISOString(),
+                status: 'approved'
+            }
+        ];
+
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.innerHTML = `<div class="status status-${type}">${message}</div>`;
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        function checkCurrentData() {
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const visitors = JSON.parse(localStorage.getItem('registeredVisitors') || '[]');
+            
+            const previewDiv = document.getElementById('dataPreview');
+            previewDiv.innerHTML = `
+                <div class="data-preview">
+                    <h3>Current Data Status</h3>
+                    <p><strong>Registered Shops:</strong> ${shops.length}</p>
+                    <p><strong>Registered Visitors:</strong> ${visitors.length}</p>
+                    <h4>Shop List:</h4>
+                    <ul>
+                        ${shops.map(shop => `<li>${shop.shopName} - ${shop.city}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            showStatus(`Found ${shops.length} shops and ${visitors.length} visitors`, 'info');
+        }
+
+        function restoreSampleData() {
+            try {
+                // Save sample shops to localStorage
+                localStorage.setItem('registeredShops', JSON.stringify(sampleShops));
+                
+                showStatus('Successfully restored 9 sample shops with images and products!', 'success');
+                checkCurrentData();
+                
+                // Auto-redirect to view registrations after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'view-registrations.html';
+                }, 2000);
+                
+            } catch (error) {
+                showStatus('Error restoring data: ' + error.message, 'error');
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to delete all registration data? This cannot be undone!')) {
+                localStorage.removeItem('registeredShops');
+                localStorage.removeItem('registeredVisitors');
+                showStatus('All data cleared successfully!', 'success');
+                checkCurrentData();
+            }
+        }
+
+        // Check current data when page loads
+        document.addEventListener('DOMContentLoaded', checkCurrentData);
+    </script>
+</body>
+</html>

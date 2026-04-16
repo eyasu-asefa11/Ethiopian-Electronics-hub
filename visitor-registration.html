@@ -142,11 +142,7 @@
                 <input type="text" name="fullName" placeholder="Enter your full name" required>
             </div>
 
-            <div class="form-group">
-                <label>Email Address *</label>
-                <input type="email" name="email" placeholder="Enter your email address" required>
-            </div>
-
+            
             <div class="form-group">
                 <label>Phone Number *</label>
                 <input type="tel" name="phone" placeholder="Enter your phone number" required>
@@ -157,23 +153,7 @@
                 <input type="text" name="city" placeholder="Enter your city" required>
             </div>
 
-            <div class="form-group">
-                <label>Interests</label>
-                <select name="interests">
-                    <option value="">Select your interests</option>
-                    <option value="smartphones">Smartphones</option>
-                    <option value="laptops">Laptops</option>
-                    <option value="tablets">Tablets</option>
-                    <option value="accessories">Accessories</option>
-                    <option value="electronics">General Electronics</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Comments</label>
-                <textarea name="comments" rows="4" placeholder="Tell us what you're looking for..."></textarea>
-            </div>
-
+            
             <button type="submit" class="btn">Register as Visitor</button>
             <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">Cancel</button>
         </form>
@@ -200,11 +180,8 @@
             const visitorData = {
                 id: Date.now().toString(),
                 fullName: formData.get('fullName'),
-                email: formData.get('email'),
                 phone: formData.get('phone'),
                 city: formData.get('city'),
-                interests: formData.get('interests'),
-                comments: formData.get('comments'),
                 registeredAt: new Date().toISOString(),
                 type: 'visitor'
             };

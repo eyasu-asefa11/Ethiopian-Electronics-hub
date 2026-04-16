@@ -46,14 +46,14 @@
 
         .form-group {
             margin-bottom: 20px;
+            position: relative;
         }
 
         .form-group label {
             display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
             color: white;
-            margin-bottom: 5px;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .form-group input,
@@ -65,12 +65,24 @@
             border-radius: 8px;
             background: rgba(255, 255, 255, 0.9);
             color: #1e293b;
-            font-size: 16px;
+            font-size: 1rem;
         }
 
         .form-group input::placeholder,
         .form-group textarea::placeholder {
-            color: #374151;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        /* City input with violet background */
+        .form-group input[name="city"] {
+            background: rgba(139, 92, 246, 0.2);
+            color: white;
+            border: 1px solid rgba(139, 92, 246, 0.4);
+        }
+
+        .form-group input[name="city"]::placeholder {
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .btn {
@@ -262,6 +274,59 @@
             position: relative;
         }
 
+        .phone-input-wrapper input {
+            width: 100%;
+            padding-right: 35px;
+            min-height: 44px;
+            font-size: 16px;
+        }
+
+        .phone-input-container-horizontal {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .provider-section {
+            flex: 0 0 auto;
+            min-width: 200px;
+        }
+
+        .provider-section select {
+            width: 100%;
+            min-height: 44px;
+        }
+
+        .phone-input-wrapper-horizontal {
+            flex: 1;
+            position: relative;
+        }
+
+        .phone-input-wrapper-horizontal input {
+            width: 100%;
+            padding-right: 35px;
+            min-height: 44px;
+            font-size: 16px;
+        }
+
+        .help-btn-horizontal {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .help-btn {
             position: absolute;
             right: 10px;
@@ -353,6 +418,29 @@
             flex: 1;
         }
 
+        /* Product Form Modal Styles */
+        .product-form .form-group {
+            margin-bottom: 15px;
+        }
+
+        .product-form label {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .product-form input,
+        .product-form select,
+        .product-form textarea {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1e293b;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             body {
@@ -426,29 +514,6 @@
             .product-table td {
                 padding: 8px;
             }
-
-            .modal-content {
-                margin: 10px;
-                padding: 20px;
-                max-width: calc(100% - 20px);
-            }
-
-            .phone-rules-modal .modal-content {
-                padding: 15px;
-            }
-
-            .phone-rules-modal h2 {
-                font-size: 18px;
-            }
-
-            .phone-rules-modal ul {
-                padding-left: 20px;
-            }
-
-            .phone-rules-modal li {
-                margin-bottom: 8px;
-                font-size: 14px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -500,18 +565,6 @@
             .product-table td {
                 padding: 6px;
             }
-
-            .modal-content {
-                padding: 15px;
-            }
-
-            .phone-rules-modal h2 {
-                font-size: 16px;
-            }
-
-            .phone-rules-modal li {
-                font-size: 13px;
-            }
         }
     </style>
 </head>
@@ -544,15 +597,17 @@
 
             <div class="form-group">
                 <label>Phone Number *</label>
-                <div class="phone-input-container">
-                    <select id="phoneProvider" name="phoneProvider" required>
-                        <option value="">Select Provider</option>
-                        <option value="ethio">Ethio Telecom</option>
-                        <option value="safaricom">Safaricom Ethiopia</option>
-                    </select>
-                    <div class="phone-input-wrapper">
+                <div class="phone-input-container-horizontal">
+                    <div class="provider-section">
+                        <select id="phoneProvider" name="phoneProvider" required>
+                            <option value="">Select Provider</option>
+                            <option value="ethio">Ethio Telecom</option>
+                            <option value="safaricom">Safaricom Ethiopia</option>
+                        </select>
+                    </div>
+                    <div class="phone-input-wrapper-horizontal">
                         <input type="tel" id="phoneNumber" name="phone" placeholder="Enter phone number" required>
-                        <button type="button" id="phoneHelpBtn" class="help-btn" title="Show phone format help">?</button>
+                        <button type="button" id="phoneHelpBtn" class="help-btn-horizontal" title="Show phone format help">?</button>
                     </div>
                 </div>
                 <div id="phoneRules" class="phone-rules" style="display: none;">
@@ -568,11 +623,7 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" name="email" placeholder="shop@example.com">
-            </div>
-
+            
             <div class="form-group">
                 <label>City *</label>
                 <input type="text" name="city" placeholder="Enter your city (e.g., Addis Ababa, Dire Dawa, Mekelle, etc.)" required>
@@ -627,6 +678,144 @@
         let uploadedImages = [];
         let products = [];
         let currentEditingIndex = -1;
+        let productFrontImages = {};
+        let productBackImages = {};
+        let productVideos = {};
+
+        // Autocomplete Data
+        const electronicsBrands = [
+            'Samsung', 'Apple', 'Xiaomi', 'Huawei', 'Oppo', 'Vivo', 'Realme', 'OnePlus',
+            'Nokia', 'Sony', 'LG', 'HTC', 'Motorola', 'Lenovo', 'Asus', 'Acer', 'Dell',
+            'HP', 'Toshiba', 'MSI', 'Gigabyte', 'Intel', 'AMD', 'Nvidia', 'Canon',
+            'Nikon', 'Fujifilm', 'Panasonic', 'Philips', 'Bose', 'JBL', 'Sony',
+            'Sennheiser', 'Audio-Technica', 'Shure', 'Logitech', 'Razer', 'Corsair'
+        ];
+
+        const ethiopianCities = [
+            'Addis Ababa', 'Dire Dawa', 'Mekelle', 'Gondar', 'Bahir Dar', 'Hawassa',
+            'Jimma', 'Jijiga', 'Dilla', 'Adama', 'Shashamane', 'Debre Markos',
+            'Kombolcha', 'Nekemte', 'Assosa', 'Gambela', 'Arba Minch', 'Weldiya',
+            'Sebeta', 'Ambo', 'Butajira', 'Gulisso', 'Hosaena', 'Mekane Selam'
+        ];
+
+        const productTypes = [
+            'Computer', 'Laptop', 'Desktop', 'Phone', 'Smartphone', 'Tablet',
+            'Accessories', 'Headphones', 'Speaker', 'Charger', 'Cable', 'Mouse',
+            'Keyboard', 'Monitor', 'TV', 'Camera', 'Printer', 'Router'
+        ];
+
+        // Autocomplete Functionality
+        class Autocomplete {
+            constructor(inputId, suggestions, dropdownId = null) {
+                this.input = document.getElementById(inputId);
+                this.suggestions = suggestions;
+                this.dropdownId = dropdownId || `${inputId}-dropdown`;
+                this.selectedIndex = -1;
+                
+                this.createDropdown();
+                this.setupEventListeners();
+            }
+
+            createDropdown() {
+                const dropdown = document.createElement('div');
+                dropdown.id = this.dropdownId;
+                dropdown.className = 'autocomplete-dropdown';
+                this.input.parentNode.appendChild(dropdown);
+            }
+
+            setupEventListeners() {
+                this.input.addEventListener('input', (e) => this.handleInput(e));
+                this.input.addEventListener('keydown', (e) => this.handleKeydown(e));
+                this.input.addEventListener('focus', () => this.showSuggestions());
+                this.input.addEventListener('blur', () => {
+                    setTimeout(() => this.hideSuggestions(), 200);
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!this.input.contains(e.target) && !document.getElementById(this.dropdownId).contains(e.target)) {
+                        this.hideSuggestions();
+                    }
+                });
+            }
+
+            handleInput(e) {
+                const value = e.target.value.toLowerCase();
+                if (value.length < 2) {
+                    this.hideSuggestions();
+                    return;
+                }
+
+                const filtered = this.suggestions.filter(item => 
+                    item.toLowerCase().includes(value)
+                );
+
+                this.showSuggestions(filtered);
+            }
+
+            handleKeydown(e) {
+                const dropdown = document.getElementById(this.dropdownId);
+                const items = dropdown.querySelectorAll('.autocomplete-item');
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    this.selectedIndex = Math.min(this.selectedIndex + 1, items.length - 1);
+                    this.updateSelection(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    this.selectedIndex = Math.max(this.selectedIndex - 1, -1);
+                    this.updateSelection(items);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (this.selectedIndex >= 0 && items[this.selectedIndex]) {
+                        this.selectItem(items[this.selectedIndex].textContent);
+                    }
+                } else if (e.key === 'Escape') {
+                    this.hideSuggestions();
+                }
+            }
+
+            updateSelection(items) {
+                items.forEach((item, index) => {
+                    if (index === this.selectedIndex) {
+                        item.classList.add('selected');
+                    } else {
+                        item.classList.remove('selected');
+                    }
+                });
+            }
+
+            showSuggestions(filteredSuggestions = null) {
+                const dropdown = document.getElementById(this.dropdownId);
+                const suggestions = filteredSuggestions || this.suggestions;
+
+                if (suggestions.length === 0) {
+                    dropdown.style.display = 'none';
+                    return;
+                }
+
+                dropdown.innerHTML = suggestions.map(item => 
+                    `<div class="autocomplete-item">${item}</div>`
+                ).join('');
+
+                dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+                    item.addEventListener('click', () => this.selectItem(item.textContent));
+                });
+
+                dropdown.style.display = 'block';
+                this.selectedIndex = -1;
+            }
+
+            hideSuggestions() {
+                document.getElementById(this.dropdownId).style.display = 'none';
+                this.selectedIndex = -1;
+            }
+
+            selectItem(value) {
+                this.input.value = value;
+                this.hideSuggestions();
+                this.input.dispatchEvent(new Event('input'));
+            }
+        }
 
         function showStatus(message, type = 'success') {
             const status = document.getElementById('status');
@@ -682,58 +871,94 @@
                     showStatus(`${file.name} is not an image file`, 'error');
                     return false;
                 }
-                if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                
+                if (file.size > 10 * 1024 * 1024) {
                     showStatus(`${file.name} is too large (max 10MB)`, 'error');
                     return false;
                 }
+                
                 return true;
             });
+            
+            if (validFiles.length === 0) {
+                showStatus('No valid files selected', 'error');
+                return;
+            }
+            
+            uploadedImages = uploadedImages.concat(validFiles.map(file => {
+                const imageUrl = URL.createObjectURL(file);
+                console.log('Created image URL:', imageUrl);
+                return {
+                    name: file.name,
+                    data: imageUrl,
+                    size: file.size,
+                    type: file.type
+                };
+            }));
+            
+            updateUploadArea();
+            
+            // Show success message for image upload
+            if (validFiles.length > 0) {
+                showStatus(`Successfully uploaded ${validFiles.length} image(s)! 🎉`, 'success');
+            }
+        }
 
-            console.log('Valid files:', validFiles.length);
-
-            validFiles.forEach((file, index) => {
-                const reader = new FileReader();
+        function updateUploadArea() {
+            const uploadArea = document.getElementById('uploadArea');
+            const imagePreview = document.getElementById('imagePreview');
+            
+            if (uploadedImages.length > 0) {
+                const totalSize = uploadedImages.reduce((sum, img) => sum + img.size, 0);
+                const sizeText = totalSize > 1024 * 1024 ? 
+                    `${(totalSize / (1024 * 1024)).toFixed(1)} MB` : 
+                    `${(totalSize / 1024).toFixed(1)} KB`;
                 
-                reader.onloadstart = () => {
-                    console.log(`Starting to read ${file.name}...`);
-                };
-                
-                reader.onload = (e) => {
-                    console.log(`Successfully read ${file.name}`);
-                    
-                    const imageData = {
-                        name: file.name,
-                        size: file.size,
-                        type: file.type,
-                        data: e.target.result
-                    };
-                    
-                    uploadedImages.push(imageData);
-                    console.log(`Added image ${uploadedImages.length}:`, imageData.name);
-                    
-                    displayImage(imageData, uploadedImages.length - 1);
-                    updateImageInfo();
-                    
-                    showStatus(`\u2705 ${file.name} uploaded successfully!`, 'success');
-                };
-                
-                reader.onerror = (error) => {
-                    console.error(`Error reading ${file.name}:`, error);
-                    showStatus(`\u274c Failed to read ${file.name}`, 'error');
-                };
-                
-                reader.readAsDataURL(file);
+                uploadArea.innerHTML = `
+                    <div class="upload-icon">+</div>
+                    <p>Click to add more images</p>
+                    <p style="font-size: 12px; opacity: 0.7;">${uploadedImages.length} images uploaded (${sizeText})</p>
+                `;
+            } else {
+                uploadArea.innerHTML = `
+                    <div class="upload-icon">+</div>
+                    <p>Click to upload shop images</p>
+                    <p style="font-size: 12px; opacity: 0.7;">PNG, JPG up to 10MB each</p>
+                `;
+            }
+            
+            imagePreview.innerHTML = '';
+            uploadedImages.forEach((imageData, index) => {
+                displayImage(imageData, index);
             });
         }
 
         function displayImage(imageData, index) {
             const imagePreview = document.getElementById('imagePreview');
             
+            console.log('Displaying image at index', index, ':', imageData);
+            
+            // Handle different image data formats
+            let imageSrc = imageData;
+            let imageName = `Image ${index + 1}`;
+            
+            if (typeof imageData === 'object' && imageData.data) {
+                imageSrc = imageData.data;
+                imageName = imageData.name || imageName;
+            } else if (typeof imageData === 'string') {
+                imageSrc = imageData;
+                imageName = `Image ${index + 1}`;
+            }
+            
+            console.log('Final image source:', imageSrc);
+            
             const imageItem = document.createElement('div');
             imageItem.className = 'image-item';
             imageItem.innerHTML = `
-                <img src="${imageData.data}" alt="${imageData.name}">
-                <button type="button" class="remove-btn" onclick="removeImage(${index})">\u00d7</button>
+                <img src="${imageSrc}" alt="${imageName}" 
+                     onload="console.log('Image loaded successfully:', '${imageSrc}')" 
+                     onerror="console.error('Image failed to load:', '${imageSrc}'); this.style.display='none'; this.parentElement.innerHTML+='<div style=\"padding:20px;text-align:center;color:red;background:#fee;border-radius:8px;margin:5px;\">Image failed to load</div>'">
+                <button type="button" class="remove-btn" onclick="removeImage(${index})">×</button>
             `;
             
             imagePreview.appendChild(imageItem);
@@ -744,7 +969,7 @@
             uploadedImages.splice(index, 1);
             refreshImageDisplay();
             updateImageInfo();
-            showStatus('Image removed', 'success');
+            showStatus('Image successfully removed! ✅', 'success');
         }
 
         function refreshImageDisplay() {
@@ -800,8 +1025,31 @@
             const phoneError = document.getElementById('phoneError');
 
             phoneHelpBtn.addEventListener('click', showPhoneRules);
-            phoneProvider.addEventListener('change', validatePhone);
+            phoneProvider.addEventListener('change', updatePhonePlaceholder);
             phoneNumber.addEventListener('input', validatePhone);
+            
+            // Update placeholder on initial load
+            updatePhonePlaceholder();
+        }
+
+        function updatePhonePlaceholder() {
+            const phoneProvider = document.getElementById('phoneProvider');
+            const phoneNumber = document.getElementById('phoneNumber');
+            
+            if (phoneProvider.value === 'ethio') {
+                phoneNumber.placeholder = '09XXXXXXXX';
+            } else if (phoneProvider.value === 'safaricom') {
+                phoneNumber.placeholder = '07XXXXXXXX';
+            } else {
+                phoneNumber.placeholder = 'Phone number';
+            }
+            
+            // Auto-focus phone input after provider selection
+            if (phoneProvider.value) {
+                setTimeout(() => {
+                    phoneNumber.focus();
+                }, 100);
+            }
         }
 
         function showPhoneRules() {
@@ -871,6 +1119,56 @@
             showProductForm();
         }
 
+        function editProduct(index) {
+            currentEditingIndex = index;
+            const product = products[index];
+            showProductForm();
+            
+            // Fill the form with existing data after modal is created
+            setTimeout(() => {
+                document.getElementById('productType').value = product.productType;
+                updateProductFields();
+                
+                // Fill form fields with product data
+                if (product.name) document.getElementById('productName').value = product.name;
+                if (product.brand) document.getElementById('brand').value = product.brand;
+                if (product.price) document.getElementById('price').value = product.price;
+                if (product.stock) document.getElementById('stock').value = product.stock;
+                
+                // Fill additional fields based on product type
+                if (product.network) document.getElementById('network').value = product.network;
+                if (product.color) document.getElementById('color').value = product.color;
+                if (product.fingerprint) document.getElementById('fingerprint').value = product.fingerprint;
+                if (product.model) document.getElementById('model').value = product.model;
+                if (product.warranty) document.getElementById('warranty').value = product.warranty;
+                if (product.notes) document.getElementById('notes').value = product.notes;
+                if (product.generation) document.getElementById('generation').value = product.generation;
+                if (product.ram) document.getElementById('ram').value = product.ram;
+                if (product.storageType) document.getElementById('storageType').value = product.storageType;
+                if (product.storageSize) document.getElementById('storageSize').value = product.storageSize;
+                if (product.batteryLife) document.getElementById('batteryLife').value = product.batteryLife;
+                if (product.operatingSystem) document.getElementById('operatingSystem').value = product.operatingSystem;
+                if (product.screenSize) document.getElementById('screenSize').value = product.screenSize;
+                if (product.resolution) document.getElementById('resolution').value = product.resolution;
+                if (product.description) document.getElementById('description').value = product.description;
+                
+                // Load multimedia data
+                const productId = currentEditingIndex === -1 ? Date.now().toString() : product.id;
+                if (product.frontImage) {
+                    productFrontImages[productId] = product.frontImage;
+                    displayProductImage(productId, 'front', product.frontImage);
+                }
+                if (product.backImage) {
+                    productBackImages[productId] = product.backImage;
+                    displayProductImage(productId, 'back', product.backImage);
+                }
+                if (product.video) {
+                    productVideos[productId] = product.video;
+                    displayProductVideo(productId, product.video);
+                }
+            }, 200);
+        }
+
         function showProductForm() {
             const modal = document.createElement('div');
             modal.style.cssText = `
@@ -892,14 +1190,13 @@
                         <h2 style="margin: 0; color: white;">Add Product</h2>
                         <button onclick="closeProductModal()" style="background: #ef4444; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">× Close</button>
                     </div>
-                    <form id="productForm" onsubmit="saveProduct(event)">
+                    <form id="productForm">
                         <div class="product-form">
                             <div class="form-group">
                                 <label style="color: white; font-weight: 600;">Product Type *</label>
                                 <select id="productType" required onchange="updateProductFields()" style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
                                     <option value="">Select Product Type</option>
                                     <option value="Computer">Computer</option>
-                                    <option value="Laptop">Laptop</option>
                                     <option value="Phone">Phone</option>
                                     <option value="Tablet">Tablet</option>
                                     <option value="Accessories">Accessories</option>
@@ -909,18 +1206,22 @@
                             <div id="dynamicProductFields">
                                 <!-- Dynamic product fields will be inserted here -->
                             </div>
-                        </div>
-                        
-                        <div style="margin-top: 20px;">
-                            <button type="submit" class="btn btn-primary">Save Product</button>
-                            <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Cancel</button>
+                            
+                            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                <button type="button" class="btn" id="submitProductBtn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);" onclick="handleProductSubmit()">Save Product</button>
+                                <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Cancel</button>
+                            </div>
                         </div>
                     </form>
                 </div>
             `;
             
             document.body.appendChild(modal);
-            updateProductFields();
+            
+            // Initialize product fields after modal is added to DOM
+            setTimeout(() => {
+                updateProductFields();
+            }, 100);
         }
 
         function closeProductModal() {
@@ -928,7 +1229,6 @@
             if (modal) {
                 modal.remove();
             }
-            document.getElementById('productForm').reset();
         }
 
         function updateProductFields() {
@@ -937,125 +1237,607 @@
             
             dynamicFields.innerHTML = '';
             
-            if (productType === 'Laptop') {
-                dynamicFields.innerHTML = `
+            // Add common fields
+            let commonFields = `
+                <div class="form-group">
+                    <label style="color: white; font-weight: 600;">Product Name *</label>
+                    <input type="text" id="productName" placeholder="e.g., Dell Inspiron 15" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                </div>
+                
+                <div class="form-group">
+                    <label style="color: white; font-weight: 600;">Brand *</label>
+                    <input type="text" id="brand" placeholder="e.g., Dell" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                </div>
+                
+                <div class="form-group">
+                    <label style="color: white; font-weight: 600;">Price (ETB) *</label>
+                    <input type="number" id="price" placeholder="e.g., 45000" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                </div>
+                
+                <div class="form-group">
+                    <label style="color: white; font-weight: 600;">Stock Quantity *</label>
+                    <input type="number" id="stock" placeholder="e.g., 10" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                </div>
+            `;
+            
+            // Add multimedia upload fields
+            let multimediaFields = `
+                <div class="form-group">
+                    <label style="color: white; font-weight: 600;">Front Image *</label>
+                    <div class="upload-area" onclick="document.getElementById('frontImageInput').click()" style="padding: 20px; border: 2px dashed rgba(255, 255, 255, 0.3); border-radius: 8px; text-align: center; cursor: pointer; background: rgba(255, 255, 255, 0.05);">
+                        <div class="upload-icon" style="font-size: 24px; color: rgba(255, 255, 255, 0.7);">📷</div>
+                        <p style="color: white; margin: 5px 0;">Click to upload front image</p>
+                        <p style="font-size: 12px; opacity: 0.7; color: rgba(255, 255, 255, 0.8);">PNG, JPG up to 10MB</p>
+                    </div>
+                    <input type="file" id="frontImageInput" accept="image/*" style="display: none;" onchange="handleProductImageUpload(event, 'front')">
+                    <div id="frontImagePreview" style="margin-top: 10px;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label style="color: white; font-weight: 600;">Back Image *</label>
+                    <div class="upload-area" onclick="document.getElementById('backImageInput').click()" style="padding: 20px; border: 2px dashed rgba(255, 255, 255, 0.3); border-radius: 8px; text-align: center; cursor: pointer; background: rgba(255, 255, 255, 0.05);">
+                        <div class="upload-icon" style="font-size: 24px; color: rgba(255, 255, 255, 0.7);">📷</div>
+                        <p style="color: white; margin: 5px 0;">Click to upload back image</p>
+                        <p style="font-size: 12px; opacity: 0.7; color: rgba(255, 255, 255, 0.8);">PNG, JPG up to 10MB</p>
+                    </div>
+                    <input type="file" id="backImageInput" accept="image/*" style="display: none;" onchange="handleProductImageUpload(event, 'back')">
+                    <div id="backImagePreview" style="margin-top: 10px;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label style="color: white; font-weight: 600;">Product Video (Optional)</label>
+                    <div class="upload-area" onclick="document.getElementById('videoInput').click()" style="padding: 20px; border: 2px dashed rgba(255, 255, 255, 0.3); border-radius: 8px; text-align: center; cursor: pointer; background: rgba(255, 255, 255, 0.05);">
+                        <div class="upload-icon" style="font-size: 24px; color: rgba(255, 255, 255, 0.7);">🎥</div>
+                        <p style="color: white; margin: 5px 0;">Click to upload product video</p>
+                        <p style="font-size: 12px; opacity: 0.7; color: rgba(255, 255, 255, 0.8);">MP4, WebM up to 50MB (Optional)</p>
+                    </div>
+                    <input type="file" id="videoInput" accept="video/*" style="display: none;" onchange="handleProductVideoUpload(event)">
+                    <div id="videoPreview" style="margin-top: 10px;"></div>
+                </div>
+            `;
+            
+            dynamicFields.innerHTML = commonFields + multimediaFields;
+            
+            // Add type-specific fields
+            if (productType === 'Phone') {
+                dynamicFields.innerHTML += `
                     <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Product Name *</label>
-                        <input type="text" id="productName" placeholder="e.g., Dell Inspiron 15" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                        <label style="color: white; font-weight: 600;">Network *</label>
+                        <select id="network" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                            <option value="">Select Network</option>
+                            <option value="2G">2G</option>
+                            <option value="3G">3G</option>
+                            <option value="4G">4G</option>
+                            <option value="5G">5G</option>
+                            <option value="LTE">LTE</option>
+                            <option value="5G Ready">5G Ready</option>
+                        </select>
                     </div>
                     
                     <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Brand *</label>
-                        <input type="text" id="brand" placeholder="e.g., Dell" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                        <label style="color: white; font-weight: 600;">Color *</label>
+                        <input type="text" id="color" placeholder="e.g., Black" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
                     </div>
                     
                     <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Price (ETB) *</label>
-                        <input type="number" id="price" placeholder="e.g., 45000" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                        <label style="color: white; font-weight: 600;">Fingerprint *</label>
+                        <select id="fingerprint" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                            <option value="">Select Fingerprint</option>
+                            <option value="Touch ID">Touch ID</option>
+                            <option value="Face ID">Face ID</option>
+                            <option value="Fingerprint">Fingerprint</option>
+                            <option value="None">None</option>
+                        </select>
                     </div>
                     
                     <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Stock Quantity *</label>
-                        <input type="number" id="stock" placeholder="e.g., 10" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
-                    </div>
-                `;
-            } else if (productType === 'Phone') {
-                dynamicFields.innerHTML = `
-                    <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Product Name *</label>
-                        <input type="text" id="productName" placeholder="e.g., iPhone 15" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                        <label style="color: white; font-weight: 600;">Model *</label>
+                        <input type="text" id="model" placeholder="e.g., iPhone 15 Pro" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
                     </div>
                     
                     <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Brand *</label>
-                        <input type="text" id="brand" placeholder="e.g., Apple" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                        <label style="color: white; font-weight: 600;">Warranty</label>
+                        <input type="text" id="warranty" placeholder="e.g., 1 Year" style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
                     </div>
                     
                     <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Price (ETB) *</label>
-                        <input type="number" id="price" placeholder="e.g., 45000" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Stock Quantity *</label>
-                        <input type="number" id="stock" placeholder="e.g., 10" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                        <label style="color: white; font-weight: 600;">Notes</label>
+                        <textarea id="notes" rows="4" placeholder="e.g., Original charger included" style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;"></textarea>
                     </div>
                 `;
             } else if (productType === 'Accessories') {
-                dynamicFields.innerHTML = `
+                dynamicFields.innerHTML += `
                     <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Product Name *</label>
-                        <input type="text" id="productName" placeholder="e.g., Wireless Headphones" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Brand *</label>
-                        <input type="text" id="brand" placeholder="e.g., Sony" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Price (ETB) *</label>
-                        <input type="number" id="price" placeholder="e.g., 8000" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Stock Quantity *</label>
-                        <input type="number" id="stock" placeholder="e.g., 20" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                        <label style="color: white; font-weight: 600;">Category</label>
+                        <select id="category" style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                            <option value="">Select Category</option>
+                            <option value="Headphones">Headphones</option>
+                            <option value="Chargers">Chargers</option>
+                            <option value="Cables">Cables</option>
+                            <option value="Cases">Cases</option>
+                            <option value="Screen Protectors">Screen Protectors</option>
+                        </select>
                     </div>
                 `;
-            } else {
-                // Default for Computer, Tablet
-                dynamicFields.innerHTML = `
+            } else if (productType === 'Computer') {
+                dynamicFields.innerHTML += `
                     <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Product Name *</label>
-                        <input type="text" id="productName" placeholder="e.g., iPad Pro" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                        <label style="color: white; font-weight: 600;">Generation *</label>
+                        <select id="generation" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                            <option value="">Select Generation</option>
+                            <option value="1st Gen">1st Gen</option>
+                            <option value="2nd Gen">2nd Gen</option>
+                            <option value="3rd Gen">3rd Gen</option>
+                            <option value="4th Gen">4th Gen</option>
+                            <option value="5th Gen">5th Gen</option>
+                            <option value="6th Gen">6th Gen</option>
+                            <option value="7th Gen">7th Gen</option>
+                            <option value="8th Gen">8th Gen</option>
+                            <option value="9th Gen">9th Gen</option>
+                            <option value="10th Gen">10th Gen</option>
+                            <option value="11th Gen">11th Gen</option>
+                            <option value="12th Gen">12th Gen</option>
+                        </select>
                     </div>
                     
                     <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Brand *</label>
-                        <input type="text" id="brand" placeholder="e.g., Apple" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                        <label style="color: white; font-weight: 600;">Model *</label>
+                        <input type="text" id="model" placeholder="e.g., 3520" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
                     </div>
                     
                     <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Price (ETB) *</label>
-                        <input type="number" id="price" placeholder="e.g., 25000" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                        <label style="color: white; font-weight: 600;">RAM (GB) *</label>
+                        <select id="ram" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                            <option value="">Select RAM</option>
+                            <option value="4GB">4GB</option>
+                            <option value="8GB">8GB</option>
+                            <option value="16GB">16GB</option>
+                            <option value="32GB">32GB</option>
+                            <option value="64GB">64GB</option>
+                            <option value="128GB">128GB</option>
+                            <option value="256GB">256GB</option>
+                            <option value="512GB">512GB</option>
+                        </select>
                     </div>
                     
                     <div class="form-group">
-                        <label style="color: white; font-weight: 600;">Stock Quantity *</label>
-                        <input type="number" id="stock" placeholder="e.g., 15" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                        <label style="color: white; font-weight: 600;">Storage Type *</label>
+                        <select id="storageType" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                            <option value="">Select Storage Type</option>
+                            <option value="SSD">SSD</option>
+                            <option value="HDD">HDD</option>
+                            <option value="NVMe">NVMe</option>
+                            <option value="Hybrid">Hybrid</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Storage Size (GB) *</label>
+                        <input type="number" id="storageSize" placeholder="e.g., 512" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Operating System *</label>
+                        <select id="operatingSystem" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                            <option value="">Select Operating System</option>
+                            <option value="Windows 10">Windows 10</option>
+                            <option value="Windows 11">Windows 11</option>
+                            <option value="macOS">macOS</option>
+                            <option value="Linux">Linux</option>
+                            <option value="Chrome OS">Chrome OS</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Warranty</label>
+                        <input type="text" id="warranty" placeholder="e.g., 1 Year" style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Description</label>
+                        <textarea id="description" rows="4" placeholder="Describe the product..." style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;"></textarea>
+                    </div>
+                `;
+            } else if (productType === 'Tablet') {
+                dynamicFields.innerHTML += `
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Screen Size (inch) *</label>
+                        <input type="text" id="screenSize" placeholder="e.g., 10.9" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Resolution *</label>
+                        <input type="text" id="resolution" placeholder="e.g., 2360 x 1640" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Storage Size (GB) *</label>
+                        <select id="storageSize" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                            <option value="">Select Storage Size</option>
+                            <option value="32GB">32GB</option>
+                            <option value="64GB">64GB</option>
+                            <option value="128GB">128GB</option>
+                            <option value="256GB">256GB</option>
+                            <option value="512GB">512GB</option>
+                            <option value="1TB">1TB</option>
+                            <option value="2TB">2TB</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">RAM (GB) *</label>
+                        <select id="ram" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                            <option value="">Select RAM</option>
+                            <option value="2GB">2GB</option>
+                            <option value="4GB">4GB</option>
+                            <option value="6GB">6GB</option>
+                            <option value="8GB">8GB</option>
+                            <option value="12GB">12GB</option>
+                            <option value="16GB">16GB</option>
+                            <option value="24GB">24GB</option>
+                            <option value="32GB">32GB</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Model *</label>
+                        <input type="text" id="model" placeholder="e.g., iPad Pro 2023" required style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Warranty</label>
+                        <input type="text" id="warranty" placeholder="e.g., 1 Year" style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="color: white; font-weight: 600;">Description</label>
+                        <textarea id="description" rows="4" placeholder="Describe product..." style="background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid #ddd;"></textarea>
                     </div>
                 `;
             }
         }
 
-        function saveProduct(event) {
-            event.preventDefault();
+        // Product multimedia upload handlers
+        function handleProductImageUpload(event, imageType) {
+            const file = event.target.files[0];
+            if (!file) return;
             
-            const productType = document.getElementById('productType').value;
-            const productName = document.getElementById('productName').value;
-            const brand = document.getElementById('brand').value;
-            const price = document.getElementById('price').value;
-            const stock = document.getElementById('stock').value;
+            if (!file.type.startsWith('image/')) {
+                showStatus('Please select an image file', 'error');
+                return;
+            }
+            
+            if (file.size > 10 * 1024 * 1024) {
+                showStatus('Image file is too large (max 10MB)', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                const productId = currentEditingIndex === -1 ? Date.now().toString() : products[currentEditingIndex].id;
+                
+                if (imageType === 'front') {
+                    productFrontImages[productId] = imageData;
+                } else {
+                    productBackImages[productId] = imageData;
+                }
+                
+                displayProductImage(productId, imageType, imageData);
+                showStatus(`${imageType} image uploaded successfully!`, 'success');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        function handleProductVideoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            console.log('Video upload started:', file);
+            
+            if (!file.type.startsWith('video/')) {
+                showStatus('Please select a video file', 'error');
+                return;
+            }
+            
+            if (file.size > 50 * 1024 * 1024) {
+                showStatus('Video file is too large (max 50MB)', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const videoData = e.target.result;
+                const productId = currentEditingIndex === -1 ? Date.now().toString() : products[currentEditingIndex].id;
+                
+                console.log('Video data loaded, product ID:', productId, 'Data length:', videoData.length);
+                
+                productVideos[productId] = videoData;
+                displayProductVideo(productId, videoData);
+                showStatus('Video uploaded successfully! Video size: ' + (file.size / 1024 / 1024).toFixed(2) + 'MB', 'success');
+                
+                // Update current product if editing
+                if (currentEditingIndex !== -1 && products[currentEditingIndex]) {
+                    products[currentEditingIndex].video = videoData;
+                    console.log('Updated current product with video');
+                }
+            };
+            
+            reader.onerror = function(error) {
+                console.error('Video upload error:', error);
+                showStatus('Failed to read video file', 'error');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        function displayProductImage(productId, imageType, imageData) {
+            const previewId = imageType + 'ImagePreview';
+            const preview = document.getElementById(previewId);
+            
+            if (preview) {
+                preview.innerHTML = `
+                    <div style="position: relative; display: inline-block; margin: 5px;">
+                        <img src="${imageData}" alt="${imageType} image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid #10b981;">
+                        <button type="button" onclick="removeProductImage('${productId}', '${imageType}')" style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px;">×</button>
+                    </div>
+                `;
+            }
+        }
+
+        function displayProductVideo(productId, videoData) {
+            const preview = document.getElementById('videoPreview');
+            
+            console.log('Displaying video for product:', productId, 'Data length:', videoData ? videoData.length : 'no data');
+            
+            if (preview) {
+                preview.innerHTML = `
+                    <div style="position: relative; display: inline-block; margin: 5px;">
+                        <video src="${videoData}" style="width: 150px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid #10b981;" controls 
+                               onloadstart="console.log('Video loading started')"
+                               onloadeddata="console.log('Video data loaded')"
+                               onerror="console.error('Video failed to load'); this.style.display='none'; this.parentElement.innerHTML+='<div style=\"width:150px;height:100px;background:#fee;border-radius:8px;display:flex;align-items:center;justify-content:center;color:red;font-size:12px;\">Video Error</div>'">
+                        </video>
+                        <button type="button" onclick="removeProductVideo('${productId}')" style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 12px;">×</button>
+                    </div>
+                `;
+            }
+        }
+
+        function removeProductImage(productId, imageType) {
+            if (imageType === 'front') {
+                delete productFrontImages[productId];
+            } else {
+                delete productBackImages[productId];
+            }
+            
+            const previewId = imageType + 'ImagePreview';
+            const preview = document.getElementById(previewId);
+            if (preview) {
+                preview.innerHTML = '';
+            }
+            
+            showStatus(`${imageType} image removed`, 'success');
+        }
+
+        function removeProductVideo(productId) {
+            delete productVideos[productId];
+            
+            const preview = document.getElementById('videoPreview');
+            if (preview) {
+                preview.innerHTML = '';
+            }
+            
+            showStatus('Video removed', 'success');
+        }
+
+        function saveProduct(event) {
+            if (event) {
+                event.preventDefault();
+            }
+            // Call the new handleProductSubmit function
+            handleProductSubmit();
+        }
+
+        // Global variable to track submission state
+        let isProductSubmitting = false;
+
+        function resetSubmitButton() {
+            isProductSubmitting = false;
+            const resetBtnElement = document.getElementById('submitProductBtn');
+            if (resetBtnElement) {
+                resetBtnElement.disabled = false;
+                resetBtnElement.textContent = 'Save Product';
+                resetBtnElement.style.opacity = '1';
+            }
+        }
+
+        function handleProductSubmit() {
+            console.log('Product submit button clicked - START');
+            console.log('isProductSubmitting flag:', isProductSubmitting);
+            
+            // Prevent multiple simultaneous submissions
+            if (isProductSubmitting) {
+                console.log('Already submitting, ignoring click');
+                return;
+            }
+            
+            isProductSubmitting = true;
+            console.log('Set isProductSubmitting to true');
+            
+            // Update button state
+            const submitBtnElement = document.getElementById('submitProductBtn');
+            if (submitBtnElement) {
+                submitBtnElement.disabled = true;
+                submitBtnElement.textContent = 'Submitting Product...';
+                submitBtnElement.style.opacity = '0.7';
+                submitBtnElement.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+            }
+            
+            // Check if form elements exist
+            console.log('Checking form elements...');
+            const productTypeEl = document.getElementById('productType');
+            const productNameEl = document.getElementById('productName');
+            const brandEl = document.getElementById('brand');
+            const priceEl = document.getElementById('price');
+            const stockEl = document.getElementById('stock');
+            
+            console.log('Form elements found:', {
+                productType: !!productTypeEl,
+                productName: !!productNameEl,
+                brand: !!brandEl,
+                price: !!priceEl,
+                stock: !!stockEl
+            });
+            
+            // Get form values
+            const productType = productTypeEl?.value || '';
+            const productName = productNameEl?.value || '';
+            const brand = brandEl?.value || '';
+            const price = priceEl?.value || '';
+            const stock = stockEl?.value || '';
+            
+            console.log('Form values:', { productType, productName, brand, price, stock });
+            console.log('Products array before save:', products.length);
+            
+            // Validate required fields
+            if (!productType) {
+                console.log('Validation failed: No product type');
+                showStatus('Please select a product type!', 'error');
+                resetSubmitButton();
+                return;
+            }
+            
+            if (!productName || productName.trim() === '') {
+                console.log('Validation failed: No product name');
+                showStatus('Please enter a product name!', 'error');
+                resetSubmitButton();
+                return;
+            }
+            
+            if (!brand || brand.trim() === '') {
+                console.log('Validation failed: No brand');
+                showStatus('Please enter a brand!', 'error');
+                resetSubmitButton();
+                return;
+            }
+            
+            if (!price || price <= 0) {
+                console.log('Validation failed: Invalid price', price);
+                showStatus('Please enter a valid price!', 'error');
+                resetSubmitButton();
+                return;
+            }
+            
+            if (!stock || stock < 0) {
+                console.log('Validation failed: Invalid stock', stock);
+                showStatus('Please enter a valid stock quantity!', 'error');
+                resetSubmitButton();
+                return;
+            }
+            
+            console.log('Validation passed, proceeding with product save');
+            
+            const productId = currentEditingIndex === -1 ? Date.now().toString() : products[currentEditingIndex]?.id || Date.now().toString();
             
             const product = {
-                id: Date.now().toString(),
+                id: productId,
                 productType: productType,
                 name: productName,
                 brand: brand,
                 price: price,
-                stock: stock
+                stock: stock,
+                frontImage: productFrontImages[productId] || null,
+                backImage: productBackImages[productId] || null,
+                video: productVideos[productId] || null
             };
             
-            if (currentEditingIndex === -1) {
-                products.push(product);
-            } else {
-                products[currentEditingIndex] = product;
+            console.log('Created product object:', {
+                id: product.id,
+                name: product.name,
+                hasFrontImage: !!product.frontImage,
+                hasBackImage: !!product.backImage,
+                hasVideo: !!product.video,
+                videoLength: product.video ? product.video.length : 0
+            });
+            
+            // Add type-specific fields with error handling
+            try {
+                if (productType === 'Phone') {
+                    product.network = document.getElementById('network')?.value || '';
+                    product.color = document.getElementById('color')?.value || '';
+                    product.fingerprint = document.getElementById('fingerprint')?.value || '';
+                    product.model = document.getElementById('model')?.value || '';
+                    product.warranty = document.getElementById('warranty')?.value || '';
+                    product.notes = document.getElementById('notes')?.value || '';
+                } else if (productType === 'Computer') {
+                    product.generation = document.getElementById('generation')?.value || '';
+                    product.model = document.getElementById('model')?.value || '';
+                    product.ram = document.getElementById('ram')?.value || '';
+                    product.storageType = document.getElementById('storageType')?.value || '';
+                    product.storageSize = document.getElementById('storageSize')?.value || '';
+                    product.operatingSystem = document.getElementById('operatingSystem')?.value || '';
+                    product.warranty = document.getElementById('warranty')?.value || '';
+                    product.description = document.getElementById('description')?.value || '';
+                } else if (productType === 'Tablet') {
+                    product.screenSize = document.getElementById('screenSize')?.value || '';
+                    product.resolution = document.getElementById('resolution')?.value || '';
+                    product.storageSize = document.getElementById('storageSize')?.value || '';
+                    product.ram = document.getElementById('ram')?.value || '';
+                    product.model = document.getElementById('model')?.value || '';
+                    product.warranty = document.getElementById('warranty')?.value || '';
+                    product.description = document.getElementById('description')?.value || '';
+                } else if (productType === 'Accessories') {
+                    product.category = document.getElementById('category')?.value || '';
+                }
+            } catch (error) {
+                console.error('Error getting type-specific fields:', error);
+                showStatus('Error getting product details!', 'error');
+                return;
             }
             
+            // Save product
+            if (currentEditingIndex === -1) {
+                products.push(product);
+                console.log('New product added to array');
+            } else {
+                products[currentEditingIndex] = product;
+                console.log('Product updated at index:', currentEditingIndex);
+            }
+            
+            // Update UI and show success
             updateProductTable();
+            
+            // Keep product-specific storage until shop is submitted
+            // Don't clear temporary storage yet - videos need to be preserved for final shop submission
+            console.log('Keeping temporary storage for product:', productId);
+            
+            // Show success message on main page
+            const action = currentEditingIndex === -1 ? 'added' : 'updated';
+            showStatus(`Product ${action} successfully! Total products: ${products.length}`, 'success');
+            
+            // Close the product modal
             closeProductModal();
-            showStatus('Product saved successfully!', 'success');
+            
+            console.log('Product saved:', product);
+            console.log('Total products:', products.length);
+            console.log('All products:', products);
+            
+            // Reset submit flag for next submission
+            isProductSubmitting = false;
+            
+            // Reset button state
+            const resetBtnElement = document.getElementById('submitProductBtn');
+            if (resetBtnElement) {
+                resetBtnElement.disabled = false;
+                resetBtnElement.textContent = 'Save Product';
+                resetBtnElement.style.opacity = '1';
+                resetBtnElement.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+            }
+            
+            // Reset editing index
+            currentEditingIndex = -1;
         }
 
         function updateProductTable() {
@@ -1082,24 +1864,13 @@
             `).join('');
         }
 
-        function editProduct(index) {
-            currentEditingIndex = index;
-            const product = products[index];
-            
-            showProductForm();
-            
-            // Fill the form with existing data
-            document.getElementById('productType').value = product.productType;
-            document.getElementById('productName').value = product.name;
-            document.getElementById('brand').value = product.brand;
-            document.getElementById('price').value = product.price;
-            document.getElementById('stock').value = product.stock;
-            
-            updateProductFields();
-        }
-
         function deleteProduct(index) {
             if (confirm('Are you sure you want to delete this product?')) {
+                const productId = products[index].id;
+                delete productFrontImages[productId];
+                delete productBackImages[productId];
+                delete productVideos[productId];
+                
                 products.splice(index, 1);
                 updateProductTable();
                 showStatus('Product deleted successfully!', 'success');
@@ -1118,6 +1889,58 @@
             
             // Get form data
             const formData = new FormData(this);
+            
+            // Process images for proper storage
+            const processedImages = uploadedImages.map(img => {
+                if (typeof img === 'object' && img.data) {
+                    return {
+                        name: img.name,
+                        data: img.data,
+                        size: img.size,
+                        type: img.type
+                    };
+                }
+                return img;
+            });
+            
+            // Process products with proper image handling
+            const processedProducts = products.map(product => {
+                const processedProduct = { ...product };
+                
+                console.log('Processing product:', product.id, product.name);
+                
+                // Handle product front image
+                if (productFrontImages[product.id]) {
+                    processedProduct.frontImage = productFrontImages[product.id];
+                    console.log('Added front image to product:', product.id);
+                }
+                
+                // Handle product back image
+                if (productBackImages[product.id]) {
+                    processedProduct.backImage = productBackImages[product.id];
+                    console.log('Added back image to product:', product.id);
+                }
+                
+                // Handle product video
+                if (productVideos[product.id]) {
+                    processedProduct.video = productVideos[product.id];
+                    console.log('Added video to product:', product.id, 'Video length:', productVideos[product.id].length);
+                } else if (product.video) {
+                    // Video is already in product object (from handleProductSubmit)
+                    processedProduct.video = product.video;
+                    console.log('Product already has video:', product.id, 'Video length:', product.video.length);
+                } else {
+                    console.log('No video found for product:', product.id);
+                }
+                
+                // Ensure video is properly stored
+                if (processedProduct.video) {
+                    console.log('Final video check for product', product.id, '- Video exists:', !!processedProduct.video, 'Type:', typeof processedProduct.video);
+                }
+                
+                return processedProduct;
+            });
+            
             const shopData = {
                 id: Date.now().toString(),
                 shopName: formData.get('shopName'),
@@ -1125,19 +1948,33 @@
                 description: formData.get('description'),
                 phone: formData.get('phone'),
                 phoneProvider: formData.get('phoneProvider'),
-                email: formData.get('email'),
                 city: formData.get('city'),
                 address: formData.get('address'),
-                images: uploadedImages,
-                products: products,
+                images: processedImages,
+                products: processedProducts,
                 createdAt: new Date().toISOString(),
                 status: 'pending'
             };
+            
+            console.log('Saving shop data:', shopData);
+            console.log('Products with videos:', shopData.products.filter(p => p.video).map(p => ({id: p.id, name: p.name, hasVideo: !!p.video, videoLength: p.video?.length})));
             
             // Save to localStorage
             const existingShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
             existingShops.push(shopData);
             localStorage.setItem('registeredShops', JSON.stringify(existingShops));
+            
+            // Verify save
+            const savedShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const savedShop = savedShops.find(s => s.id === shopData.id);
+            if (savedShop) {
+                console.log('Shop saved successfully. Products with videos:', savedShop.products.filter(p => p.video).length);
+                savedShop.products.forEach((product, index) => {
+                    console.log(`Product ${index + 1}: ${product.name} - Has video: ${!!product.video}`);
+                });
+            } else {
+                console.error('Shop not found in localStorage after save!');
+            }
             
             // Show success message
             showStatus('Shop registered successfully! Redirecting...', 'success');
@@ -1153,7 +1990,41 @@
             initializeImageUpload();
             initializePhoneValidation();
             updateProductTable();
+            
+            // Initialize Autocomplete
+            initializeAutocomplete();
         });
+
+        // Initialize autocomplete functionality
+        function initializeAutocomplete() {
+            // Brand autocomplete for shop registration
+            if (document.getElementById('shopName')) {
+                new Autocomplete('shopName', electronicsBrands);
+            }
+            
+            // City autocomplete
+            if (document.getElementById('city')) {
+                new Autocomplete('city', ethiopianCities);
+            }
+            
+            // Brand autocomplete for products (in modal)
+            setTimeout(() => {
+                const brandInputs = document.querySelectorAll('input[name="brand"], input[id="brand"]');
+                brandInputs.forEach(input => {
+                    if (input.id) {
+                        new Autocomplete(input.id, electronicsBrands);
+                    }
+                });
+                
+                // Product type autocomplete
+                const productTypeInputs = document.querySelectorAll('input[name="productType"], input[id="productType"]');
+                productTypeInputs.forEach(input => {
+                    if (input.id) {
+                        new Autocomplete(input.id, productTypes);
+                    }
+                });
+            }, 500);
+        }
     </script>
 </body>
 </html>
