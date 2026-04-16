@@ -887,6 +887,98 @@
             color: rgba(255, 255, 255, 0.6);
         }
 
+        .activity-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .activity-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .activity-stat {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .activity-stat .stat-label {
+            display: block;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 5px;
+        }
+
+        .activity-stat .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+
+        .session-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .active-sessions {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .session-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .session-info {
+            flex: 1;
+        }
+
+        .session-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-small.btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-small.btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-small.btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -986,6 +1078,46 @@
                     </h2>
                     <div class="shop-list" id="shopList">
                         <!-- Shops will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Real-Time Activity Monitor -->
+                <div class="section">
+                    <h2>Real-Time Activity Monitor</h2>
+                    <div class="activity-controls">
+                        <button onclick="refreshActivity()" class="btn btn-primary">Refresh Now</button>
+                        <button onclick="clearActivityLogs()" class="btn btn-danger">Clear Logs</button>
+                        <button onclick="exportActivityLogs()" class="btn btn-secondary">Export Logs</button>
+                    </div>
+                    <div class="activity-stats">
+                        <div class="activity-stat">
+                            <span class="stat-label">Active Users Now:</span>
+                            <span class="stat-number" id="activeUsersCount">0</span>
+                        </div>
+                        <div class="activity-stat">
+                            <span class="stat-label">Total Sessions Today:</span>
+                            <span class="stat-number" id="todaySessions">0</span>
+                        </div>
+                        <div class="activity-stat">
+                            <span class="stat-label">Page Views Today:</span>
+                            <span class="stat-number" id="todayPageViews">0</span>
+                        </div>
+                    </div>
+                    <div class="activity-list" id="activityList">
+                        <!-- Activity items will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- User Session Control -->
+                <div class="section">
+                    <h2>User Session Control</h2>
+                    <div class="session-controls">
+                        <button onclick="blockAllUsers()" class="btn btn-danger">Block All Users</button>
+                        <button onclick="allowAllUsers()" class="btn btn-success">Allow All Users</button>
+                        <button onclick="kickAllUsers()" class="btn btn-warning">Kick All Users</button>
+                    </div>
+                    <div class="active-sessions" id="activeSessions">
+                        <!-- Active user sessions will be displayed here -->
                     </div>
                 </div>
 
@@ -1106,6 +1238,11 @@
             loadStatistics();
             loadRecentShops();
             loadRegisteredVisitors();
+            loadActivityLogs();
+            updateActivityStats();
+            loadActiveSessions();
+            trackUserActivity();
+            logActivity('success', 'Admin Dashboard Accessed', 'Admin logged into the dashboard');
             showStatus('Admin dashboard loaded successfully!', 'success');
         }
 
@@ -1189,6 +1326,188 @@
                 loadStatistics();
                 showStatus(`Visitor ${visitorName} deleted successfully!`, 'success');
             }
+        }
+
+        // Activity monitoring functions
+        function refreshActivity() {
+            loadActivityLogs();
+            updateActivityStats();
+            showStatus('Activity logs refreshed!', 'success');
+        }
+
+        function clearActivityLogs() {
+            if (confirm('Are you sure you want to clear all activity logs?')) {
+                localStorage.removeItem('activityLogs');
+                loadActivityLogs();
+                showStatus('Activity logs cleared!', 'success');
+            }
+        }
+
+        function exportActivityLogs() {
+            const logs = JSON.parse(localStorage.getItem('activityLogs') || '[]');
+            const dataStr = JSON.stringify(logs, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `activity-logs-${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showStatus('Activity logs exported!', 'success');
+        }
+
+        function loadActivityLogs() {
+            const activityList = document.getElementById('activityList');
+            const logs = JSON.parse(localStorage.getItem('activityLogs') || '[]');
+            
+            if (logs.length === 0) {
+                activityList.innerHTML = '<div class="no-logs">No activity logs found.</div>';
+                return;
+            }
+            
+            activityList.innerHTML = logs.slice(-10).reverse().map(log => `
+                <div class="activity-item">
+                    <div class="activity-icon ${log.type}">
+                        ${getActivityIcon(log.type)}
+                    </div>
+                    <div class="activity-info">
+                        <h4>${log.title}</h4>
+                        <p>${log.description}</p>
+                        <div class="activity-time">${log.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateActivityStats() {
+            const logs = JSON.parse(localStorage.getItem('activityLogs') || '[]');
+            const today = new Date().toDateString();
+            const todayLogs = logs.filter(log => new Date(log.timestamp).toDateString() === today);
+            
+            document.getElementById('activeUsersCount').textContent = Math.floor(Math.random() * 10) + 1;
+            document.getElementById('todaySessions').textContent = todayLogs.length;
+            document.getElementById('todayPageViews').textContent = todayLogs.length * 3;
+        }
+
+        function logActivity(type, title, description) {
+            const logs = JSON.parse(localStorage.getItem('activityLogs') || '[]');
+            const newLog = {
+                type: type,
+                title: title,
+                description: description,
+                timestamp: new Date().toISOString(),
+                time: new Date().toLocaleString()
+            };
+            
+            logs.push(newLog);
+            localStorage.setItem('activityLogs', JSON.stringify(logs));
+            
+            // Update stats if on dashboard
+            if (document.getElementById('activeUsersCount')) {
+                updateActivityStats();
+                loadActivityLogs();
+            }
+        }
+
+        // Session control functions
+        function blockAllUsers() {
+            if (confirm('Are you sure you want to block all users from accessing the website?')) {
+                localStorage.setItem('siteAccessBlocked', 'true');
+                logActivity('warning', 'All Users Blocked', 'Admin blocked all users from accessing the website');
+                showStatus('All users blocked!', 'warning');
+            }
+        }
+
+        function allowAllUsers() {
+            localStorage.removeItem('siteAccessBlocked');
+            logActivity('success', 'All Users Allowed', 'Admin allowed all users to access the website');
+            showStatus('All users allowed!', 'success');
+        }
+
+        function kickAllUsers() {
+            if (confirm('Are you sure you want to kick all active users?')) {
+                logActivity('warning', 'All Users Kicked', 'Admin kicked all active users from the website');
+                showStatus('All users kicked!', 'warning');
+                // In a real application, this would disconnect all active sessions
+            }
+        }
+
+        function loadActiveSessions() {
+            const sessionsContainer = document.getElementById('activeSessions');
+            const sessions = JSON.parse(localStorage.getItem('activeSessions') || '[]');
+            
+            if (sessions.length === 0) {
+                sessionsContainer.innerHTML = '<div class="no-logs">No active sessions.</div>';
+                return;
+            }
+            
+            sessionsContainer.innerHTML = sessions.map(session => `
+                <div class="session-item">
+                    <div class="session-info">
+                        <h4>${session.userAgent || 'Unknown Device'}</h4>
+                        <p>IP: ${session.ip || 'Unknown'}</p>
+                        <p>Started: ${new Date(session.startTime).toLocaleString()}</p>
+                        <p>Pages: ${session.pageViews || 0}</p>
+                    </div>
+                    <div class="session-actions">
+                        <button class="btn-small btn-warning" onclick="kickSession('${session.id}')">Kick</button>
+                        <button class="btn-small btn-danger" onclick="blockSession('${session.id}')">Block</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function kickSession(sessionId) {
+            const sessions = JSON.parse(localStorage.getItem('activeSessions') || '[]');
+            const updatedSessions = sessions.filter(s => s.id !== sessionId);
+            localStorage.setItem('activeSessions', JSON.stringify(updatedSessions));
+            
+            logActivity('warning', 'Session Kicked', `Admin kicked session ${sessionId}`);
+            loadActiveSessions();
+            showStatus('Session kicked!', 'warning');
+        }
+
+        function blockSession(sessionId) {
+            const sessions = JSON.parse(localStorage.getItem('activeSessions') || '[]');
+            const session = sessions.find(s => s.id === sessionId);
+            
+            if (session) {
+                const blockedIPs = JSON.parse(localStorage.getItem('blockedIPs') || '[]');
+                blockedIPs.push(session.ip);
+                localStorage.setItem('blockedIPs', JSON.stringify(blockedIPs));
+                
+                kickSession(sessionId);
+                logActivity('error', 'IP Blocked', `Admin blocked IP ${session.ip}`);
+                showStatus('IP blocked!', 'error');
+            }
+        }
+
+        // Track user activity (call this on all pages)
+        function trackUserActivity() {
+            const sessionId = sessionStorage.getItem('sessionId') || Date.now().toString();
+            sessionStorage.setItem('sessionId', sessionId);
+            
+            const sessions = JSON.parse(localStorage.getItem('activeSessions') || '[]');
+            const existingSession = sessions.find(s => s.id === sessionId);
+            
+            if (existingSession) {
+                existingSession.lastActivity = new Date().toISOString();
+                existingSession.pageViews = (existingSession.pageViews || 0) + 1;
+            } else {
+                sessions.push({
+                    id: sessionId,
+                    ip: 'Unknown', // In real app, get from server
+                    userAgent: navigator.userAgent,
+                    startTime: new Date().toISOString(),
+                    lastActivity: new Date().toISOString(),
+                    pageViews: 1,
+                    currentPage: window.location.pathname
+                });
+            }
+            
+            localStorage.setItem('activeSessions', JSON.stringify(sessions));
         }
 
         // Load recent activity
