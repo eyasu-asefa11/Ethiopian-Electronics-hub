@@ -3568,17 +3568,40 @@
         function saveShopProduct(event, shopId) {
             event.preventDefault();
             
+            console.log('Product submit button clicked - START');
+            
+            // Disable submit button immediately to prevent multiple submissions
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
+                submitBtn.style.opacity = '0.7';
+                submitBtn.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+            }
+            
             const productType = document.getElementById('productType').value;
             const productName = document.getElementById('productName').value;
             const productBrand = document.getElementById('productBrand').value;
             const price = document.getElementById('price').value;
             const stock = document.getElementById('stock').value;
             
+            console.log('Form values:', { productType, productName, productBrand, price, stock });
+            
             // Basic validation
             if (!productType || !productName || !productBrand || !price || !stock) {
+                console.log('Validation failed - missing required fields');
                 alert('Please fill in all required fields!');
+                // Reset button state
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Product';
+                    submitBtn.style.opacity = '1';
+                    submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                }
                 return;
             }
+            
+            console.log('Validation passed, proceeding with product save');
             
             // Create product data object
             const productData = {
@@ -3707,6 +3730,15 @@
                 
                 // Close modal
                 closeProductModal();
+                
+                // Reset button state (in case modal is reopened)
+                const submitBtn = document.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Product';
+                    submitBtn.style.opacity = '1';
+                    submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                }
                 
                 // Optional: Scroll to the updated shop card
                 setTimeout(() => {
