@@ -1372,11 +1372,10 @@
         let currentFilter = 'all';
         let searchTimeout;
 
-        // Load real data from localStorage
+        // Load real data from backend API
         function loadRegisteredShops() {
-            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
-            console.log('Loading registered shops:', shops);
-            return shops.map(shop => ({
+            console.log('Loading registered shops from allShops:', allShops);
+            return allShops.map(shop => ({
                 ...shop,
                 // Parse products if they exist as string
                 products: typeof shop.products === 'string' ? JSON.parse(shop.products || '[]') : (shop.products || []),
@@ -1479,7 +1478,7 @@
                 return;
             }
             
-            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const shops = allShops; // Use the global allShops variable instead of localStorage
             const searchLower = searchTerm.toLowerCase().trim();
             
             let shopResults = [];
@@ -4359,23 +4358,45 @@
 
         // Load shops with city filtering
         function loadShops() {
-            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
-            allShops = shops; // Populate allShops global variable
-            const shopsContainer = document.getElementById('shopsContainer');
-            
-            // Filter shops by city
-            let filteredShops = shops;
-            if (currentCityFilter !== 'all') {
-                filteredShops = shops.filter(shop => 
-                    shop.city && shop.city.toLowerCase() === currentCityFilter.toLowerCase()
-                );
-            }
-            
-            // Update stats
-            updateStats(shops);
-            
-            // Render shops
-            renderShops(filteredShops);
+            // Fetch shops from backend API instead of localStorage
+            fetch('http://localhost:5000/shops')
+                .then(response => response.json())
+                .then(shops => {
+                    console.log('Fetched shops from backend:', shops);
+                    allShops = shops; // Populate allShops global variable
+                    const shopsContainer = document.getElementById('shopsContainer');
+
+                    // Filter shops by city
+                    let filteredShops = shops;
+                    if (currentCityFilter !== 'all') {
+                        filteredShops = shops.filter(shop =>
+                            shop.city && shop.city.toLowerCase() === currentCityFilter.toLowerCase()
+                        );
+                    }
+
+                    // Update stats
+                    updateStats(shops);
+
+                    // Render shops
+                    renderShops(filteredShops);
+                })
+                .catch(error => {
+                    console.error('Error fetching shops:', error);
+                    // Fallback to localStorage if API fails
+                    const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+                    allShops = shops;
+                    const shopsContainer = document.getElementById('shopsContainer');
+
+                    let filteredShops = shops;
+                    if (currentCityFilter !== 'all') {
+                        filteredShops = shops.filter(shop =>
+                            shop.city && shop.city.toLowerCase() === currentCityFilter.toLowerCase()
+                        );
+                    }
+
+                    updateStats(shops);
+                    renderShops(filteredShops);
+                });
         }
 
         // Render shops with enhanced functionality
@@ -5065,125 +5086,7 @@
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Add sample shops if no shops exist
-            const existingShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
-            if (existingShops.length === 0) {
-                const sampleShops = [
-                    {
-                        id: '1',
-                        name: 'HENOK Electronics',
-                        owner: 'HENOK',
-                        city: 'Addis Ababa',
-                        location: 'Bole',
-                        phone: '+251912345678',
-                        telegram: '@henok_electronics',
-                        email: 'henok@electronics.com',
-                        rating: '4.5',
-                        status: 'active',
-                        createdAt: new Date().toISOString(),
-                        products: [
-                            {
-                                id: 'p1',
-                                name: 'Samsung Galaxy A05',
-                                brand: 'Samsung',
-                                category: 'phones',
-                                price: 45000,
-                                quantity: 5,
-                                condition: 'new',
-                                ram: '4GB',
-                                storage: '64GB',
-                                battery: '5000 mAh',
-                                screenSize: '6.7 inches',
-                                processor: 'MediaTek Helio G85',
-                                os: 'Android 13',
-                                description: 'Brand new Samsung Galaxy A05 with warranty',
-                                images: ['https://picsum.photos/seed/samsung-a05/400/300.jpg']
-                            },
-                            {
-                                id: 'p2',
-                                name: 'Tecno Spark 10',
-                                brand: 'Tecno',
-                                category: 'phones',
-                                price: 35000,
-                                quantity: 8,
-                                condition: 'new',
-                                ram: '4GB',
-                                storage: '128GB',
-                                battery: '5000 mAh',
-                                screenSize: '6.6 inches',
-                                processor: 'MediaTek Helio G70',
-                                os: 'Android 12',
-                                description: 'Affordable smartphone with great features',
-                                images: ['https://picsum.photos/seed/tecno-spark/400/300.jpg']
-                            }
-                        ]
-                    },
-                    {
-                        id: '2',
-                        name: 'Alemu Tech Store',
-                        owner: 'Alemu',
-                        city: 'Hawassa',
-                        location: 'Mekane Yesus',
-                        phone: '+251923456789',
-                        telegram: '@alemu_tech',
-                        email: 'alemu@tech.com',
-                        rating: '4.2',
-                        status: 'active',
-                        createdAt: new Date().toISOString(),
-                        products: [
-                            {
-                                id: 'p3',
-                                name: 'HP Laptop 15',
-                                brand: 'HP',
-                                category: 'laptops',
-                                price: 25000,
-                                quantity: 3,
-                                condition: 'new',
-                                ram: '8GB',
-                                storage: '512GB SSD',
-                                processor: 'Intel Core i5',
-                                os: 'Windows 11',
-                                description: 'Reliable laptop for work and study',
-                                images: ['https://picsum.photos/seed/hp-laptop/400/300.jpg']
-                            }
-                        ]
-                    },
-                    {
-                        id: '3',
-                        name: 'Kebede Mobile',
-                        owner: 'Kebede',
-                        city: 'Bahir Dar',
-                        location: 'Piazza',
-                        phone: '+251934567890',
-                        telegram: '@kebede_mobile',
-                        email: 'kebede@mobile.com',
-                        rating: '4.7',
-                        status: 'active',
-                        createdAt: new Date().toISOString(),
-                        products: [
-                            {
-                                id: 'p4',
-                                name: 'iPhone 12',
-                                brand: 'Apple',
-                                category: 'phones',
-                                price: 65000,
-                                quantity: 2,
-                                condition: 'refurbished',
-                                ram: '4GB',
-                                storage: '64GB',
-                                battery: '2815 mAh',
-                                screenSize: '6.1 inches',
-                                processor: 'A14 Bionic',
-                                os: 'iOS 15',
-                                description: 'Refurbished iPhone 12 in excellent condition',
-                                images: ['https://picsum.photos/seed/iphone12/400/300.jpg']
-                            }
-                        ]
-                    }
-                ];
-                localStorage.setItem('registeredShops', JSON.stringify(sampleShops));
-            }
-            
+            // Load shops from backend API
             loadShops();
             initializeSearch();
         });

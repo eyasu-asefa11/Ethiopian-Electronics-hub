@@ -16,11 +16,12 @@ app.use(express.json());
 
 // ================= DATABASE =================
 
-const db = new sqlite3.Database("./ethiopian_electronics.db", (err) => {
+const dbPath = path.join(__dirname, "ethiopian_electronics.db");
+const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error(err.message);
   } else {
-    console.log("Connected to SQLite database.");
+    console.log("Connected to SQLite database at", dbPath);
     
     // Create users table if it doesn't exist
     db.run(`CREATE TABLE IF NOT EXISTS users (
@@ -346,6 +347,105 @@ app.get("/cities", (req, res) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
+});
+
+// Get all verified shops
+app.get("/shops", (req, res) => {
+  const sql = `
+    SELECT s.*, u.username as owner_username, u.email as owner_email,
+           c.name as city_name, r.name as region_name,
+           COUNT(p.id) as product_count
+    FROM shops s
+    JOIN users u ON s.owner_id = u.id
+    JOIN cities c ON s.city_id = c.id
+    JOIN regions r ON c.region_id = r.id
+    LEFT JOIN products p ON s.id = p.shop_id
+    WHERE s.is_verified = 1
+    GROUP BY s.id
+    ORDER BY s.created_at DESC
+  `;
+
+  db.all(sql, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+// Register a new shop
+app.post("/shops/register", upload.array("images", 10), async (req, res) => {
+  const { shop_name_en, shop_name_am, description, phone, telegram, city_id, address, owner_name, owner_phone } = req.body;
+
+  if (!shop_name_en || !city_id || !owner_name || !owner_phone) {
+    return res.status(400).json({ error: "Shop name (English), city, owner name, and owner phone are required" });
+  }
+
+  try {
+    // Handle uploaded images
+    let image_paths = [];
+    if (req.files && req.files.length > 0) {
+      image_paths = req.files.map(file => `/uploads/${file.filename}`);
+    }
+
+    const created_at = new Date().toISOString();
+    const updated_at = created_at;
+
+    // Use English name as Amharic fallback if not provided
+    const final_shop_name_am = shop_name_am || shop_name_en;
+
+    // First, create or get user
+    const userSql = `
+      INSERT OR IGNORE INTO users
+      (username, email, password, phone, city, region, role, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, 'seller', ?, ?)
+    `;
+
+    const hashedPassword = await bcrypt.hash('default123', 10);
+    const username = owner_name.toLowerCase().replace(/\s+/g, '_') + '_' + Date.now();
+
+    db.run(
+      userSql,
+      [username, owner_phone, hashedPassword, owner_phone, 'Addis Ababa', 'Addis Ababa', created_at, updated_at],
+      function(err) {
+        if (err) {
+          console.error('Error creating user:', err);
+          return res.status(500).json({ error: 'Failed to create user account' });
+        }
+
+        const owner_id = this.lastID;
+
+        // Now create the shop
+        const shopSql = `
+          INSERT INTO shops
+          (owner_id, shop_name_en, shop_name_am, description, phone, telegram, city_id, address, image_paths, is_verified, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
+        `;
+
+        db.run(
+          shopSql,
+          [owner_id, shop_name_en, final_shop_name_am, description, phone, telegram, city_id, address, JSON.stringify(image_paths), created_at, updated_at],
+          function (shopErr) {
+            if (shopErr) {
+              console.error('Error registering shop:', shopErr);
+              return res.status(500).json({ error: shopErr.message });
+            }
+
+            const shop_id = this.lastID;
+            console.log('Shop registered successfully with ID:', shop_id);
+
+            res.json({
+              message: "Shop registered successfully",
+              shop_id: shop_id,
+              status: "active"
+            });
+          }
+        );
+      }
+    );
+
+  } catch (error) {
+    console.error('Error in shop registration:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Get search suggestions
