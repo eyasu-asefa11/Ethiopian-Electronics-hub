@@ -3652,47 +3652,59 @@
                 productData.description = document.getElementById('description').value;
             }
             
+            // Save product immediately, process files in background
+            saveProductToShop(productData, shopId);
+            
+            // Process files asynchronously (non-blocking)
+            processProductFilesAsync(productData, shopId);
+        }
+
+        function processProductFilesAsync(productData, shopId) {
             // Handle front image (check if element exists)
             const frontImageElement = document.getElementById('frontImage');
             if (frontImageElement && frontImageElement.files && frontImageElement.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     productData.frontImage = e.target.result;
-                    checkAndSaveShopProduct(productData, shopId);
+                    updateProductInShop(productData, shopId);
                 };
                 reader.readAsDataURL(frontImageElement.files[0]);
-            } else {
-                checkAndSaveShopProduct(productData, shopId);
             }
-        }
 
-        function checkAndSaveShopProduct(productData, shopId) {
             // Handle back image (check if element exists)
             const backImageElement = document.getElementById('backImage');
             if (backImageElement && backImageElement.files && backImageElement.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     productData.backImage = e.target.result;
-                    finalizeShopProductSave(productData, shopId);
+                    updateProductInShop(productData, shopId);
                 };
                 reader.readAsDataURL(backImageElement.files[0]);
-            } else {
-                finalizeShopProductSave(productData, shopId);
             }
-        }
 
-        function finalizeShopProductSave(productData, shopId) {
             // Handle video (check if element exists)
             const videoElement = document.getElementById('productVideo');
             if (videoElement && videoElement.files && videoElement.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     productData.video = e.target.result;
-                    saveProductToShop(productData, shopId);
+                    updateProductInShop(productData, shopId);
                 };
                 reader.readAsDataURL(videoElement.files[0]);
-            } else {
-                saveProductToShop(productData, shopId);
+            }
+        }
+
+        function updateProductInShop(productData, shopId) {
+            // Update the product in the shop with file data
+            const existingShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const shopIndex = existingShops.findIndex(shop => shop.id === shopId);
+            
+            if (shopIndex !== -1 && existingShops[shopIndex].products) {
+                const productIndex = existingShops[shopIndex].products.findIndex(p => p.id === productData.id);
+                if (productIndex !== -1) {
+                    existingShops[shopIndex].products[productIndex] = productData;
+                    localStorage.setItem('registeredShops', JSON.stringify(existingShops));
+                }
             }
         }
 
@@ -3725,11 +3737,14 @@
                 allShops = existingShops;
                 displayShops(currentFilter);
                 
-                // Show success message
+                // Show success message immediately
                 alert(`Product "${productData.name}" added successfully to ${existingShops[shopIndex].shopName || existingShops[shopIndex].name || 'shop'}!`);
                 
-                // Close modal
+                // Close modal immediately
                 closeProductModal();
+                
+                // Refresh display immediately
+                displayShops(currentFilter);
                 
                 // Reset button state (in case modal is reopened)
                 const submitBtn = document.querySelector('button[type="submit"]');
