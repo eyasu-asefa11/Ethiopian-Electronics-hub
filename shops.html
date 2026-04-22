@@ -3568,13 +3568,14 @@
         function saveShopProduct(event, shopId) {
             event.preventDefault();
             
+            // Get form values quickly
             const productType = document.getElementById('productType').value;
             const productName = document.getElementById('productName').value;
             const productBrand = document.getElementById('productBrand').value;
             const price = document.getElementById('price').value;
             const stock = document.getElementById('stock').value;
             
-            // Basic validation
+            // Quick validation
             if (!productType || !productName || !productBrand || !price || !stock) {
                 alert('Please fill in all required fields!');
                 return;
@@ -3591,7 +3592,7 @@
                 addedAt: new Date().toISOString()
             };
             
-            // Add type-specific fields
+            // Add type-specific fields quickly
             if (productType === 'Computer') {
                 productData.generation = document.getElementById('generation').value;
                 productData.model = document.getElementById('model').value;
@@ -3629,47 +3630,94 @@
                 productData.description = document.getElementById('description').value;
             }
             
-            // Handle front image (check if element exists)
+            // Process images and video in parallel for faster submission
             const frontImageElement = document.getElementById('frontImage');
+            const backImageElement = document.getElementById('backImage');
+            const videoElement = document.getElementById('productVideo');
+            
+            let pendingFiles = 0;
+            let hasFiles = false;
+            
+            // Process front image
             if (frontImageElement && frontImageElement.files && frontImageElement.files[0]) {
+                pendingFiles++;
+                hasFiles = true;
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     productData.frontImage = e.target.result;
-                    checkAndSaveShopProduct(productData, shopId);
+                    pendingFiles--;
+                    if (pendingFiles === 0) finalizeProductSave(productData, shopId);
                 };
                 reader.readAsDataURL(frontImageElement.files[0]);
-            } else {
-                checkAndSaveShopProduct(productData, shopId);
             }
-        }
-
-        function checkAndSaveShopProduct(productData, shopId) {
-            // Handle back image (check if element exists)
-            const backImageElement = document.getElementById('backImage');
+            
+            // Process back image
             if (backImageElement && backImageElement.files && backImageElement.files[0]) {
+                pendingFiles++;
+                hasFiles = true;
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     productData.backImage = e.target.result;
-                    finalizeShopProductSave(productData, shopId);
+                    pendingFiles--;
+                    if (pendingFiles === 0) finalizeProductSave(productData, shopId);
                 };
                 reader.readAsDataURL(backImageElement.files[0]);
-            } else {
-                finalizeShopProductSave(productData, shopId);
             }
-        }
-
-        function finalizeShopProductSave(productData, shopId) {
-            // Handle video (check if element exists)
-            const videoElement = document.getElementById('productVideo');
+            
+            // Process video
             if (videoElement && videoElement.files && videoElement.files[0]) {
+                pendingFiles++;
+                hasFiles = true;
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     productData.video = e.target.result;
-                    saveProductToShop(productData, shopId);
+                    pendingFiles--;
+                    if (pendingFiles === 0) finalizeProductSave(productData, shopId);
                 };
                 reader.readAsDataURL(videoElement.files[0]);
+            }
+            
+            // If no files to process, save immediately
+            if (!hasFiles) {
+                finalizeProductSave(productData, shopId);
+            }
+        }
+
+        function finalizeProductSave(productData, shopId) {
+            // Get existing shops
+            const existingShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            
+            const shopIndex = existingShops.findIndex(shop => shop.id === shopId);
+            
+            if (shopIndex !== -1) {
+                // Add product to the shop
+                if (!existingShops[shopIndex].products) {
+                    existingShops[shopIndex].products = [];
+                }
+                existingShops[shopIndex].products.push(productData);
+                
+                // Save to localStorage
+                localStorage.setItem('registeredShops', JSON.stringify(existingShops));
+                
+                // Refresh shops display
+                allShops = existingShops;
+                displayShops(currentFilter);
+                
+                // Show success message
+                alert(`Product "${productData.name}" added successfully to ${existingShops[shopIndex].shopName || existingShops[shopIndex].name || 'shop'}!`);
+                
+                // Close modal immediately
+                closeProductModal();
+                
+                // Optional: Scroll to the updated shop card
+                setTimeout(() => {
+                    const shopCard = document.querySelector(`[onclick*="${shopId}"]`);
+                    if (shopCard) {
+                        shopCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100);
             } else {
-                saveProductToShop(productData, shopId);
+                alert('Shop not found! Please refresh the page and try again.');
             }
         }
 
