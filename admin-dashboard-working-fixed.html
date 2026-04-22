@@ -1117,46 +1117,7 @@
                     </div>
                 </div>
 
-                <!-- Real-Time Activity Monitor -->
-                <div class="section">
-                    <h2>Real-Time Activity Monitor</h2>
-                    <div class="activity-controls">
-                        <button onclick="refreshActivity()" class="btn btn-primary">Refresh Now</button>
-                        <button onclick="clearActivityLogs()" class="btn btn-danger">Clear Logs</button>
-                        <button onclick="exportActivityLogs()" class="btn btn-secondary">Export Logs</button>
-                    </div>
-                    <div class="activity-stats">
-                        <div class="activity-stat">
-                            <span class="stat-label">Active Users Now:</span>
-                            <span class="stat-number" id="activeUsersCount">0</span>
-                        </div>
-                        <div class="activity-stat">
-                            <span class="stat-label">Total Sessions Today:</span>
-                            <span class="stat-number" id="todaySessions">0</span>
-                        </div>
-                        <div class="activity-stat">
-                            <span class="stat-label">Page Views Today:</span>
-                            <span class="stat-number" id="todayPageViews">0</span>
-                        </div>
-                    </div>
-                    <div class="activity-list" id="activityList">
-                        <!-- Activity items will be loaded here -->
-                    </div>
-                </div>
-
-                <!-- User Session Control -->
-                <div class="section">
-                    <h2>User Session Control</h2>
-                    <div class="session-controls">
-                        <button onclick="blockAllUsers()" class="btn btn-danger">Block All Users</button>
-                        <button onclick="allowAllUsers()" class="btn btn-success">Allow All Users</button>
-                        <button onclick="kickAllUsers()" class="btn btn-warning">Kick All Users</button>
-                    </div>
-                    <div class="active-sessions" id="activeSessions">
-                        <!-- Active user sessions will be displayed here -->
-                    </div>
-                </div>
-
+                
                 <!-- Registered Visitors -->
                 <div class="section" style="max-height: 300px; overflow-y: auto;">
                     <h2 style="margin-bottom: 10px;">
@@ -1274,9 +1235,6 @@
             loadStatistics();
             loadRecentShops();
             loadRegisteredVisitors();
-            loadActivityLogs();
-            updateActivityStats();
-            startSessionTracking();
             
             // Auto-refresh data every 5 seconds
             setInterval(() => {
@@ -1374,112 +1332,7 @@
             }
         }
 
-        // Activity monitoring functions
-        function refreshActivity() {
-            loadActivityLogs();
-            updateActivityStats();
-            showStatus('Activity logs refreshed!', 'success');
-        }
-
-        function clearActivityLogs() {
-            if (confirm('Are you sure you want to clear all activity logs?')) {
-                localStorage.removeItem('activityLogs');
-                loadActivityLogs();
-                showStatus('Activity logs cleared!', 'success');
-            }
-        }
-
-        function exportActivityLogs() {
-            const logs = JSON.parse(localStorage.getItem('activityLogs') || '[]');
-            const dataStr = JSON.stringify(logs, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const exportFileDefaultName = `activity-logs-${new Date().toISOString().split('T')[0]}.json`;
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
-            
-            showStatus('Activity logs exported!', 'success');
-        }
-
-        function loadActivityLogs() {
-            const activityList = document.getElementById('activityList');
-            const logs = JSON.parse(localStorage.getItem('activityLogs') || '[]');
-            
-            if (logs.length === 0) {
-                activityList.innerHTML = '<div class="no-logs">No activity logs found.</div>';
-                return;
-            }
-            
-            activityList.innerHTML = logs.slice(-10).reverse().map(log => `
-                <div class="activity-item">
-                    <div class="activity-icon ${log.type}">
-                        ${getActivityIcon(log.type)}
-                    </div>
-                    <div class="activity-info">
-                        <h4>${log.title}</h4>
-                        <p>${log.description}</p>
-                        <div class="activity-time">${log.time}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function updateActivityStats() {
-            const logs = JSON.parse(localStorage.getItem('activityLogs') || '[]');
-            const today = new Date().toDateString();
-            const todayLogs = logs.filter(log => new Date(log.timestamp).toDateString() === today);
-            
-            document.getElementById('activeUsersCount').textContent = Math.floor(Math.random() * 10) + 1;
-            document.getElementById('todaySessions').textContent = todayLogs.length;
-            document.getElementById('todayPageViews').textContent = todayLogs.length * 3;
-        }
-
-        function logActivity(type, title, description) {
-            const logs = JSON.parse(localStorage.getItem('activityLogs') || '[]');
-            const newLog = {
-                type: type,
-                title: title,
-                description: description,
-                timestamp: new Date().toISOString(),
-                time: new Date().toLocaleString()
-            };
-            
-            logs.push(newLog);
-            localStorage.setItem('activityLogs', JSON.stringify(logs));
-            
-            // Update stats if on dashboard
-            if (document.getElementById('activeUsersCount')) {
-                updateActivityStats();
-                loadActivityLogs();
-            }
-        }
-
-        // Session control functions
-        function blockAllUsers() {
-            if (confirm('Are you sure you want to block all users from accessing the website?')) {
-                localStorage.setItem('siteAccessBlocked', 'true');
-                logActivity('warning', 'All Users Blocked', 'Admin blocked all users from accessing the website');
-                showStatus('All users blocked!', 'warning');
-            }
-        }
-
-        function allowAllUsers() {
-            localStorage.removeItem('siteAccessBlocked');
-            logActivity('success', 'All Users Allowed', 'Admin allowed all users to access the website');
-            showStatus('All users allowed!', 'success');
-        }
-
-        function kickAllUsers() {
-            if (confirm('Are you sure you want to kick all active users?')) {
-                logActivity('warning', 'All Users Kicked', 'Admin kicked all active users from the website');
-                showStatus('All users kicked!', 'warning');
-                // In a real application, this would disconnect all active sessions
-            }
-        }
-
+        
         function loadActiveSessions() {
             const sessionsContainer = document.getElementById('activeSessions');
             const sessions = JSON.parse(localStorage.getItem('activeSessions') || '[]');
