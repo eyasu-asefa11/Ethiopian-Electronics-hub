@@ -5424,6 +5424,40 @@
 
         // Add message button when navigation loads
         setTimeout(addMessageButton, 1000);
+
+        // Add clear shops button
+        function addClearShopsButton() {
+            const nav = document.querySelector('.navigation');
+            if (nav && !nav.querySelector('.clear-shops-btn')) {
+                const clearBtn = document.createElement('button');
+                clearBtn.className = 'nav-btn clear-shops-btn';
+                clearBtn.innerHTML = 'Clear All Shops';
+                clearBtn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                clearBtn.onclick = clearAllShops;
+                nav.appendChild(clearBtn);
+            }
+        }
+
+        function clearAllShops() {
+            if (confirm('Are you sure you want to delete all registered shops? This action cannot be undone!')) {
+                // Clear all shop-related data
+                localStorage.removeItem('registeredShops');
+                localStorage.removeItem('contactRequests');
+                localStorage.removeItem('messages');
+                localStorage.removeItem('visitors');
+                
+                // Clear any remaining data
+                localStorage.setItem('registeredShops', JSON.stringify([]));
+                
+                alert('All shops have been successfully removed! You can now register new shops.');
+                
+                // Reload page to show changes
+                window.location.reload();
+            }
+        }
+
+        // Add clear shops button when navigation loads
+        setTimeout(addClearShopsButton, 1000);
     </script>
 </body>
 </html>
