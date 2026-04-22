@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - Ethio Electronics Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #312e81 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #3b82f6;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .wishlist-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-bar {
+            flex: 1;
+            min-width: 250px;
+            max-width: 400px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 16px;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .sort-filter {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .sort-filter select {
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 14px;
+        }
+
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .wishlist-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .wishlist-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .wishlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .item-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #3b82f6;
+        }
+
+        .item-shop {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+
+        .item-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+
+        .item-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        .item-category {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+
+        .item-date {
+            font-size: 12px;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: scale(1.1);
+        }
+
+        .empty-wishlist {
+            text-align: center;
+            padding: 80px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .empty-wishlist h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #3b82f6;
+        }
+
+        .empty-wishlist p {
+            font-size: 18px;
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #3b82f6;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .wishlist-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .wishlist-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .wishlist-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-bar {
+                max-width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .wishlist-stats {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>❤️ My Wishlist</h1>
+            <p>Save your favorite products and never miss a deal</p>
+        </div>
+
+        <div class="wishlist-stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalItems">0</div>
+                <div class="stat-label">Total Items</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalValue">0</div>
+                <div class="stat-label">Total Value (ETB)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalShops">0</div>
+                <div class="stat-label">Shops</div>
+            </div>
+        </div>
+
+        <div class="wishlist-controls">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="🔍 Search wishlist items..." onkeyup="searchWishlist()">
+            </div>
+            <div class="sort-filter">
+                <select id="sortSelect" onchange="sortWishlist()">
+                    <option value="date">Sort by Date Added</option>
+                    <option value="name">Sort by Name</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="wishlist-grid" id="wishlistGrid">
+            <!-- Wishlist items will be loaded here -->
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="index.html" class="back-link">← Back to Shopping</a>
+        </div>
+    </div>
+
+    <script>
+        // Sample wishlist data (in real app, this would come from backend)
+        const sampleWishlist = [
+            {
+                id: 'wish-1',
+                productId: 'prod-1',
+                name: 'Samsung Galaxy A54',
+                shopName: 'TechStore Ethiopia',
+                shopId: 'shop-1',
+                price: 12000,
+                category: 'smartphone',
+                image: 'https://via.placeholder.com/300x200/3b82f6/ffffff?text=Samsung+Galaxy+A54',
+                addedDate: '2024-04-20',
+                inStock: true
+            },
+            {
+                id: 'wish-2',
+                productId: 'prod-2',
+                name: 'Dell Inspiron Laptop',
+                shopName: 'Digital Hub',
+                shopId: 'shop-2',
+                price: 25000,
+                category: 'laptop',
+                image: 'https://via.placeholder.com/300x200/10b981/ffffff?text=Dell+Inspiron',
+                addedDate: '2024-04-21',
+                inStock: true
+            },
+            {
+                id: 'wish-3',
+                productId: 'prod-3',
+                name: 'Wireless Earbuds',
+                shopName: 'Mobile World',
+                shopId: 'shop-3',
+                price: 850,
+                category: 'audio',
+                image: 'https://via.placeholder.com/300x200/f59e0b/ffffff?text=Wireless+Earbuds',
+                addedDate: '2024-04-22',
+                inStock: false
+            },
+            {
+                id: 'wish-4',
+                productId: 'prod-4',
+                name: 'Gaming Console',
+                shopName: 'Gadget Zone',
+                shopId: 'shop-4',
+                price: 15000,
+                category: 'gaming',
+                image: 'https://via.placeholder.com/300x200/8b5cf6/ffffff?text=Gaming+Console',
+                addedDate: '2024-04-19',
+                inStock: true
+            }
+        ];
+
+        let currentWishlist = [];
+        let filteredWishlist = [];
+
+        function loadWishlist() {
+            const storedWishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+            currentWishlist = storedWishlist.length > 0 ? storedWishlist : sampleWishlist;
+            filteredWishlist = [...currentWishlist];
+            
+            updateWishlistDisplay();
+            updateStats();
+        }
+
+        function updateWishlistDisplay() {
+            const wishlistGrid = document.getElementById('wishlistGrid');
+            
+            if (filteredWishlist.length === 0) {
+                wishlistGrid.innerHTML = `
+                    <div class="empty-wishlist">
+                        <h2>🛒 Your Wishlist is Empty</h2>
+                        <p>Start adding products you love to see them here!</p>
+                        <a href="index.html" class="btn btn-primary">Start Shopping</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            wishlistGrid.innerHTML = filteredWishlist.map(item => `
+                <div class="wishlist-item">
+                    <button class="remove-btn" onclick="removeFromWishlist('${item.id}')" title="Remove from wishlist">×</button>
+                    <img src="${item.image}" alt="${item.name}" class="item-image" onerror="this.src='https://via.placeholder.com/300x200/6b7280/ffffff?text=Image+Not+Found'">
+                    <div class="item-info">
+                        <h3 class="item-name">${item.name}</h3>
+                        <p class="item-shop">📍 ${item.shopName}</p>
+                        <p class="item-price">ETB ${item.price.toLocaleString()}</p>
+                        <div class="item-meta">
+                            <span class="item-category">${item.category}</span>
+                            <span class="item-date">Added ${new Date(item.addedDate).toLocaleDateString()}</span>
+                        </div>
+                        <div class="item-actions">
+                            ${item.inStock ? 
+                                `<a href="#" class="btn btn-success" onclick="addToCart('${item.productId}')">🛒 Add to Cart</a>` :
+                                `<span style="color: #ef4444; font-size: 12px;">🚫 Out of Stock</span>`
+                            }
+                            <a href="#" class="btn btn-primary" onclick="viewProduct('${item.productId}')">👁 View Product</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            const totalItems = currentWishlist.length;
+            const totalValue = currentWishlist.reduce((sum, item) => sum + item.price, 0);
+            const uniqueShops = [...new Set(currentWishlist.map(item => item.shopId))].length;
+            
+            document.getElementById('totalItems').textContent = totalItems;
+            document.getElementById('totalValue').textContent = totalValue.toLocaleString();
+            document.getElementById('totalShops').textContent = uniqueShops;
+        }
+
+        function removeFromWishlist(itemId) {
+            if (confirm('Are you sure you want to remove this item from your wishlist?')) {
+                currentWishlist = currentWishlist.filter(item => item.id !== itemId);
+                localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
+                filteredWishlist = filteredWishlist.filter(item => item.id !== itemId);
+                updateWishlistDisplay();
+                updateStats();
+            }
+        }
+
+        function searchWishlist() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (searchTerm === '') {
+                filteredWishlist = [...currentWishlist];
+            } else {
+                filteredWishlist = currentWishlist.filter(item => 
+                    item.name.toLowerCase().includes(searchTerm) ||
+                    item.shopName.toLowerCase().includes(searchTerm) ||
+                    item.category.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            updateWishlistDisplay();
+        }
+
+        function sortWishlist() {
+            const sortBy = document.getElementById('sortSelect').value;
+            
+            switch(sortBy) {
+                case 'name':
+                    filteredWishlist.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'price-low':
+                    filteredWishlist.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredWishlist.sort((a, b) => b.price - a.price);
+                    break;
+                case 'date':
+                default:
+                    filteredWishlist.sort((a, b) => new Date(b.addedDate) - new Date(a.addedDate));
+                    break;
+            }
+            
+            updateWishlistDisplay();
+        }
+
+        function addToCart(productId) {
+            // In real app, this would add to shopping cart
+            alert('Product added to cart!');
+        }
+
+        function viewProduct(productId) {
+            // In real app, this would navigate to product page
+            alert(`Viewing product: ${productId}`);
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadWishlist();
+        });
+    </script>
+</body>
+</html>

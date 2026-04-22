@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking - Ethio Electronics Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #581c87 50%, #312e81 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #3b82f6;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .tracking-form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 16px;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .orders-section {
+            margin-top: 40px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #3b82f6;
+        }
+
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .order-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .order-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: #3b82f6;
+        }
+
+        .order-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .status-processing {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .status-shipped {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6;
+        }
+
+        .status-delivered {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .order-details {
+            margin-bottom: 15px;
+        }
+
+        .order-details p {
+            margin: 5px 0;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .order-details strong {
+            color: #3b82f6;
+        }
+
+        .tracking-timeline {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .timeline-marker {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #3b82f6;
+            margin-right: 15px;
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-content h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: white;
+        }
+
+        .timeline-content p {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .no-orders {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .no-orders h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #3b82f6;
+        }
+
+        .no-orders p {
+            font-size: 16px;
+            opacity: 0.7;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #3b82f6;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .orders-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .tracking-form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 Order Tracking</h1>
+            <p>Track your orders and get real-time delivery updates</p>
+        </div>
+
+        <div class="tracking-form">
+            <h3 style="margin-bottom: 20px;">Track Your Order</h3>
+            <form id="trackingForm">
+                <div class="form-group">
+                    <label for="orderNumber">Order Number</label>
+                    <input type="text" id="orderNumber" placeholder="Enter your order number (e.g., ORD-2024-001)" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="Enter your phone number" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Track Order</button>
+            </form>
+        </div>
+
+        <div class="orders-section">
+            <h2 class="section-title">Your Recent Orders</h2>
+            <div class="orders-grid" id="ordersGrid">
+                <!-- Orders will be loaded here -->
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Sample order data (in real app, this would come from backend)
+        const sampleOrders = [
+            {
+                id: 'ORD-2024-001',
+                orderNumber: 'ORD-2024-001',
+                phone: '+251912345678',
+                status: 'delivered',
+                date: '2024-04-20',
+                total: 15000,
+                items: [
+                    { name: 'Samsung Galaxy A54', quantity: 1, price: 12000 },
+                    { name: 'Phone Case', quantity: 1, price: 3000 }
+                ],
+                deliveryAddress: 'Bole, Addis Ababa, Ethiopia',
+                trackingNumber: 'TRK123456789',
+                timeline: [
+                    { status: 'Order Placed', date: '2024-04-20 10:30 AM', description: 'Your order has been received' },
+                    { status: 'Processing', date: '2024-04-20 02:00 PM', description: 'Order is being processed' },
+                    { status: 'Shipped', date: '2024-04-21 09:00 AM', description: 'Order has been shipped' },
+                    { status: 'Out for Delivery', date: '2024-04-22 11:00 AM', description: 'Order is out for delivery' },
+                    { status: 'Delivered', date: '2024-04-22 03:30 PM', description: 'Order has been delivered' }
+                ]
+            },
+            {
+                id: 'ORD-2024-002',
+                orderNumber: 'ORD-2024-002',
+                phone: '+251912345678',
+                status: 'shipped',
+                date: '2024-04-21',
+                total: 8500,
+                items: [
+                    { name: 'Wireless Earbuds', quantity: 1, price: 8500 }
+                ],
+                deliveryAddress: 'Mekelle, Ethiopia',
+                trackingNumber: 'TRK987654321',
+                timeline: [
+                    { status: 'Order Placed', date: '2024-04-21 11:00 AM', description: 'Your order has been received' },
+                    { status: 'Processing', date: '2024-04-21 03:00 PM', description: 'Order is being processed' },
+                    { status: 'Shipped', date: '2024-04-22 10:00 AM', description: 'Order has been shipped' }
+                ]
+            },
+            {
+                id: 'ORD-2024-003',
+                orderNumber: 'ORD-2024-003',
+                phone: '+251912345678',
+                status: 'processing',
+                date: '2024-04-22',
+                total: 25000,
+                items: [
+                    { name: 'Laptop Dell Inspiron', quantity: 1, price: 25000 }
+                ],
+                deliveryAddress: 'Dire Dawa, Ethiopia',
+                trackingNumber: 'TRK456789123',
+                timeline: [
+                    { status: 'Order Placed', date: '2024-04-22 09:00 AM', description: 'Your order has been received' },
+                    { status: 'Processing', date: '2024-04-22 02:00 PM', description: 'Order is being processed' }
+                ]
+            }
+        ];
+
+        // Load orders from localStorage or use sample data
+        function loadOrders() {
+            const storedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const orders = storedOrders.length > 0 ? storedOrders : sampleOrders;
+            
+            const ordersGrid = document.getElementById('ordersGrid');
+            
+            if (orders.length === 0) {
+                ordersGrid.innerHTML = `
+                    <div class="no-orders">
+                        <h3>No Orders Found</h3>
+                        <p>You haven't placed any orders yet. Start shopping to see your orders here!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            ordersGrid.innerHTML = orders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-number">${order.orderNumber}</div>
+                        <div class="order-status status-${order.status}">${order.status.toUpperCase()}</div>
+                    </div>
+                    <div class="order-details">
+                        <p><strong>Date:</strong> ${new Date(order.date).toLocaleDateString()}</p>
+                        <p><strong>Total:</strong> ETB ${order.total.toLocaleString()}</p>
+                        <p><strong>Items:</strong> ${order.items.length} item${order.items.length > 1 ? 's' : ''}</p>
+                        <p><strong>Tracking:</strong> ${order.trackingNumber}</p>
+                        <p><strong>Delivery Address:</strong> ${order.deliveryAddress}</p>
+                    </div>
+                    <div class="tracking-timeline">
+                        <h4 style="margin-bottom: 15px; color: #3b82f6;">Tracking Timeline</h4>
+                        ${order.timeline.map(item => `
+                            <div class="timeline-item">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <h4>${item.status}</h4>
+                                    <p>${item.date} - ${item.description}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Handle tracking form submission
+        document.getElementById('trackingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const orderNumber = document.getElementById('orderNumber').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            
+            const storedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const orders = storedOrders.length > 0 ? storedOrders : sampleOrders;
+            
+            const order = orders.find(o => 
+                o.orderNumber === orderNumber && o.phone === phone
+            );
+            
+            if (order) {
+                // Scroll to the order card
+                const orderCards = document.querySelectorAll('.order-card');
+                orderCards.forEach(card => {
+                    if (card.innerHTML.includes(order.orderNumber)) {
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        card.style.border = '2px solid #3b82f6';
+                        setTimeout(() => {
+                            card.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                        }, 3000);
+                    }
+                });
+            } else {
+                alert('Order not found. Please check your order number and phone number.');
+            }
+        });
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrders();
+        });
+    </script>
+</body>
+</html>
