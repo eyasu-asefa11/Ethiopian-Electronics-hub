@@ -5180,6 +5180,250 @@
         </div>
     </div>
 
-    </body>
+    <!-- Messaging System -->
+    <div id="messageInbox" style="display: none; position: fixed; top: 0; right: 0; width: 400px; height: 100vh; background: linear-gradient(135deg, #1e3a8a 0%, #581c87 100%); z-index: 10001; box-shadow: -2px 0 10px rgba(0,0,0,0.3);">
+        <div style="padding: 20px; height: 100%; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="color: white; margin: 0;"> Messages</h3>
+                <button onclick="toggleMessageInbox()" style="background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">×</button>
+            </div>
+            
+            <div id="messageList" style="flex: 1; overflow-y: auto; color: white;">
+                <!-- Messages will be loaded here -->
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <textarea id="newMessage" placeholder="Type your message..." style="width: 100%; padding: 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 5px; background: rgba(255,255,255,0.1); color: white; resize: vertical; min-height: 60px;"></textarea>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button onclick="sendMessage()" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Send</button>
+                    <button onclick="markAllAsRead()" style="background: linear-gradient(135deg, #3b82f6, #1e40af); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Mark All Read</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Notification -->
+    <div id="messageNotification" style="display: none; position: fixed; top: 20px; right: 420px; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); z-index: 10002; max-width: 300px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px;"></span>
+            <div>
+                <div style="font-weight: bold;">New Message!</div>
+                <div style="font-size: 14px;" id="notificationText">You have a new message</div>
+            </div>
+            <button onclick="hideMessageNotification()" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer;">×</button>
+        </div>
+    </div>
+
+    <script>
+        // Messaging System Functions
+        let currentConversation = null;
+        let messagePollingInterval = null;
+
+        function initializeMessagingSystem() {
+            loadMessages();
+            startMessagePolling();
+            updateUnreadCount();
+        }
+
+        function saveMessage(messageData) {
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            messages.push(messageData);
+            localStorage.setItem('messages', JSON.stringify(messages));
+            
+            // Update conversation if it's currently open
+            if (currentConversation && 
+                (currentConversation.type === 'shop' && messageData.shopId === currentConversation.id) ||
+                (currentConversation.type === 'user' && messageData.userId === currentConversation.id)) {
+                loadConversation(currentConversation);
+            }
+            
+            showNotification('New message received!');
+        }
+
+        function loadMessages() {
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            displayMessageList(messages);
+        }
+
+        function displayMessageList(messages) {
+            const messageList = document.getElementById('messageList');
+            
+            // Group messages by conversation
+            const conversations = {};
+            messages.forEach(msg => {
+                const key = msg.shopId ? `shop_${msg.shopId}` : `user_${msg.userId}`;
+                if (!conversations[key]) {
+                    conversations[key] = [];
+                }
+                conversations[key].push(msg);
+            });
+
+            // Sort conversations by last message time
+            const sortedConversations = Object.keys(conversations).sort((a, b) => {
+                const lastA = conversations[a][conversations[a].length - 1];
+                const lastB = conversations[b][conversations[b].length - 1];
+                return new Date(lastB.timestamp) - new Date(lastA.timestamp);
+            });
+
+            messageList.innerHTML = sortedConversations.map(key => {
+                const conversation = conversations[key];
+                const lastMessage = conversation[conversation.length - 1];
+                const unreadCount = conversation.filter(msg => !msg.isRead).length;
+                
+                return `
+                    <div onclick="openConversation('${key}')" style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; hover:background:rgba(255,255,255,0.05);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: bold; color: white;">${lastMessage.senderName || 'Unknown'}</div>
+                                <div style="font-size: 12px; color: rgba(255,255,255,0.7);">${lastMessage.message.substring(0, 50)}${lastMessage.message.length > 50 ? '...' : ''}</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 11px; color: rgba(255,255,255,0.6);">${formatTime(lastMessage.timestamp)}</div>
+                                ${unreadCount > 0 ? `<div style="background: #ef4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; margin-top: 5px;">${unreadCount}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openConversation(conversationKey) {
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            const [type, id] = conversationKey.split('_');
+            
+            currentConversation = { type, id };
+            
+            const conversationMessages = messages.filter(msg => {
+                if (type === 'shop') return msg.shopId === id;
+                if (type === 'user') return msg.userId === id;
+                return false;
+            });
+
+            displayConversation(conversationMessages);
+            
+            // Mark messages as read
+            conversationMessages.forEach(msg => {
+                msg.isRead = true;
+            });
+            localStorage.setItem('messages', JSON.stringify(messages));
+            updateUnreadCount();
+        }
+
+        function displayConversation(messages) {
+            const messageList = document.getElementById('messageList');
+            
+            messageList.innerHTML = messages.map(msg => `
+                <div style="margin-bottom: 15px; padding: 10px; border-radius: 8px; background: ${msg.isFromCurrentUser ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 255, 255, 0.1)'};">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <strong style="color: white;">${msg.senderName}</strong>
+                        <span style="font-size: 12px; color: rgba(255,255,255,0.6);">${formatTime(msg.timestamp)}</span>
+                    </div>
+                    <div style="color: rgba(255,255,255,0.9);">${msg.message}</div>
+                    ${msg.productId ? `<div style="margin-top: 5px; font-size: 12px; color: #10b981;"> Product: ${msg.productName}</div>` : ''}
+                </div>
+            `).join('');
+            
+            // Scroll to bottom
+            messageList.scrollTop = messageList.scrollHeight;
+        }
+
+        function sendMessage() {
+            const messageText = document.getElementById('newMessage').value.trim();
+            if (!messageText || !currentConversation) return;
+
+            const message = {
+                id: Date.now().toString(),
+                senderName: 'You',
+                message: messageText,
+                timestamp: new Date().toISOString(),
+                isRead: false,
+                isFromCurrentUser: true,
+                shopId: currentConversation.type === 'shop' ? currentConversation.id : null,
+                userId: currentConversation.type === 'user' ? currentConversation.id : null
+            };
+
+            saveMessage(message);
+            document.getElementById('newMessage').value = '';
+        }
+
+        function markAllAsRead() {
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            messages.forEach(msg => msg.isRead = true);
+            localStorage.setItem('messages', JSON.stringify(messages));
+            updateUnreadCount();
+            loadMessages();
+        }
+
+        function updateUnreadCount() {
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            const unreadCount = messages.filter(msg => !msg.isRead && !msg.isFromCurrentUser).length;
+            
+            // Update notification badge
+            const badge = document.querySelector('.message-badge');
+            if (badge) {
+                badge.textContent = unreadCount > 0 ? unreadCount : '';
+                badge.style.display = unreadCount > 0 ? 'block' : 'none';
+            }
+        }
+
+        function toggleMessageInbox() {
+            const inbox = document.getElementById('messageInbox');
+            inbox.style.display = inbox.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function showNotification(text) {
+            const notification = document.getElementById('messageNotification');
+            const notificationText = document.getElementById('notificationText');
+            notificationText.textContent = text;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                hideMessageNotification();
+            }, 5000);
+        }
+
+        function hideMessageNotification() {
+            document.getElementById('messageNotification').style.display = 'none';
+        }
+
+        function startMessagePolling() {
+            // Simulate real-time message checking
+            messagePollingInterval = setInterval(() => {
+                updateUnreadCount();
+            }, 5000); // Check every 5 seconds
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            return `${diffDays}d ago`;
+        }
+
+        // Initialize messaging system when page loads
+        document.addEventListener('DOMContentLoaded', initializeMessagingSystem);
+
+        // Add message button to navigation
+        function addMessageButton() {
+            const nav = document.querySelector('.navigation');
+            if (nav && !nav.querySelector('.message-btn')) {
+                const messageBtn = document.createElement('button');
+                messageBtn.className = 'nav-btn message-btn';
+                messageBtn.innerHTML = ' Messages <span class="message-badge" style="display: none; background: #ef4444; color: white; border-radius: 50%; padding: 2px 6px; margin-left: 5px; font-size: 11px;">0</span>';
+                messageBtn.onclick = toggleMessageInbox;
+                nav.appendChild(messageBtn);
+            }
+        }
+
+        // Add message button when navigation loads
+        setTimeout(addMessageButton, 1000);
+    </script>
+</body>
 </html>
-                                            
