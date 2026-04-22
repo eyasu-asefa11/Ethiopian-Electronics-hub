@@ -1209,6 +1209,29 @@
             margin-top: 2px;
         }
 
+        .calendar-event-count {
+            font-size: 9px;
+            color: #3b82f6;
+            background: rgba(59, 130, 246, 0.2);
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-top: 2px;
+            font-weight: bold;
+        }
+
+        .calendar-event-preview {
+            font-size: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 2px;
+            line-height: 1.2;
+        }
+
+        .calendar-day:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: scale(1.02);
+            transition: all 0.2s ease;
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -2426,6 +2449,7 @@
             }
             
             // Add days of the month
+            let allMonthShops = [];
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
                 const dateStr = date.toDateString();
@@ -2434,20 +2458,60 @@
                     return shopDate.toDateString() === dateStr;
                 });
                 
+                // Collect all shops for the month
+                allMonthShops = allMonthShops.concat(dayShops);
+                
                 const hasEvents = dayShops.length > 0;
                 const eventClass = hasEvents ? 'has-event' : '';
                 
                 calendarHTML += `
-                    <div class="calendar-day ${eventClass}">
+                    <div class="calendar-day ${eventClass}" onclick="showDayDetails('${year}-${month}-${day}')" style="cursor: pointer;">
                         <div class="calendar-day-number">${day}</div>
-                        ${dayShops.map(shop => `
-                            <div class="calendar-event">${shop.shopName || shop.name}</div>
-                        `).join('')}
+                        ${dayShops.length > 0 ? `
+                            <div class="calendar-event-count">${dayShops.length} shop${dayShops.length > 1 ? 's' : ''}</div>
+                            <div class="calendar-event-preview">
+                                ${dayShops.slice(0, 2).map(shop => (shop.shopName || shop.name).substring(0, 10) + '...').join('<br>')}
+                                ${dayShops.length > 2 ? `+${dayShops.length - 2} more` : ''}
+                            </div>
+                        ` : ''}
                     </div>
                 `;
             }
             
             calendarHTML += '</div>';
+            
+            // Add registered shops list below calendar
+            calendarHTML += `
+                <div style="margin-top: 30px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                    <h4 style="color: white; margin-bottom: 15px;">Shops Registered in ${monthNames[month]} ${year} (${allMonthShops.length})</h4>
+                    ${allMonthShops.length === 0 ? 
+                        '<p style="color: rgba(255, 255, 255, 0.7);">No shops registered this month.</p>' :
+                        allMonthShops.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)).map(shop => `
+                            <div style="background: rgba(255, 255, 255, 0.1); padding: 12px; margin-bottom: 10px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                                <div style="display: flex; justify-content: space-between; align-items: start;">
+                                    <div>
+                                        <strong style="color: #3b82f6;">${shop.shopName || shop.name}</strong>
+                                        <p style="margin: 4px 0; color: rgba(255, 255, 255, 0.8); font-size: 14px;">
+                                            <strong>Owner:</strong> ${shop.ownerName || shop.owner} | 
+                                            <strong>City:</strong> ${shop.city || 'Not specified'} | 
+                                            <strong>Phone:</strong> ${shop.phone || 'Not provided'}
+                                        </p>
+                                        <p style="margin: 4px 0; color: rgba(255, 255, 255, 0.6); font-size: 12px;">
+                                            <strong>Registered:</strong> ${new Date(shop.createdAt).toLocaleString()} | 
+                                            <strong>Status:</strong> <span style="color: ${getStatusColor(shop.status)}">${(shop.status || 'pending').toUpperCase()}</span>
+                                        </p>
+                                    </div>
+                                    <div style="display: flex; gap: 5px;">
+                                        <button class="btn btn-small btn-primary" onclick="viewShop('${shop.id}')">View</button>
+                                        <button class="btn btn-small btn-success" onclick="approveShop('${shop.id}')">Approve</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')
+                    }
+                </div>
+            `;
+            
             calendarContainer.innerHTML = calendarHTML;
         }
 
@@ -2566,6 +2630,58 @@
         function nextDay() {
             // Implementation for day navigation
             loadCalendar();
+        }
+
+        function showDayDetails(dateString) {
+            const [year, month, day] = dateString.split('-').map(Number);
+            const date = new Date(year, month, day);
+            const dateStr = date.toDateString();
+            const shops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            const dayShops = shops.filter(shop => {
+                const shopDate = new Date(shop.createdAt);
+                return shopDate.toDateString() === dateStr;
+            });
+            
+            // Create modal for day details
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.8); display: flex; align-items: center;
+                justify-content: center; z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: #1e293b; padding: 30px; border-radius: 15px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                    <h3 style="color: white; margin-bottom: 20px;">Shops Registered on ${date.toLocaleDateString()}</h3>
+                    <div style="color: white;">
+                        <p><strong>Total Shops:</strong> ${dayShops.length}</p>
+                        ${dayShops.length === 0 ? 
+                            '<p style="margin-top: 20px;">No shops registered on this day.</p>' :
+                            dayShops.map(shop => `
+                                <div style="background: rgba(255, 255, 255, 0.1); padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                                    <h4 style="color: #3b82f6; margin-bottom: 10px;">${shop.shopName || shop.name}</h4>
+                                    <p><strong>Owner:</strong> ${shop.ownerName || shop.owner}</p>
+                                    <p><strong>City:</strong> ${shop.city || 'Not specified'}</p>
+                                    <p><strong>Phone:</strong> ${shop.phone || 'Not provided'}</p>
+                                    <p><strong>Time:</strong> ${new Date(shop.createdAt).toLocaleTimeString()}</p>
+                                    <p><strong>Status:</strong> <span style="color: ${getStatusColor(shop.status)}">${(shop.status || 'pending').toUpperCase()}</span></p>
+                                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                        <button class="btn btn-small btn-primary" onclick="viewShop('${shop.id}')">View</button>
+                                        <button class="btn btn-small btn-success" onclick="approveShop('${shop.id}')">Approve</button>
+                                        <button class="btn btn-small btn-warning" onclick="deactivateShop('${shop.id}')">Deactivate</button>
+                                        <button class="btn btn-small btn-danger" onclick="deleteShop('${shop.id}')">Delete</button>
+                                    </div>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+                    <div style="margin-top: 20px; text-align: right;">
+                        <button onclick="this.closest('div[style*=fixed]').remove()" style="padding: 10px 20px; border-radius: 5px; border: 1px solid #3b82f6; background: #3b82f6; color: white; cursor: pointer;">Close</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
         }
 
         
