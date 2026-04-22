@@ -3701,7 +3701,7 @@
                 
                 // Refresh shops display
                 allShops = existingShops;
-                displayShops(currentFilter);
+                loadShops();
                 
                 // Show success message
                 alert(`Product "${productData.name}" added successfully to ${existingShops[shopIndex].shopName || existingShops[shopIndex].name || 'shop'}!`);
@@ -3748,7 +3748,7 @@
                 
                 // Refresh shops display
                 allShops = existingShops;
-                displayShops(currentFilter);
+                loadShops();
                 
                 // Show success message
                 alert(`Product "${productData.name}" added successfully to ${existingShops[shopIndex].shopName || existingShops[shopIndex].name || 'shop'}!`);
