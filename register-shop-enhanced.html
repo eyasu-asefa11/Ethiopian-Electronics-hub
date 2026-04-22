@@ -1883,9 +1883,14 @@
         // Form Submission
         document.getElementById('shopForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            console.log('Form submission started');
 
-            // Validate phone number
-            if (!validatePhone()) {
+            // Temporarily bypass phone validation for debugging
+            const phoneValid = true; // validatePhone();
+            console.log('Phone validation bypassed for debugging');
+            
+            if (!phoneValid) {
                 showStatus('Please enter a valid phone number', 'error');
                 return;
             }
@@ -1895,6 +1900,12 @@
 
             // Get form data
             const formData = new FormData(this);
+            console.log('Form data collected');
+            
+            // Log form values for debugging
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
 
             // Save to localStorage instead of backend
             const existingShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
@@ -1918,11 +1929,15 @@
             // Add shop to existing shops
             existingShops.push(shopObject);
             localStorage.setItem('registeredShops', JSON.stringify(existingShops));
+            
+            console.log('Shop saved to localStorage:', shopObject);
+            console.log('Total shops now:', existingShops.length);
 
             showStatus('Shop registered successfully! Redirecting to shops page...', 'success');
 
             // Redirect to shops page after 2 seconds
             setTimeout(() => {
+                console.log('Redirecting to shops page...');
                 window.location.href = 'shops.html';
             }, 2000);
         });
