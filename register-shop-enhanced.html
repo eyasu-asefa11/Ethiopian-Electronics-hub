@@ -1893,74 +1893,38 @@
             // Show loading state
             showStatus('Registering shop...', 'info');
 
-            try {
-                // Get form data
-                const formData = new FormData(this);
+            // Get form data
+            const formData = new FormData(this);
 
-                // Add city_id (assuming city names map to IDs - you may need to adjust this)
-                const cityName = formData.get('city');
-                const cityMapping = {
-                    'Addis Ababa': 1,
-                    'Hawassa': 2,
-                    'Bahir Dar': 3,
-                    'Mekelle': 4,
-                    'Dire Dawa': 5,
-                    'Adama': 6,
-                    'Jimma': 7,
-                    'Jijiga': 8,
-                    'Shashamane': 9,
-                    'Debre Birhan': 10,
-                    'Dessie': 11
-                };
-                const city_id = cityMapping[cityName] || 1; // Default to Addis Ababa
+            // Save to localStorage instead of backend
+            const existingShops = JSON.parse(localStorage.getItem('registeredShops') || '[]');
+            
+            // Create shop object with proper structure
+            const shopObject = {
+                id: Date.now().toString(),
+                shopName: formData.get('shopName'),
+                ownerName: formData.get('ownerName'),
+                description: formData.get('description'),
+                phone: formData.get('phone'),
+                phoneProvider: document.getElementById('phoneProvider')?.value || 'Ethio Telecom',
+                city: formData.get('city'),
+                address: formData.get('address'),
+                images: uploadedImages.length > 0 ? uploadedImages : null,
+                products: products.length > 0 ? products : [],
+                createdAt: new Date().toISOString(),
+                status: 'approved'
+            };
 
-                // Create shop registration data
-                const shopData = {
-                    shop_name_en: formData.get('shopName'),
-                    shop_name_am: formData.get('shopName'), // Use English name as fallback for Amharic
-                    description: formData.get('description'),
-                    phone: formData.get('phone'),
-                    telegram: formData.get('telegram'),
-                    city_id: city_id,
-                    address: formData.get('address'),
-                    owner_name: formData.get('ownerName'),
-                    owner_phone: formData.get('phone')
-                };
+            // Add shop to existing shops
+            existingShops.push(shopObject);
+            localStorage.setItem('registeredShops', JSON.stringify(existingShops));
 
-                // Add images if any
-                if (uploadedImages && uploadedImages.length > 0) {
-                    // For now, we'll handle images separately or skip them in this basic implementation
-                    // You can enhance this to upload images to the server
-                    console.log('Images to upload:', uploadedImages.length);
-                }
+            showStatus('Shop registered successfully! Redirecting to shops page...', 'success');
 
-                // Send registration request to backend
-                const response = await fetch('http://localhost:5000/shops/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(shopData)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    showStatus('Shop registered successfully! Redirecting to your shop...', 'success');
-
-                    // Redirect to view the registered shop after 2 seconds
-                    setTimeout(() => {
-                        // For now, redirect to shops page. You can enhance this to go directly to the specific shop
-                        window.location.href = 'shops.html';
-                    }, 2000);
-                } else {
-                    showStatus(result.error || 'Registration failed', 'error');
-                }
-
-            } catch (error) {
-                console.error('Registration error:', error);
-                showStatus('Registration failed. Please try again.', 'error');
-            }
+            // Redirect to shops page after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'shops.html';
+            }, 2000);
         });
 
         // Initialize everything when DOM is loaded
