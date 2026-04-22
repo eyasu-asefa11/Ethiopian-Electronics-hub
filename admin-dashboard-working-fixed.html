@@ -1270,17 +1270,22 @@
         }
 
         // Initialize dashboard
-        function initializeDashboard() {
+        document.addEventListener('DOMContentLoaded', function() {
             loadStatistics();
             loadRecentShops();
             loadRegisteredVisitors();
             loadActivityLogs();
             updateActivityStats();
-            loadActiveSessions();
-            trackUserActivity();
-            logActivity('success', 'Admin Dashboard Accessed', 'Admin logged into the dashboard');
-            showStatus('Admin dashboard loaded successfully!', 'success');
-        }
+            startSessionTracking();
+            
+            // Auto-refresh data every 5 seconds
+            setInterval(() => {
+                loadStatistics();
+                loadRecentShops();
+                loadRegisteredVisitors();
+                console.log('Admin dashboard data refreshed');
+            }, 5000);
+        });
 
         // Load statistics
         function loadStatistics() {
@@ -1303,22 +1308,27 @@
                 return;
             }
             
+            console.log('Admin Dashboard - Loading shops:', shops.length, 'shops found');
+            
             shopList.innerHTML = shops.map(shop => `
                 <div class="shop-item">
                     <div class="shop-info">
-                        <h3>${shop.shopName || shop.name}</h3>
-                        <p>Owner: ${shop.ownerName || shop.owner}</p>
-                        <p>City: ${shop.city}</p>
-                        <p>Phone: ${shop.phone}</p>
-                        <p>Status: <span style="color: ${getStatusColor(shop.status)}">${(shop.status || 'pending').toUpperCase()}</span></p>
-                        <p>Products: ${shop.products ? shop.products.length : 0}</p>
-                        <p>Images: ${shop.images ? shop.images.length : 0}</p>
+                        <h3>${shop.shopName || shop.name || 'Unknown Shop'}</h3>
+                        <p><strong>Owner:</strong> ${shop.ownerName || shop.owner || 'Not specified'}</p>
+                        <p><strong>Phone:</strong> ${shop.phone || 'Not provided'} (${shop.phoneProvider || 'Not specified'})</p>
+                        <p><strong>City:</strong> ${shop.city || 'Not specified'}</p>
+                        <p><strong>Address:</strong> ${shop.address || 'Not provided'}</p>
+                        <p><strong>Status:</strong> <span style="color: ${getStatusColor(shop.status)}">${(shop.status || 'pending').toUpperCase()}</span></p>
+                        <p><strong>Products:</strong> ${shop.products ? shop.products.length : 0} items</p>
+                        <p><strong>Images:</strong> ${shop.images && shop.images.length > 0 ? shop.images.length + ' uploaded' : 'No images'}</p>
+                        <p><strong>Registered:</strong> ${new Date(shop.createdAt || Date.now()).toLocaleString()}</p>
+                        <p><strong>Description:</strong> ${shop.description ? (shop.description.length > 80 ? shop.description.substring(0, 80) + '...' : shop.description) : 'No description'}</p>
                     </div>
                     <div class="shop-actions">
-                        <button class="btn btn-small btn-primary" onclick="viewShop('${shop.shopName || shop.name}')">View</button>
-                        <button class="btn btn-small btn-success" onclick="approveShop('${shop.shopName || shop.name}')">Approve</button>
-                        <button class="btn btn-small btn-warning" onclick="deactivateShop('${shop.shopName || shop.name}')">Deactivate</button>
-                        <button class="btn btn-small btn-danger" onclick="deleteShop('${shop.shopName || shop.name}')">Delete</button>
+                        <button class="btn btn-small btn-primary" onclick="viewShop('${shop.id}')">View</button>
+                        <button class="btn btn-small btn-success" onclick="approveShop('${shop.id}')">Approve</button>
+                        <button class="btn btn-small btn-warning" onclick="deactivateShop('${shop.id}')">Deactivate</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteShop('${shop.id}')">Delete</button>
                     </div>
                 </div>
             `).join('');
